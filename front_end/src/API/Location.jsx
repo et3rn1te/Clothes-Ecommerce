@@ -21,29 +21,36 @@ const ProvinceSelect = ({ formData, setFormData, errors }) => {
   }, []);
 
   useEffect(() => {
-    fetch("https://esgoo.net/api-tinhthanh/2/66.htm")
-    .then((response) => response.json())
-    .then((data) => {
-        if (data.error === 0 && Array.isArray(data.data)) {
-          setDistricts(data.data);
-        } else {
-          console.error("Dữ liệu thành phố không hợp lệ");
-        }
-    })
-    .catch((err) => console.error("Lỗi khi lấy thành phố:", err));
-  },[]);
+    if (formData.provinceId) {
+      fetch(`https://esgoo.net/api-tinhthanh/2/${formData.provinceId}.htm`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error === 0 && Array.isArray(data.data)) {
+            setDistricts(data.data);
+          }else{
+            console.error("Dữ liệu phường xã không hợp lệ");
+          }
+        })
+        .catch((err) => console.error("Lỗi khi lấy quận/huyện:", err));
+    } else {
+      setDistricts([]);
+    }
+  }, [formData.provinceId]);
+
 
   useEffect(() => {
-    fetch("https://esgoo.net/api-tinhthanh/3/643.htm")
-    .then((response) => response.json())
-    .then((data) => {
-        if(data.error ===0 && Array.isArray(data.data)){
-            setWards(data.data);
-        }else{
-            console.error("Dữ liệu phường/xã không hợp lệ");
-        }
-    })
-    .catch((err) => console.error("Lỗi khi lấy phường/xã:", err));
+    if(formData.districtId) {
+      fetch(`https://esgoo.net/api-tinhthanh/3/${formData.districtId}.htm`)
+        .then((response) => response.json())
+        .then((data) => {
+            if(data.error ===0 && Array.isArray(data.data)){
+                setWards(data.data);
+            }else{
+                console.error("Dữ liệu phường/xã không hợp lệ");
+            }
+        })
+        .catch((err) => console.error("Lỗi khi lấy phường/xã:", err));
+    }
   });
 
   return (
@@ -58,13 +65,16 @@ const ProvinceSelect = ({ formData, setFormData, errors }) => {
               errors.province ? "border-red-500" : "border-gray-300"
             } px-3 py-2`}
             value={formData.province}
-            onChange={(e) =>
-              setFormData({ ...formData, province: e.target.value, district: "", ward: "" })
+            onChange={(e) =>{
+              const selectedProvince = provinces.find(p => p.full_name === e.target.value);
+              setFormData({ ...formData, province: selectedProvince.full_name,provinceId: selectedProvince.id, district: "", ward: "" });
+              console.log(e.target.value);
+            }
             }
           >
             <option value="">Chọn Tỉnh/Thành</option>
             {provinces.map((province) => (
-              <option key={province.id} value={province.id}>
+              <option key={province.id} value={province.full_name}>
                 {province.name}
               </option>
             ))}
@@ -82,11 +92,15 @@ const ProvinceSelect = ({ formData, setFormData, errors }) => {
               errors.district ? "border-red-500" : "border-gray-300"
             } px-3 py-2`}
             value={formData.district}
-            onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+            onChange={(e) => {
+              const selectedDistrict = districts.find(d => d.full_name === e.target.value);
+              setFormData({ ...formData, district: selectedDistrict.full_name, districtId: selectedDistrict.id });
+              console.log(selectedDistrict);
+            }}
           >
             <option value="">Chọn Quận/Huyện</option>
             {districts.map((district) =>(
-                <option key={district.id} value={district.id}>
+                <option key={district.id} value={district.full_name}>
                 {district.name}
               </option>
             ))}
@@ -109,7 +123,7 @@ const ProvinceSelect = ({ formData, setFormData, errors }) => {
         >
           <option value="">Chọn Phường/Xã</option>
           {wards.map((wards) =>(
-            <option key={wards.id} value={wards.id}>{wards.name}</option>
+            <option key={wards.id} value={wards.full_name}>{wards.name}</option>
           ))}
         </select>
         {errors.ward && (

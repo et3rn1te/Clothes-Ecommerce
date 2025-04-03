@@ -7,7 +7,9 @@ const CheckoutPage = () => {
     fullName: "",
     phoneNumber: "",
     province: "",
+    provinceId: "",
     district: "",
+    districtId: "",
     ward: "",
     address: "",
     deliveryNotes: "",
@@ -87,6 +89,7 @@ const CheckoutPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (validateForm()) {
       setIsLoading(true);
       try {
@@ -98,7 +101,9 @@ const CheckoutPage = () => {
       } finally {
         setIsLoading(false);
       }
+       console.log(formData);
     }
+   
   };
 
 
@@ -121,6 +126,27 @@ const CheckoutPage = () => {
                   />
                   {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                  <input
+                    type="tel"
+                    className={`mt-1 block w-full rounded-md border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} px-3 py-2`}
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                    onKeyDown={(e)=> {
+                      if (e.ctrlKey || e.metaKey ||
+                        ["Backspace", "ArrowLeft", "ArrowRight", "Delete", "Tab"].includes(e.key)
+                      ) {
+                        return;
+                      }
+                      if(!/[0-9]/.test(e.key)){
+                        e.preventDefault();
+                      }
+                    }}
+                  />
+                  {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
+                </div>
+                
 
                 {/* Address Fields */}
                 <ProvinceSelect formData={formData} setFormData={setFormData} errors={errors}/>
@@ -130,11 +156,11 @@ const CheckoutPage = () => {
                   <label className="block text-sm font-medium text-gray-700">House's address</label>
                   <input
                     type="tel"
-                    className={`mt-1 block w-full rounded-md border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} px-3 py-2`}
-                    value={formData.phoneNumber}
-                    onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                    className={`mt-1 block w-full rounded-md border ${errors.address ? 'border-red-500' : 'border-gray-300'} px-3 py-2`}
+                    value={formData.address}
+                    onChange={(e) => setFormData({...formData, address: e.target.value})}
                   />
-                  {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
+                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
                 </div>
 
                 
@@ -159,37 +185,6 @@ const CheckoutPage = () => {
                       </label>
                     </div>
 
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        id="card"
-                        name="payment"
-                        value="card"
-                        checked={formData.paymentMethod === "card"}
-                        onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
-                        className="h-4 w-4 text-blue-600"
-                      />
-                      <label htmlFor="card" className="ml-3 flex items-center">
-                        <FaCreditCard className="text-gray-400 mr-2" />
-                        <span className="text-sm font-medium text-gray-900">Credit/Debit Card</span>
-                      </label>
-                    </div>
-
-                    <div className="flex items-center">
-                      <input
-                        type="radio"
-                        id="card"
-                        name="payment"
-                        value="card"
-                        checked={formData.paymentMethod === "card"}
-                        onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
-                        className="h-4 w-4 text-blue-600"
-                      />
-                      <label htmlFor="card" className="ml-3 flex items-center">
-                        <FaCreditCard className="text-gray-400 mr-2" />
-                        <span className="text-sm font-medium text-gray-900">Momo</span>
-                      </label>
-                    </div>
                     <div className="flex items-center">
                       <input
                         type="radio"
