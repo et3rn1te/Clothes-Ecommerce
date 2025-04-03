@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaLock, FaCreditCard, FaMoneyBillWave, FaWallet } from "react-icons/fa";
+import ProvinceSelect from "../API/Location.jsx";
 
 const CheckoutPage = () => {
   const [formData, setFormData] = useState({
@@ -80,7 +81,7 @@ const CheckoutPage = () => {
 
   const calculateTotal = () => {
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = shippingMethods[formData.shippingMethod].price;
+    const shipping = 15;
     return (subtotal + shipping).toFixed(2);
   };
 
@@ -99,6 +100,7 @@ const CheckoutPage = () => {
       }
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -121,33 +123,8 @@ const CheckoutPage = () => {
                 </div>
 
                 {/* Address Fields */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Province/City</label>
-                    <select
-                      className={`mt-1 block w-full rounded-md border ${errors.province ? 'border-red-500' : 'border-gray-300'} px-3 py-2`}
-                      value={formData.province}
-                      onChange={(e) => setFormData({...formData, province: e.target.value})}
-                    >
-                      <option value="">Select Province</option>
-                      <option value="hanoi">Hanoi</option>
-                      <option value="hochiminh">Ho Chi Minh</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">District</label>
-                    <select
-                      className={`mt-1 block w-full rounded-md border ${errors.district ? 'border-red-500' : 'border-gray-300'} px-3 py-2`}
-                      value={formData.district}
-                      onChange={(e) => setFormData({...formData, district: e.target.value})}
-                    >
-                      <option value="">Select District</option>
-                      <option value="district1">District 1</option>
-                      <option value="district2">District 2</option>
-                    </select>
-                  </div>
-                </div>
+                <ProvinceSelect formData={formData} setFormData={setFormData} errors={errors}/>
+                
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">House's address</label>
@@ -292,7 +269,7 @@ const CheckoutPage = () => {
                   </div>
                   <div className="flex justify-between mb-2">
                     <span>Shipping</span>
-                    <span>${shippingMethods[formData.shippingMethod].price}</span>
+                    <span>${15}</span>
                   </div>
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
