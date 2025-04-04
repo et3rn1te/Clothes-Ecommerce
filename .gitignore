@@ -1,0 +1,12 @@
+# IDE
+.idea/
+*.iml
+
+# Back-end (Maven/Gradle)
+target/
+build/
+.gradle/
+
+# Front-end
+node_modules/
+dist/
