@@ -1,57 +1,61 @@
 package com.example.back_end.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
 @Entity
 @Table(name = "orders")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
-    private Integer id;
+    private Long orderId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id", nullable = false)
-    private Address address;
+    private LocalDateTime orderDate;
 
-    @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false)
     private BigDecimal totalAmount;
 
-    @Column(name = "order_status", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "shipping_address_id", nullable = false)
+    private Address shippingAddress;
+
+    @ManyToOne
+    @JoinColumn(name = "billing_address_id", nullable = false)
+    private Address billingAddress;
+
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private OrderStatus status = OrderStatus.PENDING;
 
-    @Column(name = "created_at", updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<OrderDetail> orderDetails = new HashSet<>();
+    private String trackingNumber;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderItem> items = new HashSet<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private Set<Payment> payments = new HashSet<>();
 
+    @PrePersist
+    protected void onCreate() {
+        this.orderDate = LocalDateTime.now();
+    }
+
     public enum OrderStatus {
-        pending,
-        processing,
-        shipped,
-        delivered,
-        cancelled
+        PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+    }
+
+    public enum PaymentStatus {
+        PENDING, PAID, FAILED, REFUNDED
     }
 }

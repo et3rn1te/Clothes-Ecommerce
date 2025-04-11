@@ -1,28 +1,22 @@
 package com.example.back_end.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+@Data
 @Entity
 @Table(name = "product_images")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
-    private Integer id;
+    private Long imageId;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(nullable = false)
     private String imageUrl;
 
-    @Column(name = "is_primary")
-    private Boolean isPrimary;
+    private boolean isPrimary = false;
 }

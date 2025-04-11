@@ -1,46 +1,36 @@
 package com.example.back_end.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
-
+@Data
 @Entity
 @Table(name = "addresses")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id")
-    private Integer id;
+    private Long addressId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "street")
-    private String street;
+    @Column(nullable = false)
+    private String addressLine1;
 
-    @Column(name = "city", length = 50)
+    private String addressLine2;
+
+    @Column(nullable = false)
     private String city;
 
-    @Column(name = "state", length = 50)
+    @Column(nullable = false)
     private String state;
 
-    @Column(name = "zip_code", length = 20)
-    private String zipCode;
+    @Column(nullable = false)
+    private String postalCode;
 
-    @Column(name = "country", length = 50)
+    @Column(nullable = false)
     private String country;
 
-    @Column(name = "is_default")
-    private Boolean isDefault;
-
-    @OneToMany(mappedBy = "address")
-    private Set<Order> orders = new HashSet<>();
+    private boolean isDefault = false;
 }
