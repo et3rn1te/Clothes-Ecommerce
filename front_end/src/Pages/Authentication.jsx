@@ -2,6 +2,45 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import ReCAPTCHA from "react-google-recaptcha";
+
+const PasswordStrength = ({ password }) => {
+  const getStrength = (pass) => {
+    let score = 0;
+    if (pass.length >= 8) score++;
+    if (pass.match(/[A-Z]/)) score++;
+    if (pass.match(/[0-9]/)) score++;
+    if (pass.match(/[^A-Za-z0-9]/)) score++;
+    return score;
+  };
+
+  const strength = getStrength(password);
+  const getColor = () => {
+    if (strength === 0) return "bg-gray-200";
+    if (strength === 1) return "bg-red-500";
+    if (strength === 2) return "bg-yellow-500";
+    if (strength === 3) return "bg-blue-500";
+    return "bg-green-500";
+  };
+
+  return (
+    <div className="mt-2">
+      <div className="h-2 w-full bg-gray-200 rounded-full">
+        <div
+          className={`h-full ${getColor()} rounded-full transition-all duration-300`}
+          style={{ width: `${(strength / 4) * 100}%` }}
+        ></div>
+      </div>
+      <p className="text-xs mt-1 text-gray-500">
+        {strength === 0 && "Enter password"}
+        {strength === 1 && "Weak"}
+        {strength === 2 && "Fair"}
+        {strength === 3 && "Good"}
+        {strength === 4 && "Strong"}
+      </p>
+    </div>
+  );
+};
 
 const AuthPage = () => {
   const [authState, setAuthState] = useState("login");
@@ -16,13 +55,18 @@ const AuthPage = () => {
     termsAccepted: false
   });
   const [errors, setErrors] = useState({});
+  const [captchaValue, setCaptchaValue] = useState(null);
 
   const validateEmail = (email) => {
     return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
   };
 
   const validatePassword = (password) => {
-    return password.length >= 8;
+    const hasMinLength = password.length >= 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+    return hasMinLength && hasUpperCase && hasNumber && hasSpecialChar;
   };
 
   const handleInputChange = (e) => {
@@ -42,7 +86,11 @@ const AuthPage = () => {
     }
 
     if (!validatePassword(formData.password)) {
-      newErrors.password = "Password must be at least 8 characters long";
+      newErrors.password = "Password must be at least 8 characters long and include uppercase, number, and special character";
+    }
+
+    if (authState === "login" && !captchaValue) {
+      newErrors.captcha = "Please verify that you are not a robot";
     }
 
     if (authState === "register") {
@@ -129,6 +177,7 @@ const AuthPage = () => {
                       {showPassword ? <FaEyeSlash className="text-gray-400" /> : <FaEye className="text-gray-400" />}
                     </button>
                   </div>
+                  {authState === "register" && <PasswordStrength password={formData.password} />}
                   {errors.password && <p className="mt-1 text-sm text-red-500">{errors.password}</p>}
                 </div>
               )}
@@ -182,6 +231,16 @@ const AuthPage = () => {
                   <label className="ml-2 block text-sm text-gray-900">
                     I accept the terms and conditions
                   </label>
+                </div>
+              )}
+
+              {authState === "login" && (
+                <div className="mt-4">
+                  <ReCAPTCHA
+                    sitekey="YOUR_RECAPTCHA_SITE_KEY"
+                    onChange={(value) => setCaptchaValue(value)}
+                  />
+                  {errors.captcha && <p className="mt-1 text-sm text-red-500">{errors.captcha}</p>}
                 </div>
               )}
 
