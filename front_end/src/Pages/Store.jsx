@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FiSearch, FiShoppingCart, FiUser, FiMenu, FiX, FiHeart, FiMail } from "react-icons/fi";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import ProductCard from "../component/ProductCard";
 
 const Shop = () => {
   const variants = {
@@ -27,6 +28,20 @@ const Shop = () => {
       name: "Classic T-Shirt",
       price: 29.99,
       image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+      category: "Áo",
+      gender: "Nam",
+      color: "Trắng",
+      size: ["S", "M", "L", "XL"],
+      material: "Cotton",
+      discount: 10,
+      bestSeller: true,
+      new: true
+    },
+    {
+      id:2,
+      name: "Organic Bananas",
+      price: 4.99,
+      image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e",
       category: "Áo",
       gender: "Nam",
       color: "Trắng",
@@ -248,35 +263,36 @@ const Shop = () => {
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
                 {filteredProducts.map((product, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-lg group"
-                  >
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500"
-                      />
-                      {product.discount > 0 && (
-                        <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded">
-                          -{product.discount}%
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                      <div className="flex items-center justify-between">
-                        <span className="text-green-500 font-bold">${product.price}</span>
-                        <button className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition duration-300">
-                          Thêm vào giỏ
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
+                  <ProductCard key={index} product={product}/>
+                  // <motion.div
+                  //   key={index}
+                  //   initial={{ opacity: 0, y: 20 }}
+                  //   animate={{ opacity: 1, y: 0 }}
+                  //   transition={{ delay: index * 0.1 }}
+                  //   className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-lg group"
+                  // >
+                  //   <div className="relative overflow-hidden">
+                  //     <img
+                  //       src={product.image}
+                  //       alt={product.name}
+                  //       className="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500"
+                  //     />
+                  //     {product.discount > 0 && (
+                  //       <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded">
+                  //         -{product.discount}%
+                  //       </div>
+                  //     )}
+                  //   </div>
+                  //   <div className="p-4">
+                  //     <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                  //     <div className="flex items-center justify-between">
+                  //       <span className="text-green-500 font-bold">${product.price}</span>
+                  //       <button className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition duration-300">
+                  //         Thêm vào giỏ
+                  //       </button>
+                  //     </div>
+                  //   </div>
+                  // </motion.div>
                 ))}
               </motion.div>
             </AnimatePresence>

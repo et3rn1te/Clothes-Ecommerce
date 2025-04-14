@@ -157,7 +157,7 @@ const Cart = () => {
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
                 />
-                <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                   Apply
                 </button>
               </div>
