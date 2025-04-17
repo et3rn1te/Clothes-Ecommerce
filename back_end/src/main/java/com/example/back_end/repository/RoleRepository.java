@@ -1,4 +1,4 @@
-package com.example.back_end.repositories;
+package com.example.back_end.repository;
 
 import com.example.back_end.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.example.back_end.repositories;
+package com.example.back_end.repository;
 
 import com.example.back_end.entity.User;
 import org.springframework.data.domain.Example;
