@@ -1,4 +1,4 @@
-package com.example.back_end.configuration;
+package com.example.back_end.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,23 +20,32 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
     //Xác thực yêu cầu
-    private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
-            "auth/login","auth/introspect",};
-    private final String[] PUBLIC_ENDPOINTS_GET = {"/sendEmail","/users"};
+    private final String[] PUBLIC_ENDPOINTS_POST = {"/users/createUser",
+            "/auth/login","/auth/introspect"};
+    private final String[] PUBLIC_ENDPOINTS_GET = {
+            "/sendEmail",
+            "/users",
+            "/products",
+            "/products/featured",
+            "/products/new-arrivals",
+            "/products/best-sellers",
+            "/categories/**",
+            "/categories"
+    };
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request ->
+        httpSecurity
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).hasAuthority("SCOPE_ADMIN")
-
-                        .anyRequest().authenticated());
-        httpSecurity.oauth2ResourceServer(oauth2 ->
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).permitAll()
+                        .anyRequest().authenticated())
+            .oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
-        );
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);// tắt CSRF
+            );
         return httpSecurity.build();
     }
 
@@ -48,6 +57,4 @@ public class SecurityConfig {
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
     }
-
-
 }

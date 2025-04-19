@@ -1,10 +1,10 @@
-package com.example.back_end.configuration;
+package com.example.back_end.config;
 
 import com.example.back_end.constant.PredefinedRole;
 import com.example.back_end.entity.Role;
 import com.example.back_end.entity.User;
-import com.example.back_end.repositories.RoleRepository;
-import com.example.back_end.repositories.UserRepository;
+import com.example.back_end.repository.RoleRepository;
+import com.example.back_end.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
