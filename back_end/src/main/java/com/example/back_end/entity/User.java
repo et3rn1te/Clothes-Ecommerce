@@ -3,7 +3,6 @@ package com.example.back_end.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -17,7 +16,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Long id;
 
     @Column(name = "username", nullable = false)
     private String username;
@@ -34,8 +33,8 @@ public class User {
     @Column(name = "phone", nullable = false, length = 20)
     private String phone;
 
-    @Column(name = "avatar", length = 45)
-    private String avatar;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Image avatar;
 
     @Column(name = "active", nullable = false)
     private Boolean active = false;
