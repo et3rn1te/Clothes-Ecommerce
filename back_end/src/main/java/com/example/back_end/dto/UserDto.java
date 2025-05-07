@@ -1,18 +1,15 @@
-package com.example.back_end.dto.request;
+package com.example.back_end.dto;
 
 import com.example.back_end.entity.Image;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class UserCreationRequest {
+public class UserDto {
     private String username;
-    @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
     private String fullname;
     private String email;
     private String phone;
     private Boolean active = false;
+    private ImageDto avatar;
 }

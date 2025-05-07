@@ -4,7 +4,7 @@ import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.AuthenticationResponse;
 import com.example.back_end.dto.response.IntrospectResponse;
-import com.example.back_end.service.UserService;
+import com.example.back_end.service.user.UserService;
 import com.nimbusds.jose.JOSEException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

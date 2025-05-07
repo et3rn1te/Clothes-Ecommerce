@@ -1,15 +1,16 @@
-package com.example.back_end.configuration;
+package com.example.back_end.config;
 
 import com.example.back_end.constant.PredefinedRole;
 import com.example.back_end.entity.Role;
 import com.example.back_end.entity.User;
-import com.example.back_end.repositories.RoleRepository;
-import com.example.back_end.repositories.UserRepository;
+import com.example.back_end.repository.RoleRepository;
+import com.example.back_end.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -31,6 +32,11 @@ public class ApplicationInitConfig {
 
     @NonFinal
     static final String ADMIN_PASSWORD = "admin";
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
     @Bean
     @ConditionalOnProperty(
