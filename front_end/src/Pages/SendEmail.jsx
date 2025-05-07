@@ -3,10 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
-import Login from "./Login";
-import Register from "./Register";
-import SendEmail from "./SendEmail";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
 
 const PasswordStrength = ({ password }) => {
   const getStrength = (pass) => {
@@ -65,8 +62,8 @@ const VerificationPage = ({ email, onResend }) => {
   );
 };
 
-const AuthPage = () => {
-  const [authState, setAuthState] = useState("login");
+const SendEmail = () => {
+  const [authState, setAuthState] = useState("sendEmail");
   const [showPassword, setShowPassword] = useState(false);
   const [isVerificationSent, setIsVerificationSent] = useState(false);
   const [formData, setFormData] = useState({
@@ -220,27 +217,44 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={isVerificationSent ? "verification" : authState}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/sendEmail" element={<SendEmail />} />
-            </Routes>
-          </motion.div>
-        </AnimatePresence>
+    <>
+      <div className="text-center">
+        <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          Sending Verify
+        </h2>
       </div>
-    </div>
+      <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Email address</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter email address"
+            value={formData.email}
+            onChange={handleInputChange}
+            className={`mt-1 block w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+          />
+          {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+        </div>
+        <button
+          type="submit"
+          disabled={!isFormValid()}
+          className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${isFormValid() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+        >
+          Send reset link
+        </button>
+      </form>
+
+      <div className="mt-6 text-center">
+        <button
+          type="button"
+          className="text-sm font-medium text-blue-600 hover:text-blue-500"
+        >
+          Back to sign in
+        </button>
+      </div>
+    </>      
   );
 };
 
-export default AuthPage;
+export default SendEmail;

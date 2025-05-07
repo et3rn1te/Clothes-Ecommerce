@@ -23,7 +23,7 @@ const routes = [
     component: lazy(() => import('../Pages/Payment')),
   },
   {
-    path: '/auth',
+    path: '/auth/*',
     component: lazy(() => import('../Pages/Authentication')),
   },
   {

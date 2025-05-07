@@ -3,7 +3,7 @@ import { FiSearch, FiShoppingCart, FiHeart, FiMenu, FiX , FiMic} from "react-ico
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { MdEmail, MdPhone, MdKeyboardArrowDown } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { jwtCheck } from "../API/AuthService";
+
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,7 +70,7 @@ const Header = () => {
     navigate('/cart'); // Chuyển sang trang /cart
   };
   const loginClick = () => {
-    navigate('/auth');
+    navigate('/auth/login');
   }
 
   const menuItems = [

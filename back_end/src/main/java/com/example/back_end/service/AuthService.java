@@ -2,6 +2,7 @@ package com.example.back_end.service;
 
 import com.example.back_end.constant.PredefinedRole;
 import com.example.back_end.dto.request.IntrospectRequest;
+import com.example.back_end.dto.request.LoginRequest;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.AuthenticationResponse;
 import com.example.back_end.dto.response.IntrospectResponse;
@@ -53,18 +54,26 @@ public class AuthService {
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
         boolean isValue = true;
+        String email="";
         try {
             verifyToken(token);
+            email = verifyToken(token).getJWTClaimsSet().getSubject();
         } catch (AppException e){
             isValue = false;
         }
-        return IntrospectResponse.builder().valid(isValue).build();
+        return IntrospectResponse.builder().valid(isValue).email(email).build();
     }
 
-    public AuthenticationResponse login (String email, String password){
-        var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
-        boolean authenticated =passwordEncoder.matches(password,user.getPassword());
+    public AuthenticationResponse login (LoginRequest request){
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        if(!user.getActive()){
+            throw new AppException(ErrorCode.INACTIVE_ACC);
+        }
+        System.out.println(user.getEmail());
+        System.out.println(user.getPassword());
+        boolean authenticated =passwordEncoder.matches(request.getPassword(), user.getPassword());
+        System.out.println(authenticated);
         if(!authenticated){
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
@@ -104,7 +113,7 @@ public class AuthService {
         System.out.println(buildScope(user));
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .issuer("CDWED.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(
@@ -124,6 +133,34 @@ public class AuthService {
         }
     }
 
+    public String createVerifyToken(String email) {
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                .subject(email)
+                .issuer("CDWED.com")
+                .issueTime(new Date())
+                .expirationTime(new Date(
+                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+                ))
+                .jwtID(UUID.randomUUID().toString())
+                .claim("custorClaim","Custom")
+                .build();
+
+        Payload payload = new Payload(claimsSet.toJSONObject());
+
+        JWSObject jwsObject = new JWSObject(header,payload);
+
+        try {
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            return jwsObject.serialize();
+        } catch (JOSEException e) {
+            log.error("Cannot get token",e);
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
     private String buildScope(User user){
         StringJoiner stringJoiner = new StringJoiner(" "); // dùng khoảng trắng ngăn cách scope
         if(!CollectionUtils.isEmpty(user.getRoles())) {
@@ -131,4 +168,7 @@ public class AuthService {
         }
         return stringJoiner.toString();
     }
+
+
+
 }

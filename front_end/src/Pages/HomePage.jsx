@@ -7,7 +7,6 @@ const HomePage = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
-  console.log(currentCategoryIndex);
 
   const categories = [
     { name: "Fresh Fruits", image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf" },

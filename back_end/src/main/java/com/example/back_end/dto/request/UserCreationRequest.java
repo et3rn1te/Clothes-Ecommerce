@@ -2,6 +2,7 @@ package com.example.back_end.dto.request;
 
 import com.example.back_end.entity.Role;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
+
 public class UserCreationRequest {
     private String username;
     @Size(min = 8, message = "Password must be at least 8 characters")

@@ -69,16 +69,7 @@ public class UserService {
 
         return userRepository.save(user);
     }
-    public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
-        var token = request.getToken();
-        boolean isValue = true;
-        try {
-            verifyToken(token);
-        } catch (AppException e){
-            isValue = false;
-        }
-        return IntrospectResponse.builder().valid(isValue).build();
-    }
+
 
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public List<User> getUsers() {
@@ -89,75 +80,5 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với ID: " + id))
                 ;
     }
-    public AuthenticationResponse login (String email, String password){
-        var user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_EXISTED));
-        boolean authenticated =passwordEncoder.matches(password,user.getPassword());
-        if(!authenticated){
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-        }
-        var token = generateToken(user);
-        return AuthenticationResponse.builder().token(token).authenticated(true).build();
-    }
-
-    public void logout(IntrospectRequest request) throws ParseException, JOSEException {
-        var signToken = verifyToken(request.getToken());
-        String jit = signToken.getJWTClaimsSet().getJWTID();
-        Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
-        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
-                .id(jit)
-                .expiryTime(expiryTime)
-                .build();
-
-        invalidatedTokenRepository.save(invalidatedToken);
-    }
-
-    public SignedJWT verifyToken(String token) throws JOSEException, ParseException {
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        var verified = signedJWT.verify(verifier);
-        if(!(verified && expiryTime.after(new Date()))){
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-        }
-        if(invalidatedTokenRepository
-                .existsById(signedJWT.getJWTClaimsSet().getJWTID())){
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-        }
-        return signedJWT;
-    }
-
-    private String generateToken(User user){
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-        System.out.println(buildScope(user));
-
-        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
-                .issuer("CDWED.com")
-                .issueTime(new Date())
-                .expirationTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
-                ))
-                .jwtID(UUID.randomUUID().toString())
-                .claim("scope",buildScope(user))
-                .build();
-        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-        JWSObject jwsObject = new JWSObject(header,payload);
-        try {
-            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-            return jwsObject.serialize();
-        } catch (JOSEException e) {
-            System.out.println("Can't get toten"+e);
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String buildScope(User user){
-        StringJoiner stringJoiner = new StringJoiner(" "); // dùng khoảng trắng ngăn cách scope
-        if(!CollectionUtils.isEmpty(user.getRoles())) {
-            user.getRoles().forEach(role -> stringJoiner.add(role.getName())); // Lấy tên role
-        }
-        return stringJoiner.toString();
-    }
-
+    
 }
