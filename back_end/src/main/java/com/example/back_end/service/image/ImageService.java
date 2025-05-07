@@ -27,7 +27,7 @@ public class ImageService implements IImageService {
     private final UserRepository userRepository;
     private final UserService userService;
 
-    private static final String URL_PREFIX = "/api/images/";
+    private static final String URL_PREFIX = "/api/images/download/";
 
     @Override
     public List<ImageDto> saveProductImages(List<MultipartFile> files, Long productId) {
@@ -69,7 +69,7 @@ public class ImageService implements IImageService {
             Image saved = imageRepository.save(img);
 
             // 2) Build URL và save lại
-            saved.setDownloadUrl(URL_PREFIX + saved.getId() + "/download");
+            saved.setDownloadUrl(URL_PREFIX + saved.getId());
             imageRepository.save(saved);
 
             // 3) Map sang DTO bằng setter
