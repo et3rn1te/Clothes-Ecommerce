@@ -16,15 +16,16 @@ import java.sql.SQLIntegrityConstraintViolationException;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    ResponseEntity<ApiResponse> handlingRuntimeException (MethodArgumentNotValidException exception){
+    ResponseEntity<ApiResponse> handlingRuntimeException(MethodArgumentNotValidException exception) {
         ApiResponse apiResponse = new ApiResponse();
         ErrorCode invalidPassword = ErrorCode.INVALID_PASSWORD;
         apiResponse.setCode(invalidPassword.getCode());
         apiResponse.setMessage(invalidPassword.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
+
     @ExceptionHandler(value = AppException.class)
-    ResponseEntity<ApiResponse> handlingValidationException (AppException exception){
+    ResponseEntity<ApiResponse> handlingValidationException(AppException exception) {
         ApiResponse apiResponse = new ApiResponse();
         ErrorCode errorCode = exception.getErrorCode();
         apiResponse.setCode(errorCode.getCode());
@@ -32,6 +33,7 @@ public class GlobalExceptionHandler {
         apiResponse.setResult(errorCode.getStatusCode());
         return ResponseEntity.badRequest().body(apiResponse);
     }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         Throwable rootCause = getRootCause(ex);

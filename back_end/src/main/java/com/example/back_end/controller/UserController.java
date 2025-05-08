@@ -1,38 +1,82 @@
 package com.example.back_end.controller;
 
+import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
-import com.example.back_end.entity.User;
-import com.example.back_end.service.UserService;
-import com.nimbusds.jose.proc.SecurityContext;
+import com.example.back_end.service.user.UserService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@Slf4j
 
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping("/createUser")
-    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request){
-        ApiResponse<User> response = new ApiResponse<>();
-        response.setResult(userService.createRequest(request));
-        return response;
+    public ResponseEntity<ApiResponse<UserDto>> createUser(
+            @RequestBody @Valid UserCreationRequest request) {
+        UserDto dto = userService.convertToDto(
+                userService.createRequest(request)
+        );
+        return ResponseEntity.ok(
+                ApiResponse.<UserDto>builder()
+                        .code(0)
+                        .message("User created successfully")
+                        .data(dto)
+                        .build()
+        );
     }
-    @GetMapping
-    List<User> getUsers() {
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("Username: {}",authentication.getName());
-        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
-        return userService.getUsers(); }
+
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
+        List<UserDto> list = userService.getConvertedUsers(
+                userService.getUsers()
+        );
+        return ResponseEntity.ok(
+                ApiResponse.<List<UserDto>>builder()
+                        .code(0)
+                        .message("User list retrieved successfully")
+                        .data(list)
+                        .build()
+        );
+    }
+
     @GetMapping("/{userId}")
-    User getUserById(@PathVariable int userId) { return userService.getUserById(userId); }
+    public ResponseEntity<ApiResponse<UserDto>> getUserById(
+            @PathVariable Long userId) {
+        UserDto dto = userService.convertToDto(
+                userService.getUserById(userId)
+        );
+        return ResponseEntity.ok(
+                ApiResponse.<UserDto>builder()
+                        .code(0)
+                        .message("User retrieved successfully")
+                        .data(dto)
+                        .build()
+        );
+    }
+
+//    @GetMapping("/me")
+//    public ResponseEntity<ApiResponse<UserDto>> getCurrentUser() {
+//        String username = SecurityContextHolder.getContext()
+//                .getAuthentication().getName();
+//        UserDto dto = userService.convertToDto(
+//                userService.getUserByUsername(username)
+//        );
+//        return ResponseEntity.ok(
+//                ApiResponse.<UserDto>builder()
+//                        .code(0)
+//                        .message("Current user retrieved successfully")
+//                        .data(dto)
+//                        .build()
+//        );
+//    }
 }

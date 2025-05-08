@@ -17,7 +17,11 @@ public enum ErrorCode {
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
-    INACTIVE_ACC(1009,"Your account had been clock", HttpStatus.LOCKED);
+    INACTIVE_ACC(1009,"Your account had been clock", HttpStatus.LOCKED),
+    PRODUCT_NOT_FOUND(109, "Can not find the product", HttpStatus.NOT_FOUND),
+    CATEGORY_EXIST(1010, "Can not find the category", HttpStatus.CONFLICT),
+    CATEGORY_NOT_FOUND(1011, "Can not find the category", HttpStatus.NOT_FOUND),
+    IMAGE_NOT_FOUND(1012, "Can not find the image", HttpStatus.NOT_FOUND),
     ;
 
     private final int code;

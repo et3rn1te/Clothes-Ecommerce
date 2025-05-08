@@ -1,16 +1,11 @@
 package com.example.back_end.dto.request;
 
-import com.example.back_end.entity.Role;
+import com.example.back_end.entity.Image;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.NonFinal;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @AllArgsConstructor

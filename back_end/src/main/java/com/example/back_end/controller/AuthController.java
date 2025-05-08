@@ -9,6 +9,7 @@ import com.example.back_end.dto.response.IntrospectResponse;
 import com.example.back_end.entity.User;
 import com.example.back_end.service.AuthService;
 import com.example.back_end.service.UserService;
+import com.example.back_end.service.user.UserService;
 import com.nimbusds.jose.JOSEException;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
