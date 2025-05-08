@@ -13,8 +13,8 @@ import com.example.back_end.exception.AppException;
 import com.example.back_end.exception.ErrorCode;
 import com.example.back_end.mapper.UserMapper;
 import com.example.back_end.repositories.InvalidatedTokenRepository;
-import com.example.back_end.repositories.RoleRepository;
-import com.example.back_end.repositories.UserRepository;
+import com.example.back_end.repository.RoleRepository;
+import com.example.back_end.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -45,8 +45,8 @@ public class AuthService {
     @Autowired
     private RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-    @Autowired
-    private UserMapper userMapper;
+//    @Autowired
+//    private UserMapper userMapper;
     @NonFinal
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
