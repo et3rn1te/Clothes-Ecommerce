@@ -6,14 +6,33 @@ import { useNavigate } from "react-router-dom";
 
 
 const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
   //Tìm kiếm giọng nói
   const [isListening, setIsListening] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+  // xử lý login
+  const [isLogin,setIsLogin] = useState(false);
+  useEffect(() => {
+    const jwtToken = localStorage.getItem("jwtToken");
+    if (jwtToken && jwtToken !== "null" && jwtToken !== "undefined") {
+      setIsLogin(true);
+    } 
+    console.log("okee"+isLogin);
+    
+  }, []);
+  //Xử lý logout
+  const logOut =()=> {
+    setIsOpen(false);
+    localStorage.removeItem("jwtToken");
+    setIsLogin(false);
+  };
+  
   if (recognition) {
   recognition.continuous = false;
   recognition.lang = "vi-VN";
@@ -50,9 +69,9 @@ const Header = () => {
   const cartClick = () => {
     navigate('/cart'); // Chuyển sang trang /cart
   };
-
-
-
+  const loginClick = () => {
+    navigate('/auth/login');
+  }
 
   const menuItems = [
     { name: "Home", link: "/" },
@@ -64,6 +83,7 @@ const Header = () => {
 
   return (
      <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md">
+      {console.log("Trạng thái đăng nhập"+isLogin)}
     {/* <header className={`w-full ${isSticky ? "fixed top-0 shadow-lg bg-white" : ""}`}> */}
       {/* Top Bar */}
       <div className="bg-gray-100 py-2 hidden md:block">
@@ -88,10 +108,35 @@ const Header = () => {
             <div className="flex items-center space-x-4">
               <select className="bg-transparent text-sm text-gray-600 focus:outline-none">
                 <option value="en">English</option>
-                <option value="es">Spanish</option>
-                <option value="fr">French</option>
+                <option value="es">Vietnamemes</option>
+                <option value="fr">Chinese</option>
               </select>
-              <button className="text-sm text-gray-600 hover:text-red-600">Login</button>
+              
+              {isLogin ?
+              <div className="relative">
+                <button 
+                  onClick={() => setIsOpen(!isOpen)} 
+                  className="w-8 h-8 rounded-full overflow-hidden focus:outline-none ring-2 ring-gray-200 hover:ring-red-500"
+                >
+                  <img 
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                    alt="User avatar" 
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+                {isOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                    <div className="py-1" role="menu">
+                      <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
+                      <a className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
+                      <a onClick={()=> logOut()} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Log out</a>
+                    </div>
+                  </div>
+                )}
+              </div>
+              : <button className="text-sm text-gray-600 hover:text-red-600" onClick={loginClick}>Login</button>
+              }
+              
             </div>
           </div>
         </div>
@@ -150,11 +195,6 @@ const Header = () => {
                 >
                   <FiMic className="w-5 h-5" />
                 </button>
-                {/* <button
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full text-gray-500 hover:bg-gray-100"
-                >
-                  <FiSearch className="w-5 h-5" />
-                </button> */}
               </div>
               <div className="flex items-center space-x-4">
                 <div className="relative">
