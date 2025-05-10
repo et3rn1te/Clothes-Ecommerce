@@ -14,10 +14,15 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String brand;
+    @Column(nullable = false)
     private BigDecimal price;
+    @Column(nullable = false)
     private int quantity; // quantity of the product
+    @Column(nullable = false)
     private String description;
 
     @ManyToOne

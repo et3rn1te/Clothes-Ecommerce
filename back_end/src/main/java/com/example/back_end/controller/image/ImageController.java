@@ -2,23 +2,21 @@ package com.example.back_end.controller.image;
 
 import com.example.back_end.dto.ImageDto;
 import com.example.back_end.dto.response.ApiResponse;
+import com.example.back_end.entity.Image;
 import com.example.back_end.service.image.IImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.view.RedirectView;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/images")
 public class ImageController {
+
     private final IImageService imageService;
 
     @PostMapping("/product/upload")
@@ -36,29 +34,61 @@ public class ImageController {
     }
 
     @PostMapping("/user/avatar/upload")
-    public ResponseEntity<ApiResponse<List<ImageDto>>> uploadAvatar(
+    public ResponseEntity<ApiResponse<ImageDto>> uploadAvatar(
             @RequestParam MultipartFile file,
             @RequestParam Long userId) {
         ImageDto imageDto = imageService.saveUserAvatar(file, userId);
         return ResponseEntity.ok(
-                ApiResponse.<List<ImageDto>>builder()
+                ApiResponse.<ImageDto>builder()
                         .code(0)
-                        .message("Images uploaded successfully")
+                        .message("Avatar uploaded successfully")
                         .data(imageDto)
                         .build()
         );
     }
 
-    @GetMapping("/image/download/{imageId}")
-    public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) throws SQLException {
-        var image = imageService.getImageById(imageId);
-        ByteArrayResource resource = new ByteArrayResource(
-                image.getImage().getBytes(1, (int) image.getImage().length())
+    @GetMapping("/view/redirect/{imageId}")
+    public RedirectView viewImageRedirect(@PathVariable Long imageId) {
+        Image image = imageService.getImageById(imageId);
+        return new RedirectView(image.getUrl());
+    }
+
+    @GetMapping("/image/{imageId}")
+    public ResponseEntity<ApiResponse<ImageDto>> getImageById(@PathVariable Long imageId) {
+        Image image = imageService.getImageById(imageId);
+        return ResponseEntity.ok(
+                ApiResponse.<ImageDto>builder()
+                        .code(0)
+                        .message("Image retrieved successfully")
+                        .data(image)
+                        .build()
         );
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(image.getFileType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
-                .body(resource);
+    }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ApiResponse<List<ImageDto>>> getProductImages(
+            @PathVariable Long productId) {
+        List<ImageDto> imageDtos = imageService.getProductImages(productId);
+        return ResponseEntity.ok(
+                ApiResponse.<List<ImageDto>>builder()
+                        .code(0)
+                        .message("Product images retrieved successfully")
+                        .data(imageDtos)
+                        .build()
+        );
+    }
+
+    @GetMapping("/user/avatar/{userId}")
+    public ResponseEntity<ApiResponse<ImageDto>> getUserAvatar(
+            @PathVariable Long userId) {
+        ImageDto imageDto = imageService.getUserAvatar(userId);
+        return ResponseEntity.ok(
+                ApiResponse.<ImageDto>builder()
+                        .code(0)
+                        .message("User avatar retrieved successfully")
+                        .data(imageDto)
+                        .build()
+        );
     }
 
     @PutMapping("/image/{imageId}/update")
@@ -85,7 +115,4 @@ public class ImageController {
                         .build()
         );
     }
-
-
 }
-
