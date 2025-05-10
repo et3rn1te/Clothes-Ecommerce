@@ -2,112 +2,180 @@ package com.example.back_end.service.image;
 
 import com.example.back_end.dto.ImageDto;
 import com.example.back_end.entity.Image;
+import com.example.back_end.entity.Product;
 import com.example.back_end.entity.User;
-import com.example.back_end.exception.AppException;
-import com.example.back_end.exception.ErrorCode;
+import com.example.back_end.exception.ResourceNotFoundException;
 import com.example.back_end.repository.ImageRepository;
+import com.example.back_end.repository.ProductRepository;
 import com.example.back_end.repository.UserRepository;
-import com.example.back_end.service.user.UserService;
-import com.example.back_end.service.product.IProductService;
+import com.example.back_end.service.file.IFileStorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.sql.rowset.serial.SerialBlob;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ImageService implements IImageService {
+
     private final ImageRepository imageRepository;
-    private final IProductService productService;
+    private final ProductRepository productRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
+    private final IFileStorageService fileStorageService;
 
-    private static final String URL_PREFIX = "/api/images/download/";
+    @Value("${app.base-url:http://localhost:8080}")
+    private String baseUrl;
 
     @Override
+    @Transactional
     public List<ImageDto> saveProductImages(List<MultipartFile> files, Long productId) {
-        var product = productService.getProductById(productId);
-        return files.stream()
-                .map(file -> {
-                    Image img = new Image();
-                    img.setProduct(product);
-                    return saveAndMap(img, file);
-                })
-                .toList();
-    }
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
 
-    @Override
-    public ImageDto saveUserAvatar(MultipartFile file, Long userId) {
-        var user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        Image avatar = new Image();
-        avatar.setUser(user);
-        ImageDto dto = saveAndMap(avatar, file);
+        List<Image> savedImages = new ArrayList<>();
 
-        // gán avatar cho user
-        user.setAvatar(imageRepository.findById(dto.getId()).orElseThrow());
-        userRepository.save(user);
+        for (MultipartFile file : files) {
+            String filePath = fileStorageService.storeFile(file, "products/" + productId);
 
-        return dto;
-    }
+            Image image = Image.builder()
+                    .fileName(filePath.substring(filePath.lastIndexOf('/') + 1))
+                    .originalFileName(file.getOriginalFilename())
+                    .fileType(file.getContentType())
+                    .filePath(filePath)
+                    .fileSize(file.getSize())
+                    .imageType("PRODUCT")
+                    .product(product)
+                    .build();
 
-    /**
-     * Tạo chung: 1) set blob, 2) save, 3) build URL, 4) save lại, 5) map → DTO
-     */
-    private ImageDto saveAndMap(Image img, MultipartFile file) {
-        try {
-            img.setFileName(file.getOriginalFilename());
-            img.setFileType(file.getContentType());
-            img.setImage(new SerialBlob(file.getBytes()));
-
-            // 1) Save lần 1 để có ID
-            Image saved = imageRepository.save(img);
-
-            // 2) Build URL và save lại
-            saved.setDownloadUrl(URL_PREFIX + saved.getId());
-            imageRepository.save(saved);
-
-            // 3) Map sang DTO bằng setter
-            ImageDto dto = new ImageDto();
-            dto.setId(saved.getId());
-            dto.setImageName(saved.getFileName());
-            dto.setDownloadUrl(saved.getDownloadUrl());
-            return dto;
-
-        } catch (IOException | SQLException e) {
-            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
+            savedImages.add(imageRepository.save(image));
         }
-    }
 
-
-
-    @Override
-    public Image getImageById(Long id) {
-        return imageRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.IMAGE_NOT_FOUND));
+        return savedImages.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteImage(Long id) {
-        Image image = getImageById(id);
+    @Transactional
+    public ImageDto saveUserAvatar(MultipartFile file, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+
+        // Check if user already has an avatar
+        Optional<Image> existingAvatar = imageRepository.findByUserId(userId);
+        if (existingAvatar.isPresent()) {
+            // Delete existing avatar file
+            fileStorageService.deleteFile(existingAvatar.get().getFilePath());
+            imageRepository.delete(existingAvatar.get());
+        }
+
+        // Save new avatar
+        String filePath = fileStorageService.storeFile(file, "users/avatars");
+
+        Image image = Image.builder()
+                .fileName(filePath.substring(filePath.lastIndexOf('/') + 1))
+                .originalFileName(file.getOriginalFilename())
+                .fileType(file.getContentType())
+                .filePath(filePath)
+                .fileSize(file.getSize())
+                .imageType("USER_AVATAR")
+                .user(user)
+                .build();
+
+        Image savedImage = imageRepository.save(image);
+        return convertToDto(savedImage);
+    }
+
+    @Override
+    public Resource getImageResource(Long imageId) {
+        Image image = getImageEntityById(imageId);
+        return fileStorageService.loadFileAsResource(image.getFilePath());
+    }
+
+    @Override
+    public Image getImageEntityById(Long imageId) {
+        return imageRepository.findById(imageId)
+                .orElseThrow(() -> new ResourceNotFoundException("Image not found with id: " + imageId));
+    }
+
+    @Override
+    public ImageDto getImageById(Long imageId) {
+        Image image = getImageEntityById(imageId);
+        return convertToDto(image);
+    }
+
+    @Override
+    @Transactional
+    public void updateImage(MultipartFile file, Long imageId) {
+        Image image = getImageEntityById(imageId);
+
+        // Delete old file
+        fileStorageService.deleteFile(image.getFilePath());
+
+        // Store new file
+        String subDirectory = image.getImageType().equals("PRODUCT") ?
+                "products/" + image.getProduct().getId() : "users/avatars";
+        String filePath = fileStorageService.storeFile(file, subDirectory);
+
+        // Update image entity
+        image.setFileName(filePath.substring(filePath.lastIndexOf('/') + 1));
+        image.setOriginalFileName(file.getOriginalFilename());
+        image.setFileType(file.getContentType());
+        image.setFilePath(filePath);
+        image.setFileSize(file.getSize());
+
+        imageRepository.save(image);
+    }
+
+    @Override
+    @Transactional
+    public void deleteImage(Long imageId) {
+        Image image = getImageEntityById(imageId);
+
+        // Delete file from storage
+        fileStorageService.deleteFile(image.getFilePath());
+
+        // Delete image entity
         imageRepository.delete(image);
     }
 
     @Override
-    public void updateImage(MultipartFile file, Long id) {
-        Image image = getImageById(id);
-        try {
-            image.setFileName(file.getOriginalFilename());
-            image.setFileType(file.getContentType());
-            image.setImage(new SerialBlob(file.getBytes()));
-            imageRepository.save(image);
-        } catch (IOException | SQLException e) {
-            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
-        }
+    public List<ImageDto> getProductImages(Long productId) {
+        List<Image> images = imageRepository.findAllProductImages(productId);
+        return images.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ImageDto getUserAvatar(Long userId) {
+        Image avatar = imageRepository.findUserAvatar(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Avatar not found for user with id: " + userId));
+        return convertToDto(avatar);
+    }
+
+    private ImageDto convertToDto(Image image) {
+        String imageUrl = ServletUriComponentsBuilder.fromHttpUrl(baseUrl)
+                .path("/images/image/download/")
+                .path(String.valueOf(image.getId()))
+                .toUriString();
+
+        return ImageDto.builder()
+                .id(image.getId())
+                .originalFileName(image.getOriginalFileName())
+                .fileType(image.getFileType())
+                .imageType(image.getImageType())
+                .imageUrl(imageUrl)
+                .productId(image.getProduct() != null ? image.getProduct().getId() : null)
+                .userId(image.getUser() != null ? image.getUser().getId() : null)
+                .build();
     }
 }

@@ -35,10 +35,7 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -55,7 +52,7 @@ public class UserService {
 
     public User createRequest(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new AppException(ErrorCode.USER_EXISTED);
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
         // Map fields from request to entity
         User user = modelMapper.map(request, User.class);
@@ -92,12 +89,12 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
     }
 
     public AuthenticationResponse login(String email, String password) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
@@ -143,7 +140,7 @@ public class UserService {
 
     public UserDto convertToDto(User user) {
         UserDto userDto = modelMapper.map(user, UserDto.class);
-        Image avatar = imageRepository.findByUserId(user.getId());
+        Optional<Image> avatar = imageRepository.findByUserId(user.getId());
         if (avatar != null) {
             // 3) Map Image → ImageDto
             ImageDto avatarDto = modelMapper.map(avatar, ImageDto.class);

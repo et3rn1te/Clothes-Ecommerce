@@ -36,7 +36,7 @@ public class CategoryService implements ICategoryService {
     public Category addCategory(Category category) {
         boolean exists = categoryRepository.existsByName(category.getName());
         if (exists) {
-            throw new AppException(ErrorCode.CATEGORY_EXIST);
+            throw new AppException(ErrorCode.CATEGORY_ALREADY_EXISTS);
         }
         return categoryRepository.save(category);
     }

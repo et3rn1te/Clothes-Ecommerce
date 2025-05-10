@@ -2,9 +2,10 @@ package com.example.back_end;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.*;
 
 @EnableAsync
+@EnableScheduling
 @SpringBootApplication
 public class BackEndApplication {
 

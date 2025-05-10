@@ -3,29 +3,46 @@ package com.example.back_end.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Blob;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "images")
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String fileName;
+    private String originalFileName;
     private String fileType;
+    private String filePath;
+    private Long fileSize;
+    private String imageType; // PRODUCT, USER_AVATAR
 
-    @Lob
-    private Blob image;
-    private String downloadUrl;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @OneToOne
-    @JoinColumn(name="user_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

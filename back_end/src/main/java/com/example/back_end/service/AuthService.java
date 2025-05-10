@@ -66,9 +66,9 @@ public class AuthService {
 
     public AuthenticationResponse login (LoginRequest request){
         var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         if(!user.getActive()){
-            throw new AppException(ErrorCode.INACTIVE_ACC);
+            throw new AppException(ErrorCode.ACCOUNT_DISABLED);
         }
         System.out.println(user.getEmail());
         System.out.println(user.getPassword());
