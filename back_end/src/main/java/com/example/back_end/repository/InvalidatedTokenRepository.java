@@ -1,4 +1,4 @@
-package com.example.back_end.repositories;
+package com.example.back_end.repository;
 
 import com.example.back_end.entity.InvalidatedToken;
 import org.springframework.data.jpa.repository.JpaRepository;

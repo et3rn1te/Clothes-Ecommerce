@@ -1,18 +1,15 @@
 package com.example.back_end.service;
 
-import com.example.back_end.constant.PredefinedRole;
 import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.request.LoginRequest;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.AuthenticationResponse;
 import com.example.back_end.dto.response.IntrospectResponse;
 import com.example.back_end.entity.InvalidatedToken;
-import com.example.back_end.entity.Role;
 import com.example.back_end.entity.User;
 import com.example.back_end.exception.AppException;
 import com.example.back_end.exception.ErrorCode;
-import com.example.back_end.mapper.UserMapper;
-import com.example.back_end.repositories.InvalidatedTokenRepository;
+import com.example.back_end.repository.InvalidatedTokenRepository;
 import com.example.back_end.repository.RoleRepository;
 import com.example.back_end.repository.UserRepository;
 import com.nimbusds.jose.*;
@@ -24,7 +21,6 @@ import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -99,7 +95,7 @@ public class AuthService {
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified = signedJWT.verify(verifier);
         if(!(verified && expiryTime.after(new Date()))){
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCode.SESSION_EXPIRED);
         }
         if(invalidatedTokenRepository
                 .existsById(signedJWT.getJWTClaimsSet().getJWTID())){

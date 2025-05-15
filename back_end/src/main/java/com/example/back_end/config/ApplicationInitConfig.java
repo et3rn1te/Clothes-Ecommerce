@@ -31,7 +31,7 @@ public class ApplicationInitConfig {
     static final String ADMIN_USER_NAME = "admin";
 
     @NonFinal
-    static final String ADMIN_PASSWORD = "admin";
+    static final String ADMIN_PASSWORD = "Tam123456@";
 
     @Bean
     public ModelMapper modelMapper() {

@@ -27,7 +27,7 @@ import java.util.List;
 public class SecurityConfig {
     //Xác thực yêu cầu
     private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
-            "auth/login","auth/introspect","auth/signup","/sendEmail"};
+            "auth/login","auth/introspect","auth/signup","auth/register","users/existUser","verifyRegister"};
     private final String[] PUBLIC_ENDPOINTS_GET = {"/users"};
     private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout"};
     @Value("${jwt.signer-key}")
@@ -51,7 +51,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/verifyEmail").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/verifyAccount").permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).authenticated()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_LOGIN).authenticated()
                         .anyRequest().authenticated()

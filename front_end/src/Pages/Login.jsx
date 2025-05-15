@@ -3,12 +3,33 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
-import { signIn} from "../API/AuthService";
+import { checkEmailExists, signIn, verifyRegister} from "../API/AuthService";
+import { useNavigate } from "react-router-dom";
+
+const VerificationPage = ({ email, onResend }) => {
+  return (
+    <div className="text-center space-y-6">
+      <h2 className="text-3xl font-extrabold text-gray-900">Verify your email</h2>
+      <p className="text-gray-600">We have sent a verification link to</p>
+      <p className="font-medium text-gray-800">{email}</p>
+      <p className="text-gray-600">Please check your inbox and click the link to verify your account</p>
+      <div className="pt-4">
+        <button
+          onClick={onResend}
+          className="text-blue-600 hover:text-blue-800 font-medium"
+        >
+          Resend verification email
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const Login = () => {
+  const navigate = useNavigate(); 
   const [authState, setAuthState] = useState("login");
   const [showPassword, setShowPassword] = useState(false);
-  const [isVerificationSent, setIsVerificationSent] = useState(false);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -51,10 +72,11 @@ const Login = () => {
       default:
         break;
     }
+    
     return error;
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = async (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;
     
@@ -69,15 +91,33 @@ const Login = () => {
         ...prev,
         [name]: error
       }));
+
+      if (name === "email" && validateEmail(newValue)) {
+        const response = await checkEmailExists(newValue);
+        const emailExists = response.data.result;
+        if ((authState === "login" || authState === "forgot") && !emailExists) {
+          setErrors(prev => ({
+            ...prev,
+            email: "Email not registered"
+          }));
+        } else if (authState === "register" && emailExists) {
+          setErrors(prev => ({
+            ...prev,
+            email: "Email already exists"
+          }));
+        }else{
+          setIsCheckingEmail(true);
+        }
+      }
     }
 
-    if (name === "password" && formData.confirmPassword) {
-      const confirmError = formData.confirmPassword !== value ? "Passwords do not match" : "";
-      setErrors(prev => ({
-        ...prev,
-        confirmPassword: confirmError
-      }));
-    }
+    // if (name === "password" && formData.confirmPassword) {
+    //   const confirmError = formData.confirmPassword !== value ? "Passwords do not match" : "";
+    //   setErrors(prev => ({
+    //     ...prev,
+    //     confirmPassword: confirmError
+    //   }));
+    // }
   };
 
   const handleSubmit = async (e) => {
@@ -93,40 +133,60 @@ const Login = () => {
       }
     });
 
-    if (authState === "register" && !formData.termsAccepted) {
-      newErrors.terms = "Please accept terms and conditions";
-    }
-
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
-      if (authState === "register" || authState === "forgot") {
-        setIsVerificationSent(true);
-      } else {
-        console.log("Form submitted:", formData);
-      }
-    }
+    // if (Object.keys(newErrors).length === 0) {
+    //   if ( authState === "forgot") {
+    //     setVerificationSent(true);
+    //   } else {
+    //     console.log("Form submitted:", formData);
+    //   }
+    // }
     if(authState === "login"){
       console.log("login :", formData);
-       const response = await signIn({
-            email:formData.email, 
-            password: formData.password
+      await signIn({email: formData.email,password: formData.password,})
+        .then((res) => {
+          const { code, message, result } = res.data;
+          if(code !== 0){
+            console.log(message);
+          }
+          localStorage.setItem("session", JSON.stringify(result));
+          navigate('/');
+
+        })
+        .catch((err) => {
+          console.error("Đã xảy ra lỗi khi gọi API:", err);
         });
-      console.log(response.data.result.token);
+        
+          
     } else {
-      if(authState === "register"){
+      if(authState==="forgot"){
+        console.log("forgot :", formData);
+      }else{
         console.log("register :", formData);
-      } else {
-        console.log("send vertical :", formData);
+        await verifyRegister(formData.email)
+        .then((res) => {
+          const { code, message, result } = res.data;
+          if(code !== 0){
+            console.log(message);
+          }
+          navigate('/auth/resend');
+
+        })
+        .catch((err) => {
+          console.error("Đã xảy ra lỗi khi gọi API:", err);
+        });
       }
     }
   };
 
   const isFormValid = () => {
     if (authState === "login") {
-      return validateEmail(formData.email) && captchaValue && validatePassword(formData.password);
-    } else if (authState === "forgot" || authState === "sendEmail") {
-      return validateEmail(formData.email);
+      return validateEmail(formData.email) && captchaValue && validatePassword(formData.password) && isCheckingEmail;
+    } else if (authState === "forgot" ) {
+      return validateEmail(formData.email) && isCheckingEmail;
+    } else if (authState === "register"){
+      return validateEmail(formData.email) && isCheckingEmail;
     }
     return false;
   };
@@ -223,7 +283,7 @@ const Login = () => {
 
               <button
                 type="button"
-                onClick={()=> setAuthState("forgot")}
+                onClick={()=> {setAuthState("forgot");setIsCheckingEmail(false)}}
                 className="text-sm font-medium text-blue-600 hover:text-blue-500"
               >
                 Forgot your password?
@@ -239,7 +299,6 @@ const Login = () => {
             </div>
             </>
           )}
-          
           <button
             type="submit"
             disabled={!isFormValid()}
@@ -286,7 +345,7 @@ const Login = () => {
         <div className="mt-6 text-center">
           <button
             type="button"
-            onClick={() => setAuthState(authState === "login" ? "sendEmail" : "login")}
+            onClick={() => {setAuthState(authState === "login" ? "register" : "login");setIsCheckingEmail(false)}}
             className="text-sm font-medium text-blue-600 hover:text-blue-500"
           >
             {authState === "login"

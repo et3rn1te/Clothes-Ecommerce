@@ -3,6 +3,7 @@ import { FiSearch, FiShoppingCart, FiHeart, FiMenu, FiX , FiMic} from "react-ico
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { MdEmail, MdPhone, MdKeyboardArrowDown } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { logOutApi } from "../API/AuthService";
 
 
 const Header = () => {
@@ -19,17 +20,17 @@ const Header = () => {
   // xử lý login
   const [isLogin,setIsLogin] = useState(false);
   useEffect(() => {
-    const jwtToken = localStorage.getItem("jwtToken");
-    if (jwtToken && jwtToken !== "null" && jwtToken !== "undefined") {
+    const session = JSON.parse(localStorage.getItem("session"));
+    if (session && session !== "undefined" && session.authenticated === true) {
       setIsLogin(true);
-    } 
-    console.log("okee"+isLogin);
-    
+    }
   }, []);
   //Xử lý logout
-  const logOut =()=> {
+  const logOut = async (e)=> {
+    const session = JSON.parse(localStorage.getItem("session"));
     setIsOpen(false);
-    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("session");
+    await logOutApi({token:session.token});
     setIsLogin(false);
   };
   

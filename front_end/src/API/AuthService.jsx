@@ -5,7 +5,33 @@ const signIn = async (body) => {
 };
 
 const register = async (body) => {
-    return await axiosClient.post('', body);
+    return await axiosClient.post('/users/createUser', body);
 };
 
-export { signIn ,register};
+const checkEmailExists = async (email) => {
+    return await axiosClient.post('users/existUser',null, {
+        params: {
+            email: email
+        }
+    });
+}
+
+const logOutApi = async (body) => {
+    const token = body.token;
+    return await axiosClient.post('auth/logout',body,{
+        headers : {
+            Authorization: `Bearer ${token}`
+        }
+    });
+}
+
+const verifyRegister = async (email) => {
+    return await axiosClient.post('/verifyRegister',null, {
+        params: {
+            email: email
+        },
+        timeout: 15000
+    });
+}
+
+export { signIn ,register,checkEmailExists,logOutApi,verifyRegister};

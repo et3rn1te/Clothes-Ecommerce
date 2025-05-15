@@ -3,6 +3,8 @@ package com.example.back_end.controller;
 import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
+import com.example.back_end.entity.User;
+import com.example.back_end.repository.UserRepository;
 import com.example.back_end.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private final UserRepository userRepository;
     private final UserService userService;
 
     @PostMapping("/createUser")
@@ -79,4 +82,12 @@ public class UserController {
 //                        .build()
 //        );
 //    }
+    @PostMapping("/existUser")
+    ApiResponse<Boolean> existUser(@RequestParam ("email") String email) {
+        boolean rs = true;
+        if (userRepository.findByEmail(email).isEmpty()) {
+            rs = false;
+        }
+        return ApiResponse.<Boolean>builder().result(rs).build();
+    }
 }
