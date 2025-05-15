@@ -142,10 +142,9 @@ public class UserService {
         UserDto userDto = modelMapper.map(user, UserDto.class);
         Optional<Image> avatar = imageRepository.findByUserId(user.getId());
         if (avatar != null) {
-            // 3) Map Image → ImageDto
+            // Map Image → ImageDto
             ImageDto avatarDto = modelMapper.map(avatar, ImageDto.class);
 
-            // 4) Gán vào userDto
             userDto.setAvatar(avatarDto);
         }
         return userDto;

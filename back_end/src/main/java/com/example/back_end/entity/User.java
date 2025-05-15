@@ -27,7 +27,7 @@ public class User {
     @Column(name = "fullname", nullable = false)
     private String fullname;
 
-    @Column(name = "email",unique = true, nullable = false, length = 45)
+    @Column(name = "email", unique = true, nullable = false, length = 45)
     private String email;
 
     @Column(name = "phone", nullable = false, length = 20)
@@ -35,6 +35,9 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Image avatar;
+
+    @Column(nullable = true)
+    private String imageUrl;
 
     @Column(name = "active", nullable = false)
     private Boolean active = false;
