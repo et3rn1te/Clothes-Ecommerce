@@ -27,9 +27,10 @@ import java.util.List;
 public class SecurityConfig {
     //Xác thực yêu cầu
     private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
-            "auth/login","auth/introspect","auth/signup","/sendEmail"};
-    private final String[] PUBLIC_ENDPOINTS_GET = {"/users"};
+            "auth/login", "auth/introspect", "auth/signup", "/sendEmail", "/products/**", "/categories/**", "/users/**"};
+    private final String[] PUBLIC_ENDPOINTS_GET = {"/users/**", "/categories/**", "/products/**"};
     private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout"};
+
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
     @Autowired
@@ -52,7 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/verifyEmail").permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).authenticated()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_LOGIN).authenticated()
                         .anyRequest().authenticated()
                 )
@@ -76,8 +77,8 @@ public class SecurityConfig {
 
 
     @Bean
-    JwtDecoder jwtDecoder(){
-        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(),"HS512");
+    JwtDecoder jwtDecoder() {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
         return NimbusJwtDecoder
                 .withSecretKey(secretKeySpec)
                 .macAlgorithm(MacAlgorithm.HS512)

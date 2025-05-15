@@ -35,10 +35,7 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -143,12 +140,11 @@ public class UserService {
 
     public UserDto convertToDto(User user) {
         UserDto userDto = modelMapper.map(user, UserDto.class);
-        Image avatar = imageRepository.findByUserId(user.getId());
+        Optional<Image> avatar = imageRepository.findByUserId(user.getId());
         if (avatar != null) {
-            // 3) Map Image → ImageDto
+            // Map Image → ImageDto
             ImageDto avatarDto = modelMapper.map(avatar, ImageDto.class);
 
-            // 4) Gán vào userDto
             userDto.setAvatar(avatarDto);
         }
         return userDto;

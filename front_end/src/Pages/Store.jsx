@@ -22,38 +22,12 @@ const Shop = () => {
     })
   };
 
-  const products = [
-    { 
-      id: 1,
-      name: "Classic T-Shirt",
-      price: 29.99,
-      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
-      category: "Áo",
-      gender: "Nam",
-      color: "Trắng",
-      size: ["S", "M", "L", "XL"],
-      material: "Cotton",
-      discount: 10,
-      bestSeller: true,
-      new: true
-    },
-    {
-      id:2,
-      name: "Organic Bananas",
-      price: 4.99,
-      image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e",
-      category: "Áo",
-      gender: "Nam",
-      color: "Trắng",
-      size: ["S", "M", "L", "XL"],
-      material: "Cotton",
-      discount: 10,
-      bestSeller: true,
-      new: true
-    }
-  ];
-
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  // States for API data
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const [filters, setFilters] = useState({
     category: "",
     gender: "",
@@ -79,6 +53,45 @@ const Shop = () => {
     sortOptions: ["Mới nhất", "Bán chạy nhất", "Giá thấp đến cao", "Giá cao đến thấp", "Giảm giá"]
   };
 
+  // Fetch products when component mounts
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch products
+        const productsResponse = await fetch('http://localhost:8080/api/products/all');
+        if (!productsResponse.ok) {
+          throw new Error(`HTTP error! Status: ${productsResponse.status}`);
+        }
+        const productsResult = await productsResponse.json();
+        
+        // Check API response format and set data
+        if (productsResult.code === 0) {
+          setProducts(productsResult.data);
+          setFilteredProducts(productsResult.data);
+        } else {
+          throw new Error(productsResult.message || 'Đã xảy ra lỗi khi tải sản phẩm');
+        }
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError(err.message || "Không thể tải dữ liệu sản phẩm. Vui lòng thử lại sau.");
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // For debugging - Log products structure
+  useEffect(() => {
+    if (products.length > 0) {
+      console.log("Products data structure:", products[0]);
+    }
+  }, [products]);
+
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
       ...prev,
@@ -87,7 +100,9 @@ const Shop = () => {
   };
 
   useEffect(() => {
-    let result = products;
+    if (products.length === 0) return;
+    
+    let result = [...products];
 
     if (filters.category) {
       result = result.filter(product => product.category === filters.category);
@@ -99,7 +114,9 @@ const Shop = () => {
       result = result.filter(product => product.color === filters.color);
     }
     if (filters.size) {
-      result = result.filter(product => product.size.includes(filters.size));
+      result = result.filter(product => 
+        product.sizes && product.sizes.some(size => size === filters.size)
+      );
     }
     if (filters.material) {
       result = result.filter(product => product.material === filters.material);
@@ -116,10 +133,10 @@ const Shop = () => {
     if (filters.sortBy) {
       switch (filters.sortBy) {
         case "Mới nhất":
-          result = [...result].sort((a, b) => b.new - a.new);
+          result = [...result].sort((a, b) => (b.new === true) - (a.new === true));
           break;
         case "Bán chạy nhất":
-          result = [...result].sort((a, b) => b.bestSeller - a.bestSeller);
+          result = [...result].sort((a, b) => (b.bestSeller === true) - (a.bestSeller === true));
           break;
         case "Giá thấp đến cao":
           result = [...result].sort((a, b) => a.price - b.price);
@@ -136,7 +153,48 @@ const Shop = () => {
     }
 
     setFilteredProducts(result);
-  }, [filters]);
+  }, [filters, products]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-gray-600">Đang tải dữ liệu sản phẩm...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="bg-red-100 p-6 rounded-lg">
+          <h2 className="text-red-800 text-xl font-semibold">Đã xảy ra lỗi</h2>
+          <p className="text-red-600 mt-2">{error}</p>
+          <button 
+            className="mt-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+            onClick={() => window.location.reload()}
+          >
+            Thử lại
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback if no data
+  if (products.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-gray-600">Không tìm thấy sản phẩm</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen ${isDarkMode ? "dark bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
@@ -262,37 +320,8 @@ const Shop = () => {
                 }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
-                {filteredProducts.map((product, index) => (
-                  <ProductCard key={index} product={product}/>
-                  // <motion.div
-                  //   key={index}
-                  //   initial={{ opacity: 0, y: 20 }}
-                  //   animate={{ opacity: 1, y: 0 }}
-                  //   transition={{ delay: index * 0.1 }}
-                  //   className="bg-white dark:bg-gray-700 rounded-lg overflow-hidden shadow-lg group"
-                  // >
-                  //   <div className="relative overflow-hidden">
-                  //     <img
-                  //       src={product.image}
-                  //       alt={product.name}
-                  //       className="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500"
-                  //     />
-                  //     {product.discount > 0 && (
-                  //       <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded">
-                  //         -{product.discount}%
-                  //       </div>
-                  //     )}
-                  //   </div>
-                  //   <div className="p-4">
-                  //     <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                  //     <div className="flex items-center justify-between">
-                  //       <span className="text-green-500 font-bold">${product.price}</span>
-                  //       <button className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition duration-300">
-                  //         Thêm vào giỏ
-                  //       </button>
-                  //     </div>
-                  //   </div>
-                  // </motion.div>
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
                 ))}
               </motion.div>
             </AnimatePresence>

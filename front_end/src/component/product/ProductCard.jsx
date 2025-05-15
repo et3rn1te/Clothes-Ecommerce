@@ -1,10 +1,7 @@
 import React from "react";
 import { FiShoppingCart } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
-  const navigate = useNavigate();
-
   // Format price with proper currency
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -13,23 +10,8 @@ const ProductCard = ({ product }) => {
   // Handle the case when product doesn't have all expected properties
   if (!product) return null;
 
-  // Handle navigation to product detail page
-  const handleProductClick = () => {
-    navigate(`/product_detail/${product.id}`);
-  };
-
-  // Handle add to cart separately to prevent navigation when clicking the cart button
-  const handleAddToCart = (e) => {
-    e.stopPropagation(); // Prevent the click from triggering the parent onClick
-    // Add your cart logic here
-    console.log("Added to cart:", product.id);
-  };
-
   return (
-    <div 
-      className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-300"
-      onClick={handleProductClick}
-    >
+    <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
       <div className="relative">
         {/* Use the first image from images array if available, otherwise use a placeholder */}
         <img
@@ -49,10 +31,7 @@ const ProductCard = ({ product }) => {
           <div className="text-lg font-bold text-blue-600">
             {formatPrice(product.price)}
           </div>
-          <button 
-            className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600"
-            onClick={handleAddToCart}
-          >
+          <button className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600">
             <FiShoppingCart />
           </button>
         </div>

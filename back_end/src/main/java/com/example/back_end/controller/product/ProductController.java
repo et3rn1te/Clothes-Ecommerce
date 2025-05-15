@@ -1,13 +1,16 @@
 package com.example.back_end.controller.product;
 
+import com.example.back_end.dto.ImageDto;
 import com.example.back_end.dto.ProductDto;
 import com.example.back_end.dto.request.AddProductRequest;
 import com.example.back_end.dto.request.UpdateProductRequest;
 import com.example.back_end.dto.response.ApiResponse;
+import com.example.back_end.service.image.IImageService;
 import com.example.back_end.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private final IProductService productService;
+    private final IImageService imageService;
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<ProductDto>>> getAllProducts() {
@@ -128,6 +132,32 @@ public class ProductController {
                         .code(0)
                         .message("Count retrieved successfully")
                         .data(count)
+                        .build()
+        );
+    }
+
+    @PostMapping("/product/image/upload")
+    public ResponseEntity<ApiResponse<List<ImageDto>>> uploadProductImages(
+            @RequestParam List<MultipartFile> files,
+            @RequestParam Long productId) {
+        List<ImageDto> imageDtos = imageService.saveProductImages(files, productId);
+        return ResponseEntity.ok(
+                ApiResponse.<List<ImageDto>>builder()
+                        .code(0)
+                        .message("Images uploaded successfully")
+                        .data(imageDtos)
+                        .build()
+        );
+    }
+    @GetMapping("/product/image/{productId}")
+    public ResponseEntity<ApiResponse<List<ImageDto>>> getProductImages(
+            @PathVariable Long productId) {
+        List<ImageDto> imageDtos = imageService.getProductImages(productId);
+        return ResponseEntity.ok(
+                ApiResponse.<List<ImageDto>>builder()
+                        .code(0)
+                        .message("Product images retrieved successfully")
+                        .data(imageDtos)
                         .build()
         );
     }
