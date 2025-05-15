@@ -11,8 +11,8 @@ const routes = [
     component: lazy(() => import('../Pages/Store')),
   },
   {
-    path: '/product_detail',
-    component: lazy(() => import('../Pages/ProductDetail')),
+    path: '/product_detail/:id',
+    component: lazy(() => import('../Pages/product/ProductDetail')),
   },
   {
     path: '/cart',

@@ -1,10 +1,11 @@
 package com.example.back_end.controller;
 
+import com.example.back_end.dto.ImageDto;
 import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
-import com.example.back_end.entity.User;
 import com.example.back_end.repository.UserRepository;
+import com.example.back_end.service.image.IImageService;
 import com.example.back_end.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ import java.util.List;
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
+    private final IImageService imageService;
 
     @PostMapping("/createUser")
     public ResponseEntity<ApiResponse<UserDto>> createUser(
@@ -63,6 +66,33 @@ public class UserController {
                         .code(0)
                         .message("User retrieved successfully")
                         .data(dto)
+                        .build()
+        );
+    }
+
+    @PostMapping("/user/avatar/upload")
+    public ResponseEntity<ApiResponse<ImageDto>> uploadAvatar(
+            @RequestParam MultipartFile file,
+            @RequestParam Long userId) {
+        ImageDto imageDto = imageService.saveUserAvatar(file, userId);
+        return ResponseEntity.ok(
+                ApiResponse.<ImageDto>builder()
+                        .code(0)
+                        .message("Avatar uploaded successfully")
+                        .data(imageDto)
+                        .build()
+        );
+    }
+
+    @GetMapping("/user/avatar/{userId}")
+    public ResponseEntity<ApiResponse<ImageDto>> getUserAvatar(
+            @PathVariable Long userId) {
+        ImageDto imageDto = imageService.getUserAvatar(userId);
+        return ResponseEntity.ok(
+                ApiResponse.<ImageDto>builder()
+                        .code(0)
+                        .message("User avatar retrieved successfully")
+                        .data(imageDto)
                         .build()
         );
     }

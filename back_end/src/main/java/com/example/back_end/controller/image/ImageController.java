@@ -2,63 +2,37 @@ package com.example.back_end.controller.image;
 
 import com.example.back_end.dto.ImageDto;
 import com.example.back_end.dto.response.ApiResponse;
+import com.example.back_end.entity.Image;
 import com.example.back_end.service.image.IImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.sql.SQLException;
-import java.util.List;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/images")
 public class ImageController {
+
     private final IImageService imageService;
 
-    @PostMapping("/product/upload")
-    public ResponseEntity<ApiResponse<List<ImageDto>>> uploadProductImages(
-            @RequestParam List<MultipartFile> files,
-            @RequestParam Long productId) {
-        List<ImageDto> imageDtos = imageService.saveProductImages(files, productId);
-        return ResponseEntity.ok(
-                ApiResponse.<List<ImageDto>>builder()
-                        .code(0)
-                        .message("Images uploaded successfully")
-                        .data(imageDtos)
-                        .build()
-        );
+    @GetMapping("/view/redirect/{imageId}")
+    public RedirectView viewImageRedirect(@PathVariable Long imageId) {
+        Image image = imageService.getImageById(imageId);
+        return new RedirectView(image.getUrl());
     }
 
-    @PostMapping("/user/avatar/upload")
-    public ResponseEntity<ApiResponse<List<ImageDto>>> uploadAvatar(
-            @RequestParam MultipartFile file,
-            @RequestParam Long userId) {
-        ImageDto imageDto = imageService.saveUserAvatar(file, userId);
+    @GetMapping("/image/{imageId}")
+    public ResponseEntity<ApiResponse<ImageDto>> getImageById(@PathVariable Long imageId) {
+        Image image = imageService.getImageById(imageId);
         return ResponseEntity.ok(
-                ApiResponse.<List<ImageDto>>builder()
+                ApiResponse.<ImageDto>builder()
                         .code(0)
-                        .message("Images uploaded successfully")
-                        .data(imageDto)
+                        .message("Image retrieved successfully")
+                        .data(image)
                         .build()
         );
-    }
-
-    @GetMapping("/image/download/{imageId}")
-    public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) throws SQLException {
-        var image = imageService.getImageById(imageId);
-        ByteArrayResource resource = new ByteArrayResource(
-                image.getImage().getBytes(1, (int) image.getImage().length())
-        );
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(image.getFileType()))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
-                .body(resource);
     }
 
     @PutMapping("/image/{imageId}/update")
@@ -85,7 +59,4 @@ public class ImageController {
                         .build()
         );
     }
-
-
 }
-
