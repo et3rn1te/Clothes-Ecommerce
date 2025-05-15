@@ -4,7 +4,7 @@ import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { checkEmailExists, register } from "../API/AuthService";
-import useQueryParam from "../component/useQueryParam";
+import useQueryParam from "../utils/useQueryParam";
 
 const PasswordStrength = ({ password }) => {
   const getStrength = (pass) => {

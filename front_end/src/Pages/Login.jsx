@@ -53,7 +53,10 @@ const Login = () => {
 
   const validatePassword = (password) => {
     const hasMinLength = password.length >= 8;
-    return hasMinLength;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+    return hasMinLength && hasUpperCase && hasNumber && hasSpecialChar;
   };
 
   const validateField = (name, value) => {
