@@ -159,6 +159,11 @@ const Login = () => {
 
         })
         .catch((err) => {
+          if (err.response && err.response.data && err.response.data.message) {
+            alert("Lỗi: " + err.response.data.message);
+          } else {
+            alert("Đã xảy ra lỗi không xác định.");
+          }
           console.error("Đã xảy ra lỗi khi gọi API:", err);
         });
         
