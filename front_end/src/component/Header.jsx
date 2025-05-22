@@ -75,10 +75,12 @@ const Header = () => {
 
   const menuItems = [
     { name: "Home", link: "/" },
-    { name: "Shop", link: "/shop", hasDropdown: true },
-    { name: "Pages", link: "#", hasDropdown: true },
-    { name: "Blog", link: "#" },
-    { name: "Contact", link: "#" },
+    { name: "Products", link: "/products" },
+    { name: "Clothes", link: "/category/Clothes" },
+    { name: "Dresses", link: "/category/Dresses" },
+    { name: "Accessories", link: "/category/Accessories" },
+    { name: "Pants", link: "/category/Pants" },
+    { name: "Contact", link: "/contact" },
   ];
 
   return (
@@ -165,9 +167,6 @@ const Header = () => {
                     className="text-gray-700 hover:text-red-600 flex items-center"
                   >
                     {item.name}
-                    {item.hasDropdown && (
-                      <MdKeyboardArrowDown className="ml-1" />
-                    )}
                   </a>
                   {item.hasDropdown && (
                     <div className="absolute top-full left-0 w-48 bg-white shadow-lg rounded-md py-2 hidden group-hover:block">

@@ -7,12 +7,16 @@ const routes = [
     component: lazy(() => import('../Pages/HomePage')),
   },
   {
-    path: '/shop',
-    component: lazy(() => import('../Pages/Store')),
+    path: '/products',
+    component: lazy(() => import('../Pages/product/Products')),
   },
   {
     path: '/product_detail/:id',
     component: lazy(() => import('../Pages/product/ProductDetail')),
+  }, 
+  {
+    path: '/category/:categoryName',
+    component: lazy(() => import('../Pages/product/ProductsByCategory')),
   },
   {
     path: '/cart',

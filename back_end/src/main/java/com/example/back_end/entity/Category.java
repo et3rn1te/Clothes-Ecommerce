@@ -1,17 +1,18 @@
 package com.example.back_end.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "categories")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+@Builder
+public class Category extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,11 +20,15 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
+    private String description;
 
-    public Category(String name) {
-        this.name = name;
-    }
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Category parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    private List<Category> subcategories = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "categories")
+    private List<Product> products = new ArrayList<>();
 }

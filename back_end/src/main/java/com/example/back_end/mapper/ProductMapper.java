@@ -1,0 +1,63 @@
+package com.example.back_end.mapper;
+
+import com.example.back_end.dto.request.product.*;
+import com.example.back_end.dto.response.product.*;
+import com.example.back_end.entity.*;
+import org.mapstruct.*;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring",
+        uses = {BrandMapper.class, GenderMapper.class,
+                CategoryMapper.class, ProductImageMapper.class,
+                ProductVariantMapper.class})
+public interface ProductMapper {
+
+    // CREATE
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "brand", ignore = true)
+    @Mapping(target = "gender", ignore = true)
+    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "images", ignore = true)
+    @Mapping(target = "variants", ignore = true)
+    Product toEntity(ProductCreationRequest request);
+
+    // UPDATE
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "brand", ignore = true)
+    @Mapping(target = "gender", ignore = true)
+    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "images", ignore = true)
+    @Mapping(target = "variants", ignore = true)
+    void updateFromRequest(ProductUpdateRequest request, @MappingTarget Product product);
+
+    // RESPONSE MAPPINGS
+    @Mapping(target = "primaryImage", source = "images", qualifiedByName = "findPrimaryImage")
+    ProductResponse toResponse(Product product);
+
+    ProductDetailResponse toDetailResponse(Product product);
+
+    ProductSummary toSummary(Product product);
+
+    // LIST MAPPINGS
+    List<ProductResponse> toResponseList(List<Product> products);
+
+    List<ProductSummary> toSummaryList(List<Product> products);
+
+    // CUSTOM MAPPING LOGIC
+    @Named("findPrimaryImage")
+    default ProductImageSummary findPrimaryImage(List<ProductImage> images) {
+        if (images == null || images.isEmpty()) {
+            return null;
+        }
+        return images.stream()
+                .filter(ProductImage::isPrimary)
+                .findFirst()
+                .map(image -> ProductImageSummary.builder()
+                        .id(image.getId())
+                        .imageUrl(image.getImageUrl())
+                        .altText(image.getAltText())
+                        .build())
+                .orElse(null);
+    }
+}

@@ -29,6 +29,9 @@ public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
             "auth/login", "auth/introspect", "auth/signup", "/sendEmail", "/products/**", "/categories/**", "/users/**"};
     private final String[] PUBLIC_ENDPOINTS_GET = {"/users/**", "/categories/**", "/products/**"};
+    private final String[] PUBLIC_ENDPOINTS_PUT = {"/users/**", "/categories/**", "/products/**"};
+    private final String[] PUBLIC_ENDPOINTS_PATCH = {"/users/**", "/categories/**", "/products/**"};
+    private final String[] PUBLIC_ENDPOINTS_DELETE = {"/users/**", "/categories/**", "/products/**"};
     private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout"};
 
     @Value("${jwt.signer-key}")
@@ -54,6 +57,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_POST).permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/verifyEmail").permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).permitAll()
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_PUT).permitAll()
+                        .requestMatchers(HttpMethod.PATCH, PUBLIC_ENDPOINTS_PATCH).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_DELETE).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_LOGIN).authenticated()
                         .anyRequest().authenticated()
                 )

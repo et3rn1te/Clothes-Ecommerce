@@ -2,42 +2,55 @@ package com.example.back_end.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "products")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Product {
+@AllArgsConstructor
+@Builder
+public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private String brand;
-    @Column(nullable = false)
-    private BigDecimal price;
-    @Column(nullable = false)
-    private int quantity; // quantity of the product
-    @Column(nullable = false)
+
+    @Column(length = 2000)
     private String description;
 
+    private BigDecimal basePrice;
+
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "brand_id", nullable = false)
+    private Brand brand;
+
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    private Gender gender;
+
+    @ManyToMany
+    @JoinTable(
+            name = "product_categories",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images;
+    private List<ProductImage> images = new ArrayList<>();
 
-    public Product(String name, String brand, BigDecimal price, int quantity, String description, Category category) {
-        this.name = name;
-        this.brand = brand;
-        this.price = price;
-        this.quantity = quantity;
-        this.description = description;
-        this.category = category;
-    }
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductVariant> variants = new ArrayList<>();
+
+    @Column(name = "is_featured", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean featured;
+
+    @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active;
 }

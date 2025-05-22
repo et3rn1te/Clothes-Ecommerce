@@ -11,27 +11,26 @@ const ProductCard = ({ product }) => {
   if (!product) return null;
 
   return (
-    <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
-      <div className="relative">
-        {/* Use the first image from images array if available, otherwise use a placeholder */}
-        <img
-          src={product.images && product.images.length > 0 ? product.images[0].url : "/api/placeholder/400/320"}
-          alt={product.name}
-          className="w-full h-64 object-cover"
-        />
-        {product.discount > 0 && (
-          <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded">
-            -{product.discount}%
-          </div>
-        )}
-      </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-        <div className="flex justify-between items-center">
-          <div className="text-lg font-bold text-blue-600">
-            {formatPrice(product.price)}
-          </div>
-          <button className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600">
+    <div
+      className="bg-white rounded-lg shadow hover:shadow-lg transition overflow-hidden cursor-pointer flex flex-col"
+      onClick={handleProductClick}
+    >
+      <img
+        src={product.images?.[0]?.url || '/api/placeholder/400/320'}
+        alt={product.name}
+        className="w-full h-64 object-cover"
+      />
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        <div>
+          <h3 className="text-lg font-bold mb-2 text-gray-900">{product.name}</h3>
+          <p className="text-gray-500 mb-2">{product.brand}</p>
+        </div>
+        <div className="flex items-center justify-between mt-4">
+          <span className="text-xl font-bold text-red-500">{formatPrice(product.price)}</span>
+          <button
+            className="bg-gray-900 text-white px-4 py-2 rounded-full hover:bg-red-500 transition"
+            onClick={handleAddToCart}
+          >
             <FiShoppingCart />
           </button>
         </div>
