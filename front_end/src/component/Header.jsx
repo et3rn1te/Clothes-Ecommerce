@@ -3,7 +3,8 @@ import { FiSearch, FiShoppingCart, FiHeart, FiMenu, FiX , FiMic} from "react-ico
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { MdEmail, MdPhone, MdKeyboardArrowDown } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { logOutApi } from "../API/AuthService";
+import { introspect, logOutApi } from "../API/AuthService";
+import { listCartItem } from "../API/CartService";
 
 
 const Header = () => {
@@ -19,17 +20,48 @@ const Header = () => {
   const recognition = SpeechRecognition ? new SpeechRecognition() : null;
   // xử lý login
   const [isLogin,setIsLogin] = useState(false);
-  useEffect(() => {
-    const session = JSON.parse(localStorage.getItem("session"));
-    if (session && session !== "undefined" && session.authenticated === true) {
-      setIsLogin(true);
+  const [cartClick, setCartClick] = useState(() => () => {navigate('/cart')});
+  const checkToken = async (token) => {
+    try {
+      const response = await introspect({token});
+      console.log(response.data.result.valid);
+      return response.data.result.valid;
+    } catch (error) {
+      console.error("Lỗi kiểm tra token:", error);
+      return false; // Nếu có lỗi thì coi token không hợp lệ
     }
-  }, []);
+  };
+  
+  useEffect(() => {
+    const check = async () => {
+      const session = JSON.parse(localStorage.getItem("session"));
+      if (session && session !== "undefined") {
+        const isValid = await checkToken(session.token);
+        console.log("Token valid:", isValid);
+        if (isValid) {
+          setIsLogin(true);
+          
+          await listCartItem({userId:session.currentUser.id,token:session.token})
+            .then((res)=>{
+              const { code, message, result } = res.data;
+              // console.log(res.data);
+              setCartCount(result.length);
+            })
+        } else {
+          setIsLogin(false);
+          setCartCount(0);
+        }
+      }
+    };
+    check();
+  }, [isLogin]);
+  
   //Xử lý logout
   const logOut = async (e)=> {
     const session = JSON.parse(localStorage.getItem("session"));
     setIsOpen(false);
-    localStorage.removeItem("session");
+    setCartCount(0);
+    localStorage.clear();
     await logOutApi({token:session.token});
     setIsLogin(false);
   };
@@ -67,9 +99,7 @@ const Header = () => {
   };
   //
   const navigate = useNavigate(); 
-  const cartClick = () => {
-    navigate('/cart'); // Chuyển sang trang /cart
-  };
+  
   const loginClick = () => {
     navigate('/auth/login');
   }
@@ -84,7 +114,6 @@ const Header = () => {
 
   return (
      <header className="sticky top-0 z-50 bg-white dark:bg-gray-800 shadow-md">
-      {console.log("Trạng thái đăng nhập"+isLogin)}
     {/* <header className={`w-full ${isSticky ? "fixed top-0 shadow-lg bg-white" : ""}`}> */}
       {/* Top Bar */}
       <div className="bg-gray-100 py-2 hidden md:block">

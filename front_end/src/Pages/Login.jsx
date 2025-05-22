@@ -151,9 +151,6 @@ const Login = () => {
       await signIn({email: formData.email,password: formData.password,})
         .then((res) => {
           const { code, message, result } = res.data;
-          if(code !== 0){
-            console.log(message);
-          }
           localStorage.setItem("session", JSON.stringify(result));
           navigate('/');
 

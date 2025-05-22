@@ -1,8 +1,11 @@
 package com.example.back_end.config;
 
+import com.example.back_end.constant.PredefinedPayment;
 import com.example.back_end.constant.PredefinedRole;
+import com.example.back_end.entity.PaymentMethod;
 import com.example.back_end.entity.Role;
 import com.example.back_end.entity.User;
+import com.example.back_end.repository.PaymentRepository;
 import com.example.back_end.repository.RoleRepository;
 import com.example.back_end.repository.UserRepository;
 import lombok.AccessLevel;
@@ -43,9 +46,20 @@ public class ApplicationInitConfig {
             prefix = "spring",
             value = "datasource.driverClassName",
             havingValue = "com.mysql.cj.jdbc.Driver")
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
+    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository, PaymentRepository paymentRepository) {
         log.info("Initializing application.....");
         return args -> {
+            if (!paymentRepository.existsPaymentMethodByTypePayment(PredefinedPayment.COD)) {
+                paymentRepository.save(PaymentMethod.builder()
+                        .typePayment(PredefinedPayment.COD)
+                        .build());
+            }
+
+            if (!paymentRepository.existsPaymentMethodByTypePayment(PredefinedPayment.VN_PAY)) {
+                paymentRepository.save(PaymentMethod.builder()
+                        .typePayment(PredefinedPayment.VN_PAY)
+                        .build());
+            }
             if (userRepository.existsByUsername(ADMIN_USER_NAME) != true) {
                 roleRepository.save(Role.builder()
                         .name(PredefinedRole.USER_ROLE)

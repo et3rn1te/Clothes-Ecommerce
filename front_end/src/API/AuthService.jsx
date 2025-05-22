@@ -34,4 +34,8 @@ const verifyRegister = async (email) => {
     });
 }
 
-export { signIn ,register,checkEmailExists,logOutApi,verifyRegister};
+const introspect = async (body) => {
+    return await axiosClient.post('/auth/introspect', body);
+}
+
+export { signIn ,register,checkEmailExists,logOutApi,verifyRegister,introspect };

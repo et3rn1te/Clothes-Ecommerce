@@ -27,10 +27,10 @@ import java.util.List;
 public class SecurityConfig {
     //Xác thực yêu cầu
     private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
-            "auth/login", "auth/introspect", "auth/signup", "auth/register","users/existUser","verifyRegister", "/products/**", "/categories/**", "/users/**"};
-    private final String[] PUBLIC_ENDPOINTS_GET = {"/users/**", "/categories/**", "/products/**"};
-    private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = {"/users/**", "/categories/**", "/products/**","/auth/verifyAccount"};
-    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout"};
+            "auth/login", "auth/introspect", "/verifyRegister", "auth/register","users/existUser", "/products/**", "/categories/**", "/users/**"};
+    private final String[] PUBLIC_ENDPOINTS_GET = {"cart/listCartItem/**"};
+    private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = {"/users/**", "/categories/**", "/products/**","/auth/verifyAccount","/discount/getDiscount"};
+    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout","/cart/updateItem                                                                                                                                                   "};
 
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
