@@ -30,7 +30,7 @@ public class SecurityConfig {
             "auth/login", "auth/introspect", "/verifyRegister", "auth/register","users/existUser", "/products/**", "/categories/**", "/users/**"};
     private final String[] PUBLIC_ENDPOINTS_GET = {"cart/listCartItem/**"};
     private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = {"/users/**", "/categories/**", "/products/**","/auth/verifyAccount","/discount/getDiscount"};
-    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout","/cart/updateItem                                                                                                                                                   "};
+    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout","/cart/updateItem","/order/add"};
 
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;

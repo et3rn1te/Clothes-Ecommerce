@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oder_detail")
+@Table(name = "order_details")
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,8 +15,8 @@ public class OrderDetail {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_order", nullable = false)
-    private Order idOder;
+    @JoinColumn(name = "id_order", nullable = false, referencedColumnName = "id")
+    private Order idOrder;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_product", nullable = false)
@@ -25,6 +25,6 @@ public class OrderDetail {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "totalPrice", nullable = false, length = 50)
+    @Column(name = "totalPrice", nullable = false)
     private Double totalPrice;
 }

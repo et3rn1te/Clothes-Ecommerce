@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaLock, FaCreditCard, FaMoneyBillWave, FaWallet } from "react-icons/fa";
 import ProvinceSelect from "../API/Location.jsx";
 import { listCartItem } from "../API/CartService.jsx";
+import { addOrder } from "../API/CheckoutService.jsx";
 
 const CheckoutPage = () => {
   const [formData, setFormData] = useState({
@@ -114,6 +115,19 @@ const CheckoutPage = () => {
       }
        console.log(formData);
     }
+    const session = JSON.parse(localStorage.getItem("session"));
+
+    await addOrder({
+      idUser: session.currentUser.id,
+      receiver: formData.fullName,
+      phone: formData.phoneNumber,
+      idPaymentMethod: 1,
+      address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
+      idStatus: 1,
+      total:calculateTotal()
+    }
+      ,session.token
+    );
    
   };
 

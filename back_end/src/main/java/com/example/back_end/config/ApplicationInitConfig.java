@@ -5,6 +5,7 @@ import com.example.back_end.constant.PredefinedRole;
 import com.example.back_end.entity.PaymentMethod;
 import com.example.back_end.entity.Role;
 import com.example.back_end.entity.User;
+import com.example.back_end.repository.DiscountRepository;
 import com.example.back_end.repository.PaymentRepository;
 import com.example.back_end.repository.RoleRepository;
 import com.example.back_end.repository.UserRepository;
@@ -46,7 +47,7 @@ public class ApplicationInitConfig {
             prefix = "spring",
             value = "datasource.driverClassName",
             havingValue = "com.mysql.cj.jdbc.Driver")
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository, PaymentRepository paymentRepository) {
+    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository, PaymentRepository paymentRepository, DiscountRepository discountRepository) {
         log.info("Initializing application.....");
         return args -> {
             if (!paymentRepository.existsPaymentMethodByTypePayment(PredefinedPayment.COD)) {

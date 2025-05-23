@@ -17,7 +17,8 @@ public class OrderCreateRequest {
     private Long idUser;
     private String receiver;
     private String phone;
-    private LocalDate dateOrder;
+    private String address;
     private int idPaymentMethod;
-    private Status idStatus;
+    private int idStatus;
+    private double total;
 }

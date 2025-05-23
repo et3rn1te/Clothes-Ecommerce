@@ -46,7 +46,9 @@ public class CartDetailService implements ICartService{
                     CartDetail newCartDetail = new CartDetail();
                     newCartDetail.setIdCart(cart);
                     newCartDetail.setIdProduct(product);
-                    newCartDetail.setQuantity(request.getAmount());
+                    System.out.println(request.getAmount());
+                    newCartDetail.setQuantity(0);
+                    cartDetailRepository.save(newCartDetail);
                     return newCartDetail;
                 });
         System.out.println(cartDetail.getIdProduct().getId());
@@ -56,7 +58,7 @@ public class CartDetailService implements ICartService{
                 System.out.println("cộng");
             } else {
                 cartDetail.setQuantity(cartDetail.getQuantity()- request.getAmount());
-                System.out.println("cộng");
+                System.out.println("trừ");
             }
             cartDetailRepository.save(cartDetail);
         }
