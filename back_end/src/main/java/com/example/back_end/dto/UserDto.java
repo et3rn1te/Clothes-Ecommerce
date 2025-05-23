@@ -1,10 +1,14 @@
 package com.example.back_end.dto;
 
 import com.example.back_end.entity.Image;
+import com.example.back_end.entity.Role;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class UserDto {
+    private Long id;
     private String username;
     private String password;
     private String fullname;
@@ -12,4 +16,5 @@ public class UserDto {
     private String phone;
     private Boolean active = false;
     private ImageDto avatar;
+    private Set<Role> roles;
 }

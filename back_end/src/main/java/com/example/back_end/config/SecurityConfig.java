@@ -27,9 +27,10 @@ import java.util.List;
 public class SecurityConfig {
     //Xác thực yêu cầu
     private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
-            "auth/login", "auth/introspect", "auth/signup", "/sendEmail", "/products/**", "/categories/**", "/users/**"};
-    private final String[] PUBLIC_ENDPOINTS_GET = {"/users/**", "/categories/**", "/products/**"};
-    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout"};
+            "auth/login", "auth/introspect", "/verifyRegister", "auth/register","users/existUser", "/products/**", "/categories/**", "/users/**"};
+    private final String[] PUBLIC_ENDPOINTS_GET = {"cart/listCartItem/**"};
+    private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = {"/users/**", "/categories/**", "/products/**","/auth/verifyAccount","/discount/getDiscount"};
+    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout","/cart/updateItem","/order/add"};
 
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
@@ -52,8 +53,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/verifyEmail").permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET_PERMITALL).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).authenticated()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_LOGIN).authenticated()
                         .anyRequest().authenticated()
                 )

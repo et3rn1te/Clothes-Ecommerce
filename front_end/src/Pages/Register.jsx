@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import ReCAPTCHA from "react-google-recaptcha";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { checkEmailExists, register } from "../API/AuthService";
+import useQueryParam from "../utils/useQueryParam";
 
 const PasswordStrength = ({ password }) => {
   const getStrength = (pass) => {
@@ -43,27 +44,19 @@ const PasswordStrength = ({ password }) => {
   );
 };
 
-const VerificationPage = ({ email, onResend }) => {
-  return (
-    <div className="text-center space-y-6">
-      <h2 className="text-3xl font-extrabold text-gray-900">Verify your email</h2>
-      <p className="text-gray-600">We have sent a verification link to</p>
-      <p className="font-medium text-gray-800">{email}</p>
-      <p className="text-gray-600">Please check your inbox and click the link to verify your account</p>
-      <div className="pt-4">
-        <button
-          onClick={onResend}
-          className="text-blue-600 hover:text-blue-800 font-medium"
-        >
-          Resend verification email
-        </button>
-      </div>
-    </div>
-  );
-};
+
 
 const Register = () => {
-  const [authState, setAuthState] = useState("register");
+  const email = useQueryParam("email");
+
+  useEffect(() => {
+    if (email) {
+      console.log("Email từ URL:", email);
+      // xử lý logic khi có email ở đây
+    }
+  }, [email]);
+  const navigate = useNavigate(); 
+  // const [authState, setAuthState] = useState("register");
   const [showPassword, setShowPassword] = useState(false);
   const [isVerificationSent, setIsVerificationSent] = useState(false);
   const [formData, setFormData] = useState({
@@ -77,10 +70,13 @@ const Register = () => {
     termsAccepted: false
   });
   const [errors, setErrors] = useState({});
-  const [captchaValue, setCaptchaValue] = useState(null);
-  const handleCaptchaChange = (value) => {
-    setCaptchaValue(value); 
-  };
+  // const [captchaValue, setCaptchaValue] = useState(null);
+  const [isEmailAvailable, setIsEmailAvailable] = useState(true);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+
+  // const handleCaptchaChange = (value) => {
+  //   setCaptchaValue(value); 
+  // };
 
   const validateEmail = (email) => {
     return email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
@@ -150,6 +146,14 @@ const Register = () => {
       }));
     }
 
+    if (name === "email") {
+      // Debounce email check
+      const timeoutId = setTimeout(() => {
+        checkEmailAvailability(value);
+      }, 500);
+      return () => clearTimeout(timeoutId);
+    }
+
     if (name === "password" && formData.confirmPassword) {
       const confirmError = formData.confirmPassword !== value ? "Passwords do not match" : "";
       setErrors(prev => ({
@@ -159,61 +163,60 @@ const Register = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const checkEmailAvailability = async (email) => {
+    if (!email || !validateEmail(email)) return;
+    
+    setIsCheckingEmail(true);
+    try {
+      // Simulate API call - replace with actual API endpoint
+      const response = await checkEmailExists(email);
+      console.log(response.data.result);
+      setIsEmailAvailable(!response.data.result);
+      
+    } catch (error) {
+      console.error('Error checking email:', error);
+      setIsEmailAvailable(false);
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
-
-    Object.keys(formData).forEach(field => {
-      if (field !== "rememberMe" && field !== "termsAccepted") {
-        const error = validateField(field, formData[field]);
-        if (error) {
-          newErrors[field] = error;
-        }
-      }
-    });
-
-    if (authState === "register" && !formData.termsAccepted) {
-      newErrors.terms = "Please accept terms and conditions";
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      if (authState === "register" || authState === "forgot") {
-        setIsVerificationSent(true);
-      } else {
-        console.log("Form submitted:", formData);
-      }
-    }
-    if(authState === "login"){
-      console.log("login :", formData);
-    } else {
-      if(authState === "register"){
-        console.log("register :", formData);
-      } else {
-        console.log("send vertical :", formData);
-      }
-    }
+    console.log("register :", formData);
+    await register({username: formData.username,
+      password: formData.password,
+      phone: formData.phone ,
+      email: email,
+      fullname: formData.fullName,
+      active: 1,
+    })
+        .then((res) => {
+          const { code, message, result } = res.data;
+          if(code !== 0){
+            console.log(message);
+          }
+          navigate('/auth/login');
+        })
+        .catch((err) => {
+          console.error("Đã xảy ra lỗi khi gọi API:", err);
+        });
   };
 
   const handleResendVerification = () => {
     console.log("Resending verification email to:", formData.email);
   };
 
-  const isFormValid = () => {
-    if (authState === "login") {
-      return validateEmail(formData.email) && captchaValue;
-    } else if (authState === "register") {
+  const isFormValid = () => {    
       return validateEmail(formData.email) && 
              validatePassword(formData.password) && 
              formData.password === formData.confirmPassword && 
              formData.fullName && 
              formData.username && 
              formData.phone && 
-             formData.termsAccepted;
-    } else {
-      return validateEmail(formData.email);
-    }
+             formData.termsAccepted &&
+             isEmailAvailable;
   };
 
   return (
@@ -266,15 +269,25 @@ const Register = () => {
         
         <div>
           <label className="block text-sm font-medium text-gray-700">Email address</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Enter email address"
-            value={formData.email}
-            onChange={handleInputChange}
-            className={`mt-1 block w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-          />
+          <div className="relative">
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter email address"
+              value={formData.email}
+              onChange={handleInputChange}
+              className={`mt-1 block w-full px-3 py-2 border ${errors.email ? 'border-red-500' : isEmailAvailable ? 'border-gray-300' : 'border-red-500'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
+            />
+            {isCheckingEmail && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+              </div>
+            )}
+          </div>
           {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+          {!isEmailAvailable && !errors.email && (
+            <p className="mt-1 text-sm text-red-500">This email is already registered</p>
+          )}
         </div>
         <div className="relative">
           <label className="block text-sm font-medium text-gray-700">Password</label>
@@ -336,6 +349,7 @@ const Register = () => {
       <div className="mt-6 text-center">
         <button
           type="button"
+          onClick={() => { navigate('/auth/login');}}
           className="text-sm font-medium text-blue-600 hover:text-blue-500"
         >Already have an account? Sign in
         </button>
