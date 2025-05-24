@@ -5,6 +5,7 @@ import com.example.back_end.dto.response.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,4 +19,5 @@ public class ProductVariantSummary {
     private BigDecimal price;
     private Integer stockQuantity;
     private boolean active;
+    private List<ProductImageSummary> images;
 }

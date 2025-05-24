@@ -21,4 +21,6 @@ public interface ProductVariantService {
     void toggleVariantStatus(Long id);
     
     boolean existsByProductAndColorAndSize(Long productId, Long colorId, Long sizeId);
+
+    ProductVariantResponse getVariantBySku(String sku);
 } 

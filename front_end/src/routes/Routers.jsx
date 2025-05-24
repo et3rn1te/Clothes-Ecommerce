@@ -4,35 +4,35 @@ import { lazy } from 'react';
 const routes = [
   {
     path: '/',
-    component: lazy(() => import('../Pages/HomePage')),
+    component: lazy(() => import('../pages/home/HomePage')),
   },
   {
-    path: '/products',
-    component: lazy(() => import('../Pages/product/Products')),
+    path: '/categories/:slug',
+    component: lazy(() => import('../pages/product/ProductListPage')),
   },
   {
-    path: '/product_detail/:id',
-    component: lazy(() => import('../Pages/product/ProductDetail')),
-  }, 
+    path: '/product/:productId',
+    component: lazy(() => import('../pages/product/ProductDetailPage')),
+  },
   {
-    path: '/category/:categoryName',
-    component: lazy(() => import('../Pages/product/ProductsByCategory')),
+    path: '/products/:slug',
+    component: lazy(() => import('../pages/product/ProductDetailPage')),
   },
   {
     path: '/cart',
-    component: lazy(() => import('../Pages/Cart')),
+    component: lazy(() => import('../pages/Cart')),
   },
   {
     path: '/payment',
-    component: lazy(() => import('../Pages/Payment')),
+    component: lazy(() => import('../pages/Payment')),
   },
   {
     path: '/auth/*',
-    component: lazy(() => import('../Pages/Authentication')),
+    component: lazy(() => import('../pages/Authentication')),
   },
   {
     path: '/profile',
-    component: lazy(() => import('../Pages/Profile')),
+    component: lazy(() => import('../pages/Profile')),
   }
 ];
 

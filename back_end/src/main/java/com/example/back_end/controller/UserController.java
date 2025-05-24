@@ -1,18 +1,17 @@
 package com.example.back_end.controller;
 
-import com.example.back_end.dto.ImageDto;
 import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
-import com.example.back_end.service.image.IImageService;
-import com.example.back_end.service.user.UserService;
+import com.example.back_end.entity.User;
+import com.example.back_end.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Pageable;
+import com.example.back_end.dto.response.PageResponse;
 
 import java.util.List;
 
@@ -22,77 +21,83 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    private final IImageService imageService;
 
     @PostMapping("/createUser")
     public ResponseEntity<ApiResponse<UserDto>> createUser(
             @RequestBody @Valid UserCreationRequest request) {
-        UserDto dto = userService.convertToDto(
-                userService.createRequest(request)
-        );
-        return ResponseEntity.ok(
-                ApiResponse.<UserDto>builder()
-                        .code(0)
-                        .message("User created successfully")
-                        .data(dto)
-                        .build()
-        );
+        try {
+            User user = userService.createRequest(request);
+            List<UserDto> dtos = userService.getConvertedUsers(List.of(user));
+            UserDto dto = dtos.get(0);
+            
+            return ResponseEntity.ok(
+                    ApiResponse.<UserDto>builder()
+                            .code(0)
+                            .message("User created successfully")
+                            .data(dto)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to create user", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserDto>builder()
+                            .code(1)
+                            .message("Failed to create user: " + e.getMessage())
+                            .build());
+        }
     }
 
+    /**
+     * Method to get all Users with pagination
+     *
+     * @param pageable: Pagination parameters (page, size, sort)
+     * @return JSON body contains paginated list of User DTOs
+     */
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
-        List<UserDto> list = userService.getConvertedUsers(
-                userService.getUsers()
-        );
-        return ResponseEntity.ok(
-                ApiResponse.<List<UserDto>>builder()
-                        .code(0)
-                        .message("User list retrieved successfully")
-                        .data(list)
-                        .build()
-        );
+    public ResponseEntity<ApiResponse<PageResponse<UserDto>>> getAllUsers(Pageable pageable) {
+        try {
+            PageResponse<UserDto> userPage = userService.getUsers(pageable);
+            
+            return ResponseEntity.ok(
+                    ApiResponse.<PageResponse<UserDto>>builder()
+                            .code(0)
+                            .message("User list retrieved successfully")
+                            .data(userPage)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to retrieve users", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<PageResponse<UserDto>>builder()
+                            .code(1)
+                            .message("Failed to retrieve users: " + e.getMessage())
+                            .build());
+        }
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<UserDto>> getUserById(
             @PathVariable Long userId) {
-        UserDto dto = userService.convertToDto(
-                userService.getUserById(userId)
-        );
-        return ResponseEntity.ok(
-                ApiResponse.<UserDto>builder()
-                        .code(0)
-                        .message("User retrieved successfully")
-                        .data(dto)
-                        .build()
-        );
-    }
-
-    @PostMapping("/user/avatar/upload")
-    public ResponseEntity<ApiResponse<ImageDto>> uploadAvatar(
-            @RequestParam MultipartFile file,
-            @RequestParam Long userId) {
-        ImageDto imageDto = imageService.saveUserAvatar(file, userId);
-        return ResponseEntity.ok(
-                ApiResponse.<ImageDto>builder()
-                        .code(0)
-                        .message("Avatar uploaded successfully")
-                        .data(imageDto)
-                        .build()
-        );
-    }
-
-    @GetMapping("/user/avatar/{userId}")
-    public ResponseEntity<ApiResponse<ImageDto>> getUserAvatar(
-            @PathVariable Long userId) {
-        ImageDto imageDto = imageService.getUserAvatar(userId);
-        return ResponseEntity.ok(
-                ApiResponse.<ImageDto>builder()
-                        .code(0)
-                        .message("User avatar retrieved successfully")
-                        .data(imageDto)
-                        .build()
-        );
+        try {
+            User user = userService.getUserById(userId);
+            List<UserDto> dtos = userService.getConvertedUsers(List.of(user));
+            UserDto dto = dtos.get(0);
+            
+            return ResponseEntity.ok(
+                    ApiResponse.<UserDto>builder()
+                            .code(0)
+                            .message("User retrieved successfully")
+                            .data(dto)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to retrieve user with id: " + userId, e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserDto>builder()
+                            .code(1)
+                            .message("Failed to retrieve user: " + e.getMessage())
+                            .build());
+        }
     }
 
 //    @GetMapping("/me")

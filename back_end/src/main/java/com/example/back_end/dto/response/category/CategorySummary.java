@@ -9,5 +9,7 @@ import lombok.*;
 public class CategorySummary {
     private Long id;
     private String name;
+    private String description;
     private Long parentId;
+    private String parentName;
 }

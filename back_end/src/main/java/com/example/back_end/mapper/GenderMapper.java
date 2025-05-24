@@ -8,5 +8,5 @@ import org.mapstruct.*;
 public interface GenderMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "name", source = "name")
-    GenderSummary toSummary(Gender gender);
+    GenderSummary oSummary(Gender gender);
 }

@@ -4,6 +4,8 @@ import com.example.back_end.dto.request.category.CategoryCreationRequest;
 import com.example.back_end.dto.request.category.UpdateCategoryRequest;
 import com.example.back_end.dto.response.category.CategoryListResponse;
 import com.example.back_end.dto.response.category.CategoryResponse;
+import org.springframework.data.domain.Pageable;
+import com.example.back_end.dto.response.PageResponse;
 
 import java.util.List;
 
@@ -16,9 +18,17 @@ public interface CategoryService {
     
     CategoryResponse getCategoryById(Long id);
     
-    List<CategoryListResponse> getAllCategories();
+    CategoryResponse getCategoryBySlug(String slug);
+    
+    boolean existsBySlug(String slug);
+    
+    PageResponse<CategoryResponse> getAllCategories(Pageable pageable);
     
     void toggleCategoryStatus(Long id);
     
     boolean existsByName(String name);
+
+    List<CategoryResponse> getSubCategoriesByParentId(Long parentId);
+
+    CategoryResponse getCategoryByName(String name);
 } 

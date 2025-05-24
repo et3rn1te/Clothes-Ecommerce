@@ -5,6 +5,7 @@ import com.example.back_end.dto.request.product.ProductUpdateRequest;
 import com.example.back_end.dto.response.product.ProductDetailResponse;
 import com.example.back_end.dto.response.product.ProductResponse;
 import com.example.back_end.dto.response.product.ProductSummary;
+import com.example.back_end.dto.response.PageResponse;
 import com.example.back_end.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -62,6 +63,20 @@ public class ProductController {
     }
 
     /**
+     * Method to get Products by Category Name with pagination
+     *
+     * @param name: Category's name
+     * @param pageable: Pagination parameters (page, size, sort)
+     * @return JSON body contains paginated list of Product summaries for the specified category name
+     */
+    @GetMapping("/category/name/{name}")
+    public ResponseEntity<PageResponse<ProductSummary>> getProductsByCategoryName(
+            @PathVariable String name,
+            Pageable pageable) {
+        return ResponseEntity.ok(productService.getProductsByCategoryName(name, pageable));
+    }
+
+    /**
      * Method to get Product by ID
      *
      * @param id: Product's id
@@ -72,6 +87,16 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<ProductDetailResponse> getProductBySlug(@PathVariable String slug) {
+        return ResponseEntity.ok(productService.getProductBySlug(slug));
+    }
+
+    @GetMapping("/check-slug")
+    public ResponseEntity<Boolean> checkSlugExists(@RequestParam String slug) {
+        return ResponseEntity.ok(productService.existsBySlug(slug));
+    }
+
     /**
      * Method to get all Products with pagination
      *
@@ -79,7 +104,7 @@ public class ProductController {
      * @return JSON body contains paginated list of Product summaries
      */
     @GetMapping
-    public ResponseEntity<Page<ProductSummary>> getAllProducts(Pageable pageable) {
+    public ResponseEntity<PageResponse<ProductSummary>> getAllProducts(Pageable pageable) {
         return ResponseEntity.ok(productService.getAllProducts(pageable));
     }
 
@@ -90,7 +115,7 @@ public class ProductController {
      * @return JSON body contains paginated list of featured Product summaries
      */
     @GetMapping("/featured")
-    public ResponseEntity<Page<ProductSummary>> getFeaturedProducts(Pageable pageable) {
+    public ResponseEntity<PageResponse<ProductSummary>> getFeaturedProducts(Pageable pageable) {
         return ResponseEntity.ok(productService.getFeaturedProducts(pageable));
     }
 
@@ -102,7 +127,7 @@ public class ProductController {
      * @return JSON body contains paginated list of matching Product summaries
      */
     @GetMapping("/search")
-    public ResponseEntity<Page<ProductSummary>> searchProducts(
+    public ResponseEntity<PageResponse<ProductSummary>> searchProducts(
             @RequestParam String keyword,
             Pageable pageable) {
         return ResponseEntity.ok(productService.searchProducts(keyword, pageable));

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -27,4 +28,25 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoriesIdAndActiveTrue(Long categoryId);
     
     boolean existsByNameAndBrandId(String name, Long brandId);
+
+    @Query("SELECT p FROM Product p JOIN p.categories c WHERE c.name = :categoryName AND p.active = true")
+    Page<Product> findByCategoriesNameAndActiveTrue(String categoryName, Pageable pageable);
+
+    @Query("SELECT DISTINCT p FROM Product p " +
+           "JOIN p.categories c " +
+           "WHERE (c.name = :categoryName OR c.parent.name = :categoryName) " +
+           "AND p.active = true")
+    Page<Product> findByCategoryNameIncludingSubcategories(String categoryName, Pageable pageable);
+
+    @Query("SELECT p FROM Product p " +
+           "LEFT JOIN FETCH p.variants v " +
+           "WHERE p.id = :id")
+    Optional<Product> findByIdWithDetails(Long id);
+
+    @Query("SELECT p FROM Product p " +
+           "LEFT JOIN FETCH p.variants v " +
+           "WHERE p.slug = :slug AND p.active = true")
+    Optional<Product> findBySlugWithDetails(String slug);
+
+    boolean existsBySlug(String slug);
 } 

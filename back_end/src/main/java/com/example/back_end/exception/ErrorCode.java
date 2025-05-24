@@ -33,7 +33,9 @@ public enum ErrorCode {
     VARIANT_NOT_FOUND(1022, "Can not find the product variant", HttpStatus.NOT_FOUND),
     VARIANT_EXISTS(1023, "Product variant with this color and size already exists", HttpStatus.CONFLICT),
     CATEGORY_NAME_EXISTS(1024, "Category name already exists", HttpStatus.CONFLICT),
-    OPERATION_NOT_SUPPORTED(1025, "This operation is not supported", HttpStatus.METHOD_NOT_ALLOWED);
+    OPERATION_NOT_SUPPORTED(1025, "This operation is not supported", HttpStatus.METHOD_NOT_ALLOWED),
+    PRODUCT_SLUG_EXISTS(1026, "Product slug already exists", HttpStatus.CONFLICT),
+    CATEGORY_SLUG_EXISTS(1027, "Category slug already exists", HttpStatus.CONFLICT);
 
     private final int code;
     private final String message;

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
+import com.example.back_end.dto.response.PageResponse;
 
 import java.util.List;
 
@@ -69,14 +71,25 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<CategoryResponse> getCategoryBySlug(@PathVariable String slug) {
+        return ResponseEntity.ok(categoryService.getCategoryBySlug(slug));
+    }
+
+    @GetMapping("/check-slug")
+    public ResponseEntity<Boolean> checkSlugExists(@RequestParam String slug) {
+        return ResponseEntity.ok(categoryService.existsBySlug(slug));
+    }
+
     /**
-     * Method to get all Categories
+     * Method to get all Categories with pagination
      *
-     * @return JSON body contains Category info
+     * @param pageable: Pagination parameters (page, size, sort)
+     * @return JSON body contains paginated list of Category responses
      */
     @GetMapping
-    public ResponseEntity<List<CategoryListResponse>> getAllCategories() {
-        return ResponseEntity.ok(categoryService.getAllCategories());
+    public ResponseEntity<PageResponse<CategoryResponse>> getAllCategories(Pageable pageable) {
+        return ResponseEntity.ok(categoryService.getAllCategories(pageable));
     }
 
     /**
@@ -90,4 +103,29 @@ public class CategoryController {
         categoryService.toggleCategoryStatus(id);
         return ResponseEntity.noContent().build();
     }
-} 
+
+    /**
+     * Method to get sub-categories by parent category ID
+     *
+     * @param parentId: Parent Category's id
+     * @return JSON body contains list of sub-category responses
+     */
+    @GetMapping("/{parentId}/subcategories")
+    public ResponseEntity<List<CategoryResponse>> getSubCategoriesByParentId(@PathVariable Long parentId) {
+        // Note: You need to implement getSubCategoriesByParentId method in CategoryService
+        // This is a placeholder endpoint.
+        return ResponseEntity.ok(categoryService.getSubCategoriesByParentId(parentId));
+    }
+
+    /**
+     * Method to get Category by name
+     *
+     * @param name: Category's name
+     * @return JSON body contains Category info
+     */
+    @GetMapping("/name/{name}")
+    public ResponseEntity<CategoryResponse> getCategoryByName(@PathVariable String name) {
+        return ResponseEntity.ok(categoryService.getCategoryByName(name));
+    }
+
+}

@@ -5,6 +5,8 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "product_variants")
@@ -42,5 +44,6 @@ public class ProductVariant extends BaseEntity {
     private boolean active;
 
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SUBSELECT)
     private List<ProductImage> images = new ArrayList<>();
 }

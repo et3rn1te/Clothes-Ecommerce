@@ -2,6 +2,9 @@ package com.example.back_end.mapper;
 
 import com.example.back_end.dto.request.product.*;
 import com.example.back_end.dto.response.product.*;
+import com.example.back_end.dto.response.BrandSummary;
+import com.example.back_end.dto.response.ColorSummary;
+import com.example.back_end.dto.response.SizeSummary;
 import com.example.back_end.entity.*;
 import org.mapstruct.*;
 
@@ -35,8 +38,15 @@ public interface ProductMapper {
     @Mapping(target = "primaryImage", source = "images", qualifiedByName = "findPrimaryImage")
     ProductResponse toResponse(Product product);
 
+    @Mapping(target = "brand", source = "brand")
+    @Mapping(target = "gender", source = "gender")
+    @Mapping(target = "categories", source = "categories")
+    @Mapping(target = "images", source = "images")
+    @Mapping(target = "variants", source = "variants")
     ProductDetailResponse toDetailResponse(Product product);
 
+    @Mapping(target = "brandName", source = "brand.name")
+    @Mapping(target = "primaryImage", expression = "java(findPrimaryImage(product.getImages()))")
     ProductSummary toSummary(Product product);
 
     // LIST MAPPINGS

@@ -11,8 +11,11 @@ import com.example.back_end.mapper.CategoryMapper;
 import com.example.back_end.repository.CategoryRepository;
 import com.example.back_end.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.back_end.dto.response.PageResponse;
 
 import java.util.List;
 
@@ -29,10 +32,23 @@ public class CategoryServiceImpl implements CategoryService {
             throw new AppException(ErrorCode.CATEGORY_NAME_EXISTS);
         }
 
+        String slug = generateSlug(request.getName());
+        if (categoryRepository.existsBySlug(slug)) {
+            throw new AppException(ErrorCode.CATEGORY_SLUG_EXISTS);
+        }
+
         Category category = Category.builder()
                 .name(request.getName())
+                .slug(slug)
                 .description(request.getDescription())
                 .build();
+
+        if (request.getParentId() != null) {
+            Category parent = categoryRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+            category.setParent(parent);
+        }
+
         category = categoryRepository.save(category);
         return categoryMapper.toResponse(category);
     }
@@ -46,8 +62,26 @@ public class CategoryServiceImpl implements CategoryService {
             throw new AppException(ErrorCode.CATEGORY_NAME_EXISTS);
         }
 
+        // Generate new slug if name changed
+        if (!category.getName().equals(request.getName())) {
+            String newSlug = generateSlug(request.getName());
+            if (!newSlug.equals(category.getSlug()) && categoryRepository.existsBySlug(newSlug)) {
+                throw new AppException(ErrorCode.CATEGORY_SLUG_EXISTS);
+            }
+            category.setSlug(newSlug);
+        }
+
         category.setName(request.getName());
         category.setDescription(request.getDescription());
+
+        if (request.getParentId() != null) {
+            Category parent = categoryRepository.findById(request.getParentId())
+                    .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+            category.setParent(parent);
+        } else {
+            category.setParent(null);
+        }
+
         category = categoryRepository.save(category);
         return categoryMapper.toResponse(category);
     }
@@ -68,15 +102,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryListResponse> getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
-        CategoryListResponse response = CategoryListResponse.builder()
-                .categories(categoryMapper.toResponseList(categories))
-                .totalPages(1)
-                .totalElements(categories.size())
-                .currentPage(0)
+    public PageResponse<CategoryResponse> getAllCategories(Pageable pageable) {
+        Page<Category> categoryPage = categoryRepository.findAll(pageable);
+        return PageResponse.<CategoryResponse>builder()
+                .content(categoryPage.getContent().stream()
+                        .map(categoryMapper::toResponse)
+                        .toList())
+                .pageNo(categoryPage.getNumber())
+                .pageSize(categoryPage.getSize())
+                .totalElements(categoryPage.getTotalElements())
+                .totalPages(categoryPage.getTotalPages())
+                .last(categoryPage.isLast())
                 .build();
-        return List.of(response);
     }
 
     @Override
@@ -87,5 +124,52 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public boolean existsByName(String name) {
         return categoryRepository.existsByName(name);
+    }
+
+    @Override
+    public List<CategoryResponse> getSubCategoriesByParentId(Long parentId) {
+        // Assume CategoryRepository has a method findAllByParentId(Long parentId)
+        // You need to implement this method in CategoryRepository.
+        List<Category> subCategories = categoryRepository.findAllByParentId(parentId);
+        return subCategories.stream()
+                .map(categoryMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public CategoryResponse getCategoryByName(String name) {
+        Category category = categoryRepository.findByName(name) // Assume findByName method exists in CategoryRepository
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        return categoryMapper.toResponse(category);
+    }
+
+    @Override
+    public CategoryResponse getCategoryBySlug(String slug) {
+        Category category = categoryRepository.findBySlugWithSubcategories(slug)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        return categoryMapper.toResponse(category);
+    }
+
+    @Override
+    public boolean existsBySlug(String slug) {
+        return categoryRepository.existsBySlug(slug);
+    }
+
+    private String generateSlug(String name) {
+        // Convert to lowercase and replace spaces with hyphens
+        String baseSlug = name.toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "") // Remove special characters
+                .replaceAll("\\s+", "-")         // Replace spaces with hyphens
+                .replaceAll("-+", "-");          // Replace multiple hyphens with single hyphen
+
+        String slug = baseSlug;
+        int counter = 1;
+
+        // Keep adding numbers until we find a unique slug
+        while (categoryRepository.existsBySlug(slug)) {
+            slug = baseSlug + "-" + counter++;
+        }
+
+        return slug;
     }
 } 

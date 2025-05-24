@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import com.example.back_end.dto.response.PageResponse;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -36,6 +38,11 @@ public class ProductServiceImpl implements ProductService {
             throw new AppException(ErrorCode.PRODUCT_NAME_EXISTS);
         }
 
+        String slug = generateSlug(request.getName());
+        if (productRepository.existsBySlug(slug)) {
+            throw new AppException(ErrorCode.PRODUCT_SLUG_EXISTS);
+        }
+
         Brand brand = brandRepository.findById(request.getBrandId())
                 .orElseThrow(() -> new AppException(ErrorCode.BRAND_NOT_FOUND));
 
@@ -46,11 +53,12 @@ public class ProductServiceImpl implements ProductService {
         List<Category> categories = categoryRepository.findByIdIn(request.getCategoryIds());
 
         Product product = productMapper.toEntity(request);
+        product.setSlug(slug);
         product.setBrand(brand);
         product.setGender(gender);
         product.setCategories(categories);
-        product.setActive(true);
-        product.setFeatured(false);
+        product.setActive(request.isActive());
+        product.setFeatured(request.isFeatured());
 
         return productMapper.toResponse(productRepository.save(product));
     }
@@ -94,27 +102,84 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDetailResponse getProductById(Long id) {
-        Product product = productRepository.findById(id)
+        Product product = productRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         return productMapper.toDetailResponse(product);
     }
 
     @Override
-    public Page<ProductSummary> getAllProducts(Pageable pageable) {
-        return productRepository.findByActiveTrue(pageable)
-                .map(productMapper::toSummary);
+    public ProductDetailResponse getProductBySlug(String slug) {
+        Product product = productRepository.findBySlugWithDetails(slug)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        return productMapper.toDetailResponse(product);
     }
 
     @Override
-    public Page<ProductSummary> getFeaturedProducts(Pageable pageable) {
-        return productRepository.findByFeaturedTrueAndActiveTrue(pageable)
-                .map(productMapper::toSummary);
+    public boolean existsBySlug(String slug) {
+        return productRepository.existsBySlug(slug);
+    }
+
+    private String generateSlug(String name) {
+        // Convert to lowercase and replace spaces with hyphens
+        String baseSlug = name.toLowerCase()
+                .replaceAll("[^a-z0-9\\s-]", "") // Remove special characters
+                .replaceAll("\\s+", "-")         // Replace spaces with hyphens
+                .replaceAll("-+", "-");          // Replace multiple hyphens with single hyphen
+
+        String slug = baseSlug;
+        int counter = 1;
+
+        // Keep adding numbers until we find a unique slug
+        while (productRepository.existsBySlug(slug)) {
+            slug = baseSlug + "-" + counter++;
+        }
+
+        return slug;
     }
 
     @Override
-    public Page<ProductSummary> searchProducts(String keyword, Pageable pageable) {
-        return productRepository.searchProducts(keyword, pageable)
-                .map(productMapper::toSummary);
+    public PageResponse<ProductSummary> getAllProducts(Pageable pageable) {
+        Page<Product> productPage = productRepository.findByActiveTrue(pageable);
+        return PageResponse.<ProductSummary>builder()
+                .content(productPage.getContent().stream()
+                        .map(productMapper::toSummary)
+                        .toList())
+                .pageNo(productPage.getNumber())
+                .pageSize(productPage.getSize())
+                .totalElements(productPage.getTotalElements())
+                .totalPages(productPage.getTotalPages())
+                .last(productPage.isLast())
+                .build();
+    }
+
+    @Override
+    public PageResponse<ProductSummary> getFeaturedProducts(Pageable pageable) {
+        Page<Product> productPage = productRepository.findByFeaturedTrueAndActiveTrue(pageable);
+        return PageResponse.<ProductSummary>builder()
+                .content(productPage.getContent().stream()
+                        .map(productMapper::toSummary)
+                        .toList())
+                .pageNo(productPage.getNumber())
+                .pageSize(productPage.getSize())
+                .totalElements(productPage.getTotalElements())
+                .totalPages(productPage.getTotalPages())
+                .last(productPage.isLast())
+                .build();
+    }
+
+    @Override
+    public PageResponse<ProductSummary> searchProducts(String keyword, Pageable pageable) {
+        Page<Product> productPage = productRepository.searchProducts(keyword, pageable);
+        return PageResponse.<ProductSummary>builder()
+                .content(productPage.getContent().stream()
+                        .map(productMapper::toSummary)
+                        .toList())
+                .pageNo(productPage.getNumber())
+                .pageSize(productPage.getSize())
+                .totalElements(productPage.getTotalElements())
+                .totalPages(productPage.getTotalPages())
+                .last(productPage.isLast())
+                .build();
     }
 
     @Override
@@ -157,5 +222,20 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
         product.setFeatured(!product.isFeatured());
         productRepository.save(product);
+    }
+
+    @Override
+    public PageResponse<ProductSummary> getProductsByCategoryName(String categoryName, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByCategoryNameIncludingSubcategories(categoryName, pageable);
+        return PageResponse.<ProductSummary>builder()
+                .content(productPage.getContent().stream()
+                        .map(productMapper::toSummary)
+                        .toList())
+                .pageNo(productPage.getNumber())
+                .pageSize(productPage.getSize())
+                .totalElements(productPage.getTotalElements())
+                .totalPages(productPage.getTotalPages())
+                .last(productPage.isLast())
+                .build();
     }
 }

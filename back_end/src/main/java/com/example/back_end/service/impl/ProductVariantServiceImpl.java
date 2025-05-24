@@ -112,4 +112,11 @@ public class ProductVariantServiceImpl implements ProductVariantService {
     public boolean existsByProductAndColorAndSize(Long productId, Long colorId, Long sizeId) {
         return variantRepository.existsByProductIdAndColorIdAndSizeId(productId, colorId, sizeId);
     }
+
+    @Override
+    public ProductVariantResponse getVariantBySku(String sku) {
+        ProductVariant variant = variantRepository.findBySkuAndActiveTrue(sku)
+                .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND));
+        return variantMapper.toResponse(variant);
+    }
 } 

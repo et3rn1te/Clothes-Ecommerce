@@ -15,6 +15,7 @@ public interface CategoryMapper {
     CategoryResponse toResponse(Category category);
 
     @Mapping(target = "parentId", source = "parent", qualifiedByName = "parentToId")
+    @Mapping(target = "parentName", source = "parent.name")
     CategorySummary toSummary(Category category);
 
     List<CategorySummary> toSummaryList(List<Category> categories);

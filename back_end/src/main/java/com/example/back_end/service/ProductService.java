@@ -5,6 +5,7 @@ import com.example.back_end.dto.request.product.ProductUpdateRequest;
 import com.example.back_end.dto.response.product.ProductDetailResponse;
 import com.example.back_end.dto.response.product.ProductResponse;
 import com.example.back_end.dto.response.product.ProductSummary;
+import com.example.back_end.dto.response.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,11 +20,15 @@ public interface ProductService {
     
     ProductDetailResponse getProductById(Long id);
     
-    Page<ProductSummary> getAllProducts(Pageable pageable);
+    ProductDetailResponse getProductBySlug(String slug);
     
-    Page<ProductSummary> getFeaturedProducts(Pageable pageable);
+    boolean existsBySlug(String slug);
     
-    Page<ProductSummary> searchProducts(String keyword, Pageable pageable);
+    PageResponse<ProductSummary> getAllProducts(Pageable pageable);
+    
+    PageResponse<ProductSummary> getFeaturedProducts(Pageable pageable);
+    
+    PageResponse<ProductSummary> searchProducts(String keyword, Pageable pageable);
     
     List<ProductSummary> getProductsByBrand(Long brandId);
     
@@ -34,4 +39,6 @@ public interface ProductService {
     void toggleProductStatus(Long id);
     
     void toggleFeaturedStatus(Long id);
+
+    PageResponse<ProductSummary> getProductsByCategoryName(String categoryName, Pageable pageable);
 } 

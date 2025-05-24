@@ -65,4 +65,9 @@ public class ProductVariantController {
             @RequestParam Long sizeId) {
         return ResponseEntity.ok(variantService.existsByProductAndColorAndSize(productId, colorId, sizeId));
     }
+
+    @GetMapping("/sku/{sku}")
+    public ResponseEntity<ProductVariantResponse> getVariantBySku(@PathVariable String sku) {
+        return ResponseEntity.ok(variantService.getVariantBySku(sku));
+    }
 } 

@@ -1,8 +1,8 @@
 import '../assets/styles/App.css';
-import Header from '../component/Header';
-import Footer from '../component/Footer';
 import AppRoutes from '../routes/AppRoutes.jsx';
 import { useLocation } from 'react-router-dom';
+import Header from './Header.jsx';
+import Footer from './Footer.jsx';
 
 function AppLayout() {
   const location = useLocation();
@@ -10,9 +10,9 @@ function AppLayout() {
 
   return (
     <>
-      {!hideHeaderFooter && <Header />}
+      {!hideHeaderFooter && <Header/>}
       <AppRoutes />
-      {!hideHeaderFooter && <Footer />}
+      {!hideHeaderFooter && <Footer/>}
     </>
   );
 }
