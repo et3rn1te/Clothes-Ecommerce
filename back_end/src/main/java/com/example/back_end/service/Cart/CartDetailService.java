@@ -2,22 +2,21 @@ package com.example.back_end.service.Cart;
 
 import com.example.back_end.dto.CartDetailDto;
 import com.example.back_end.dto.request.CartRequest;
+import com.example.back_end.dto.response.product.ProductDetailResponse;
 import com.example.back_end.entity.Cart;
 import com.example.back_end.entity.CartDetail;
 import com.example.back_end.entity.Product;
 import com.example.back_end.repository.CartDetailRepository;
 import com.example.back_end.repository.CartRepository;
-import com.example.back_end.service.product.ProductService;
-import com.example.back_end.service.user.UserService;
+import com.example.back_end.service.product.IProductService;
+import com.example.back_end.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +25,8 @@ import java.util.stream.Collectors;
 public class CartDetailService implements ICartService{
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
-    private final UserService userService;
-    private final ProductService productService;
+    private final IUserService userService;
+    private final IProductService productService;
     private final ModelMapper modelMapper;
     @Override
     public void updateCartItem(CartRequest request) {

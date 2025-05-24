@@ -1,7 +1,6 @@
 package com.example.back_end.dto;
 
-import com.example.back_end.entity.Image;
-import lombok.Data;
+import lombok.*;
 
 @Data
 @Builder
@@ -14,5 +13,4 @@ public class UserDto {
     private String fullname;
     private String phone;
     private Boolean active = false;
-    private ImageDto avatar;
 }

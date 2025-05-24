@@ -1,4 +1,4 @@
-package com.example.back_end.service.impl;
+package com.example.back_end.service.user;
 
 import com.example.back_end.constant.PredefinedRole;
 import com.example.back_end.dto.UserDto;
@@ -13,7 +13,6 @@ import com.example.back_end.exception.ErrorCode;
 import com.example.back_end.mapper.UserMapper;
 import com.example.back_end.repository.RoleRepository;
 import com.example.back_end.repository.UserRepository;
-import com.example.back_end.service.UserService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -30,7 +29,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -40,7 +38,7 @@ import com.example.back_end.dto.response.PageResponse;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;

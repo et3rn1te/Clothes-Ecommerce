@@ -4,10 +4,9 @@ import com.example.back_end.dto.request.product.ProductVariantCreationRequest;
 import com.example.back_end.dto.request.product.ProductVariantUpdateRequest;
 import com.example.back_end.dto.response.product.ProductVariantResponse;
 import com.example.back_end.dto.response.product.ProductVariantSummary;
-import com.example.back_end.service.ProductVariantService;
+import com.example.back_end.service.product.IProductVariantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
 @RequestMapping("/products/{productId}/variants")
 @RequiredArgsConstructor
 public class ProductVariantController {
-    private final ProductVariantService variantService;
+    private final IProductVariantService variantService;
 
     @PostMapping
     // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")

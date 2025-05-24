@@ -2,12 +2,10 @@ package com.example.back_end.controller;
 
 import com.example.back_end.dto.request.category.CategoryCreationRequest;
 import com.example.back_end.dto.request.category.UpdateCategoryRequest;
-import com.example.back_end.dto.response.category.CategoryListResponse;
 import com.example.back_end.dto.response.category.CategoryResponse;
-import com.example.back_end.service.CategoryService;
+import com.example.back_end.service.category.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import com.example.back_end.dto.response.PageResponse;
@@ -18,7 +16,7 @@ import java.util.List;
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 public class CategoryController {
-    private final CategoryService categoryService;
+    private final ICategoryService categoryService;
 
     /**
      * Method to create Category

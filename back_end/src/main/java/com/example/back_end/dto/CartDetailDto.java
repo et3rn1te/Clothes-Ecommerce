@@ -1,5 +1,7 @@
 package com.example.back_end.dto;
 
+import com.example.back_end.dto.response.product.ProductSummary;
+import com.example.back_end.dto.response.product.ProductVariantSummary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CartDetailDto {
     private long id;
-    private ProductDto product;
+    private ProductVariantSummary product;
     private int quantity;
 }

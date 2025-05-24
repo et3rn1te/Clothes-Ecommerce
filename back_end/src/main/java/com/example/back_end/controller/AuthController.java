@@ -1,29 +1,22 @@
 package com.example.back_end.controller;
 
-import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.request.LoginRequest;
-import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.AuthenticationResponse;
 import com.example.back_end.dto.response.IntrospectResponse;
-import com.example.back_end.entity.User;
-import com.example.back_end.repository.UserRepository;
 import com.example.back_end.service.AuthService;
-import com.example.back_end.service.UserService;
+import com.example.back_end.service.user.IUserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.example.back_end.service.SendEmailService;
 import com.nimbusds.jose.JOSEException;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @Slf4j
 @RestController
@@ -34,7 +27,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @Autowired
-    private UserService userService;
+    private IUserService userService;
     @Autowired
     SendEmailService sendEmailService;
 
@@ -88,10 +81,11 @@ public class AuthController {
         IntrospectRequest request = new IntrospectRequest(token);
         var result = authService.introspect(request);
         String email = result.getEmail();
-        if(result.isValid()) {
-            response.sendRedirect("http://localhost:5173/auth/register?email="+email);
-        }else{
+        if (result.isValid()) {
+            response.sendRedirect("http://localhost:5173/auth/register?email=" + email);
+        } else {
             System.out.println("invalid-verification");
         }
+        return ApiResponse.<Void>builder().build();
     }
 }

@@ -3,18 +3,14 @@ package com.example.back_end.service.order;
 import com.example.back_end.dto.request.OrderCreateRequest;
 import com.example.back_end.entity.*;
 import com.example.back_end.repository.*;
-import com.example.back_end.service.product.ProductService;
-import com.example.back_end.service.user.UserService;
+import com.example.back_end.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -23,7 +19,7 @@ public class OrderService implements IOrderService{
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
     private final ModelMapper modelMapper;
-    private final UserService userService;
+    private final IUserService userService;
     private final PaymentRepository paymentRepository;
     private final StatusRepository statusRepository;
     private final OrderRepository orderRepository;

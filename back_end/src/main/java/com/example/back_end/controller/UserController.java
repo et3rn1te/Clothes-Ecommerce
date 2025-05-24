@@ -4,7 +4,8 @@ import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.entity.User;
-import com.example.back_end.service.UserService;
+import com.example.back_end.repository.UserRepository;
+import com.example.back_end.service.user.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserRepository userRepository;
-    private final UserService userService;
+    private final IUserService userService;
 
     @PostMapping("/createUser")
     public ResponseEntity<ApiResponse<UserDto>> createUser(

@@ -1,4 +1,4 @@
-package com.example.back_end.service.impl;
+package com.example.back_end.service.product;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -15,11 +15,9 @@ import com.example.back_end.mapper.ProductImageMapper;
 import com.example.back_end.repository.ProductImageRepository;
 import com.example.back_end.repository.ProductRepository;
 import com.example.back_end.repository.ProductVariantRepository;
-import com.example.back_end.service.ProductImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,7 +27,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductImageServiceImpl implements ProductImageService {
+public class ProductImageService implements IProductImageService {
     private static final long MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
     private static final List<String> ALLOWED_IMAGE_TYPES = List.of("image/jpeg", "image/png", "image/gif");
 
