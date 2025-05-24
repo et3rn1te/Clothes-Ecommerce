@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private final UserRepository userRepository;
     private final UserService userService;
 
     @PostMapping("/createUser")
@@ -115,4 +116,12 @@ public class UserController {
 //                        .build()
 //        );
 //    }
+    @PostMapping("/existUser")
+    ApiResponse<Boolean> existUser(@RequestParam ("email") String email) {
+        boolean rs = true;
+        if (userRepository.findByEmail(email).isEmpty()) {
+            rs = false;
+        }
+        return ApiResponse.<Boolean>builder().result(rs).build();
+    }
 }

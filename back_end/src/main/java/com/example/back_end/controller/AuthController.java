@@ -1,16 +1,26 @@
 package com.example.back_end.controller;
 
+import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.request.LoginRequest;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.AuthenticationResponse;
 import com.example.back_end.dto.response.IntrospectResponse;
+import com.example.back_end.entity.User;
+import com.example.back_end.repository.UserRepository;
 import com.example.back_end.service.AuthService;
 import com.example.back_end.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.example.back_end.service.SendEmailService;
+import com.nimbusds.jose.JOSEException;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -21,8 +31,12 @@ import java.io.IOException;
 @CrossOrigin(origins = {"http://localhost:5173"})
 @RequestMapping("/auth")
 public class AuthController {
-    private final AuthService authService;
-    private final UserService userService;
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    SendEmailService sendEmailService;
 
     @PostMapping("/login")
     public ApiResponse<AuthenticationResponse> login(@RequestBody LoginRequest request) {
@@ -69,44 +83,15 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/verifyEmail")
-    public ApiResponse<Void> verifyEmail(
-            @RequestParam("token") String token,
-            HttpServletResponse response) {
-        try {
-            IntrospectRequest request = new IntrospectRequest(token);
-            IntrospectResponse result = authService.introspect(request);
-            
-            if (result.isValid() && result.getEmail() != null) {
-                // Tạo user mới với email đã xác thực
-                UserCreationRequest userRequest = new UserCreationRequest(
-                    "", // username sẽ được set sau
-                    "", // password sẽ được set sau
-                    "", // fullname sẽ được set sau
-                    result.getEmail(),
-                    "" // phone sẽ được set sau
-                );
-                
-                userService.createRequest(userRequest);
-                response.sendRedirect("http://localhost:5173/auth/register?email=" + result.getEmail());
-                
-                return ApiResponse.<Void>builder()
-                        .code(0)
-                        .message("Email verification successful")
-                        .build();
-            } else {
-                log.warn("Invalid email verification token");
-                return ApiResponse.<Void>builder()
-                        .code(1)
-                        .message("Invalid verification token")
-                        .build();
-            }
-        } catch (Exception e) {
-            log.error("Email verification failed", e);
-            return ApiResponse.<Void>builder()
-                    .code(1)
-                    .message("Email verification failed: " + e.getMessage())
-                    .build();
+    @GetMapping("/verifyAccount")
+    ApiResponse<Void> verifyAccount(@RequestParam("token") String token, HttpServletResponse response) throws ParseException, JOSEException, IOException {
+        IntrospectRequest request = new IntrospectRequest(token);
+        var result = authService.introspect(request);
+        String email = result.getEmail();
+        if(result.isValid()) {
+            response.sendRedirect("http://localhost:5173/auth/register?email="+email);
+        }else{
+            System.out.println("invalid-verification");
         }
     }
 }

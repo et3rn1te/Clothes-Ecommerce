@@ -1,11 +1,7 @@
 package com.example.back_end.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.example.back_end.entity.Image;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -17,9 +13,6 @@ public class UserDto {
     private String email;
     private String fullname;
     private String phone;
-    private String roles;
-    private String imageUrl;
-    private Boolean active;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Boolean active = false;
+    private ImageDto avatar;
 }

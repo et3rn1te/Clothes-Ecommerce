@@ -32,7 +32,7 @@ const routes = [
   },
   {
     path: '/profile',
-    component: lazy(() => import('../pages/Profile')),
+    component: ('../Pages/Profile'),
   }
 ];
 

@@ -3,6 +3,8 @@ import { FiSearch, FiShoppingCart, FiHeart, FiMenu, FiX, FiMic } from "react-ico
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { MdEmail, MdPhone } from "react-icons/md";
 import { useNavigate, Link } from "react-router-dom";
+import { introspect, logOutApi } from "../API/AuthService";
+import { listCartItem } from "../API/CartService";
 import CategoryService from '../API/CategoryService';
 
 const Header = () => {
@@ -18,6 +20,42 @@ const Header = () => {
   const recognition = SpeechRecognition ? new SpeechRecognition() : null;
   // xử lý login
   const [isLogin,setIsLogin] = useState(false);
+  const [cartClick, setCartClick] = useState(() => () => {navigate('/cart')});
+  const checkToken = async (token) => {
+    try {
+      const response = await introspect({token});
+      console.log(response.data.result.valid);
+      return response.data.result.valid;
+    } catch (error) {
+      console.error("Lỗi kiểm tra token:", error);
+      return false; // Nếu có lỗi thì coi token không hợp lệ
+    }
+  };
+  
+  useEffect(() => {
+    const check = async () => {
+      const session = JSON.parse(localStorage.getItem("session"));
+      if (session && session !== "undefined") {
+        const isValid = await checkToken(session.token);
+        console.log("Token valid:", isValid);
+        if (isValid) {
+          setIsLogin(true);
+          
+          await listCartItem({userId:session.currentUser.id,token:session.token})
+            .then((res)=>{
+              const { code, message, result } = res.data;
+              // console.log(res.data);
+              setCartCount(result.length);
+            })
+        } else {
+          setIsLogin(false);
+          setCartCount(0);
+        }
+      }
+    };
+    check();
+  }, [isLogin]);
+  
   // State to store category links (name and link)
   const [categoryLinks, setCategoryLinks] = useState([]);
 
@@ -58,9 +96,12 @@ const Header = () => {
    }, []);
 
   //Xử lý logout
-  const logOut =()=> {
+  const logOut = async (e)=> {
+    const session = JSON.parse(localStorage.getItem("session"));
     setIsOpen(false);
-    localStorage.removeItem("jwtToken");
+    setCartCount(0);
+    localStorage.clear();
+    await logOutApi({token:session.token});
     setIsLogin(false);
   };
   
@@ -97,9 +138,7 @@ const Header = () => {
   };
   //
   const navigate = useNavigate(); 
-  const cartClick = () => {
-    navigate('/cart'); // Chuyển sang trang /cart
-  };
+  
   const loginClick = () => {
     navigate('/auth/login');
   }
