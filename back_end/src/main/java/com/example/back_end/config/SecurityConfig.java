@@ -25,20 +25,22 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    //Xác thực yêu cầu
-    private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
-            "auth/login", "auth/introspect", "auth/signup", "/sendEmail", "/products/**", "/categories/**", "/users/**"};
-    private final String[] PUBLIC_ENDPOINTS_GET = {"/users/**", "/categories/**", "/products/**"};
-    private final String[] PUBLIC_ENDPOINTS_PUT = {"/users/**", "/categories/**", "/products/**"};
-    private final String[] PUBLIC_ENDPOINTS_PATCH = {"/users/**", "/categories/**", "/products/**"};
-    private final String[] PUBLIC_ENDPOINTS_DELETE = {"/users/**", "/categories/**", "/products/**"};
-    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout"};
+    // Xác thực yêu cầu
+    private final String[] PUBLIC_ENDPOINTS_POST = { "users/createUser",
+            "auth/login", "auth/introspect", "/verifyRegister", "auth/register", "users/existUser", "/products/**",
+            "/categories/**", "/users/**" };
+    private final String[] PUBLIC_ENDPOINTS_GET = { "cart/listCartItem/**" };
+    private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = { "/users/**", "/categories/**", "/products/**",
+            "/auth/verifyAccount", "/discount/getDiscount" };
+    private final String[] PUBLIC_ENDPOINTS_PUT = { "/users/**", "/categories/**", "/products/**" };
+    private final String[] PUBLIC_ENDPOINTS_PATCH = { "/users/**", "/categories/**", "/products/**" };
+    private final String[] PUBLIC_ENDPOINTS_DELETE = { "/users/**", "/categories/**", "/products/**" };
+    private final String[] PUBLIC_ENDPOINTS_LOGIN = { "/logout", "/cart/updateItem", "/order/add" };
 
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
     @Autowired
     private ObjectMapper objectMapper;
-
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -51,18 +53,16 @@ public class SecurityConfig {
                             corsConfiguration.setAllowedHeaders(List.of("*"));
                             corsConfiguration.setAllowCredentials(true);
                             return corsConfiguration;
-                        })
-                )
+                        }))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_POST).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/auth/verifyEmail").permitAll()
-                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).permitAll()
-                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_PUT).permitAll()
-                        .requestMatchers(HttpMethod.PATCH, PUBLIC_ENDPOINTS_PATCH).permitAll()
-                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_DELETE).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET_PERMITALL).permitAll()
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_PUT).authenticated()
+                        .requestMatchers(HttpMethod.PATCH, PUBLIC_ENDPOINTS_PATCH).authenticated()
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_DELETE).authenticated()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS_GET).authenticated()
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_LOGIN).authenticated()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())))
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
@@ -72,15 +72,12 @@ public class SecurityConfig {
                                     ApiResponse.builder()
                                             .code(ErrorCode.UNAUTHENTICATED.getCode())
                                             .message(ErrorCode.UNAUTHENTICATED.getMessage())
-                                            .build()
-                            ));
-                        })
-                )
+                                            .build()));
+                        }))
                 .csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();
     }
-
 
     @Bean
     JwtDecoder jwtDecoder() {
@@ -90,6 +87,5 @@ public class SecurityConfig {
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();
     }
-
 
 }

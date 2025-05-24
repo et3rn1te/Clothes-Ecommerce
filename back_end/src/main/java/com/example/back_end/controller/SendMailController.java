@@ -1,6 +1,9 @@
 package com.example.back_end.controller;
 
 import com.example.back_end.dto.response.ApiResponse;
+import com.example.back_end.exception.AppException;
+import com.example.back_end.exception.ErrorCode;
+import com.example.back_end.repository.UserRepository;
 import com.example.back_end.service.AuthService;
 import com.example.back_end.service.SendEmailService;
 import com.nimbusds.jose.JOSEException;
@@ -18,10 +21,11 @@ public class SendMailController {
     AuthService authService;
 
 
-    @PostMapping("/sendEmail")
-    ApiResponse<Void> sendEmail(@RequestParam String email,@RequestParam String subject) throws ParseException, JOSEException, MessagingException {
+    @PostMapping("/verifyRegister")
+    ApiResponse<Void> verifyRegister(@RequestParam ("email") String email) throws ParseException, JOSEException, MessagingException {
         String token = authService.createVerifyToken(email);
-        String result = "http://localhost:8080/api/auth/verifyEmail?token="+token;
+        String subject = "Xác thực đăng ký";
+        String result = "http://localhost:8080/api/auth/verifyAccount?token="+token;
        sendEmailService.sendMail(email,subject,result);
        return ApiResponse.<Void>builder().build();
     }

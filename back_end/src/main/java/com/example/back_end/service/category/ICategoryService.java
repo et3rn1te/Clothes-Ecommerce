@@ -1,15 +1,14 @@
-package com.example.back_end.service;
+package com.example.back_end.service.category;
 
 import com.example.back_end.dto.request.category.CategoryCreationRequest;
 import com.example.back_end.dto.request.category.UpdateCategoryRequest;
-import com.example.back_end.dto.response.category.CategoryListResponse;
 import com.example.back_end.dto.response.category.CategoryResponse;
 import org.springframework.data.domain.Pageable;
 import com.example.back_end.dto.response.PageResponse;
 
 import java.util.List;
 
-public interface CategoryService {
+public interface ICategoryService {
     CategoryResponse createCategory(CategoryCreationRequest request);
     
     CategoryResponse updateCategory(Long id, UpdateCategoryRequest request);

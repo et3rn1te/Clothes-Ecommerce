@@ -4,7 +4,8 @@ import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.entity.User;
-import com.example.back_end.service.UserService;
+import com.example.back_end.repository.UserRepository;
+import com.example.back_end.service.user.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final IUserService userService;
 
     @PostMapping("/createUser")
     public ResponseEntity<ApiResponse<UserDto>> createUser(
@@ -115,4 +117,12 @@ public class UserController {
 //                        .build()
 //        );
 //    }
+    @PostMapping("/existUser")
+    ApiResponse<Boolean> existUser(@RequestParam ("email") String email) {
+        boolean rs = true;
+        if (userRepository.findByEmail(email).isEmpty()) {
+            rs = false;
+        }
+        return ApiResponse.<Boolean>builder().result(rs).build();
+    }
 }

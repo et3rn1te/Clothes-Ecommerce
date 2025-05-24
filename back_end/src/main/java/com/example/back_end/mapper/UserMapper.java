@@ -20,7 +20,7 @@ public interface UserMapper {
     @Mapping(target = "roles", ignore = true)
     User toEntity(UserCreationRequest request);
 
-    @Mapping(target = "roles", expression = "java(rolesToString(user.getRoles()))")
+//    @Mapping(target = "roles", expression = "java(rolesToString(user.getRoles()))")
     UserDto toDto(User user);
 
     List<UserDto> toDtoList(List<User> users);

@@ -1,4 +1,4 @@
-package com.example.back_end.service.impl;
+package com.example.back_end.service.product;
 
 import com.example.back_end.dto.request.product.ProductCreationRequest;
 import com.example.back_end.dto.request.product.ProductUpdateRequest;
@@ -10,7 +10,6 @@ import com.example.back_end.exception.AppException;
 import com.example.back_end.exception.ErrorCode;
 import com.example.back_end.mapper.ProductMapper;
 import com.example.back_end.repository.*;
-import com.example.back_end.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +23,7 @@ import com.example.back_end.dto.response.PageResponse;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductServiceImpl implements ProductService {
+public class ProductService implements IProductService {
     private final ProductRepository productRepository;
     private final BrandRepository brandRepository;
     private final GenderRepository genderRepository;
@@ -70,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         if (!product.getName().equals(request.getName()) &&
-            productRepository.existsByNameAndBrandId(request.getName(), request.getBrandId())) {
+                productRepository.existsByNameAndBrandId(request.getName(), request.getBrandId())) {
             throw new AppException(ErrorCode.PRODUCT_NAME_EXISTS);
         }
 
@@ -101,10 +100,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDetailResponse getProductById(Long id) {
-        Product product = productRepository.findByIdWithDetails(id)
+    public Product getProductById(Long id) {
+        return productRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
-        return productMapper.toDetailResponse(product);
     }
 
     @Override

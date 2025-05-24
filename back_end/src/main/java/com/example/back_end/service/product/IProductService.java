@@ -1,4 +1,4 @@
-package com.example.back_end.service;
+package com.example.back_end.service.product;
 
 import com.example.back_end.dto.request.product.ProductCreationRequest;
 import com.example.back_end.dto.request.product.ProductUpdateRequest;
@@ -6,19 +6,19 @@ import com.example.back_end.dto.response.product.ProductDetailResponse;
 import com.example.back_end.dto.response.product.ProductResponse;
 import com.example.back_end.dto.response.product.ProductSummary;
 import com.example.back_end.dto.response.PageResponse;
-import org.springframework.data.domain.Page;
+import com.example.back_end.entity.Product;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface ProductService {
+public interface IProductService {
     ProductResponse createProduct(ProductCreationRequest request);
     
     ProductResponse updateProduct(Long id, ProductUpdateRequest request);
     
     void deleteProduct(Long id);
     
-    ProductDetailResponse getProductById(Long id);
+    Product getProductById(Long id);
     
     ProductDetailResponse getProductBySlug(String slug);
     

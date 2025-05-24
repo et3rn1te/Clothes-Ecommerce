@@ -1,4 +1,4 @@
-package com.example.back_end.service;
+package com.example.back_end.service.product;
 
 import com.example.back_end.dto.request.product.ProductVariantCreationRequest;
 import com.example.back_end.dto.request.product.ProductVariantUpdateRequest;
@@ -7,7 +7,7 @@ import com.example.back_end.dto.response.product.ProductVariantSummary;
 
 import java.util.List;
 
-public interface ProductVariantService {
+public interface IProductVariantService {
     ProductVariantResponse createVariant(Long productId, ProductVariantCreationRequest request);
     
     ProductVariantResponse updateVariant(Long id, ProductVariantUpdateRequest request);

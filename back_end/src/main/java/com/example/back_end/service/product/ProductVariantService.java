@@ -1,4 +1,4 @@
-package com.example.back_end.service.impl;
+package com.example.back_end.service.product;
 
 import com.example.back_end.dto.request.product.ProductVariantCreationRequest;
 import com.example.back_end.dto.request.product.ProductVariantUpdateRequest;
@@ -9,7 +9,6 @@ import com.example.back_end.exception.AppException;
 import com.example.back_end.exception.ErrorCode;
 import com.example.back_end.mapper.ProductVariantMapper;
 import com.example.back_end.repository.*;
-import com.example.back_end.service.ProductVariantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductVariantServiceImpl implements ProductVariantService {
+public class ProductVariantService implements IProductVariantService {
     private final ProductVariantRepository variantRepository;
     private final ProductRepository productRepository;
     private final ColorRepository colorRepository;

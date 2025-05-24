@@ -4,11 +4,10 @@ import com.example.back_end.dto.request.product.ProductImageCreationRequest;
 import com.example.back_end.dto.request.product.ProductImageUpdateRequest;
 import com.example.back_end.dto.response.product.ProductImageResponse;
 import com.example.back_end.dto.response.product.ProductImageSummary;
-import com.example.back_end.service.ProductImageService;
+import com.example.back_end.service.product.IProductImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.List;
 @RequestMapping("/products/{productId}/images")
 @RequiredArgsConstructor
 public class ProductImageController {
-    private final ProductImageService imageService;
+    private final IProductImageService imageService;
 
     /**
      * Create a new product image with file upload.

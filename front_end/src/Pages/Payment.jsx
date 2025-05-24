@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FaLock, FaCreditCard, FaMoneyBillWave, FaWallet } from "react-icons/fa";
 import ProvinceSelect from "../API/Location.jsx";
+import { listCartItem } from "../API/CartService.jsx";
+import { addOrder } from "../API/CheckoutService.jsx";
 
 const CheckoutPage = () => {
   const [formData, setFormData] = useState({
@@ -14,7 +16,7 @@ const CheckoutPage = () => {
     address: "",
     deliveryNotes: "",
     shippingMethod: "standard",
-    paymentMethod: "cod",
+    paymentMethod: "",
     cardNumber: "",
     cvv: "",
     expiryDate: "",
@@ -25,26 +27,36 @@ const CheckoutPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const cartItems = [
-    {
-      id: 1,
-      name: "Premium Leather Jacket",
-      size: "L",
-      color: "Brown",
-      quantity: 1,
-      price: 299.99,
-      image: "https://images.unsplash.com/photo-1551028719-00167b16eac5"
-    },
-    {
-      id: 2,
-      name: "Designer Sneakers",
-      size: "42",
-      color: "White",
-      quantity: 2,
-      price: 159.99,
-      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff"
+  const session = JSON.parse(localStorage.getItem("session"));
+  const total = JSON.parse(localStorage.getItem("total"));
+  const [cartItems, setCartItems] = useState([]);
+  const fetchCartItems = async () => {
+    try {
+      const res = await listCartItem({
+        userId: session.currentUser.id,
+        token: session.token
+      });
+      const { result } = res.data;
+  
+      // ép kiểu rõ ràng là mảng, nếu không phải thì trả về []
+      if (Array.isArray(result)) {
+        setCartItems(result);
+      } else {
+        console.warn('Kết quả không phải mảng:', result);
+        setCartItems([]);
+      }
+  
+    } catch (error) {
+      console.error('Lỗi khi lấy cart items:', error);
+      setCartItems([]); // fallback
     }
-  ];
+  };
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+    
+
+
 
   const shippingMethods = {
     standard: { price: 0, time: "3-5 business days" },
@@ -82,9 +94,9 @@ const CheckoutPage = () => {
   };
 
   const calculateTotal = () => {
-    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    // const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shipping = 15;
-    return (subtotal + shipping).toFixed(2);
+    return (total + shipping).toFixed(2);
   };
 
   const handleSubmit = async (e) => {
@@ -103,6 +115,19 @@ const CheckoutPage = () => {
       }
        console.log(formData);
     }
+    const session = JSON.parse(localStorage.getItem("session"));
+
+    await addOrder({
+      idUser: session.currentUser.id,
+      receiver: formData.fullName,
+      phone: formData.phoneNumber,
+      idPaymentMethod: 1,
+      address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
+      idStatus: 1,
+      total:calculateTotal()
+    }
+      ,session.token
+    );
    
   };
 
@@ -190,8 +215,8 @@ const CheckoutPage = () => {
                         type="radio"
                         id="card"
                         name="payment"
-                        value="card"
-                        checked={formData.paymentMethod === "card"}
+                        value="vnpay"
+                        checked={formData.paymentMethod === "vnpay"}
                         onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
                         className="h-4 w-4 text-blue-600"
                       />
@@ -243,24 +268,24 @@ const CheckoutPage = () => {
                   <div key={item.id} className="flex items-center space-x-4">
                     <img
                       src={item.image}
-                      alt={item.name}
+                      alt={item.product.name}
                       className="w-20 h-20 object-cover rounded"
                     />
                     <div className="flex-1">
                       <h3 className="font-medium">{item.name}</h3>
                       <p className="text-sm text-gray-500">
-                        Size: {item.size} | Color: {item.color}
+                        Size: 200 | Color: trắng
                       </p>
                       <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
                     </div>
-                    <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</p>
                   </div>
                 ))}
 
                 <div className="border-t pt-4 mt-4">
                   <div className="flex justify-between mb-2">
                     <span>Subtotal</span>
-                    <span>${calculateTotal()}</span>
+                    <span>${total}</span>
                   </div>
                   <div className="flex justify-between mb-2">
                     <span>Shipping</span>

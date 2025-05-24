@@ -1,8 +1,12 @@
 package com.example.back_end.config;
 
+import com.example.back_end.constant.PredefinedPayment;
 import com.example.back_end.constant.PredefinedRole;
+import com.example.back_end.entity.PaymentMethod;
 import com.example.back_end.entity.Role;
 import com.example.back_end.entity.User;
+import com.example.back_end.repository.DiscountRepository;
+import com.example.back_end.repository.PaymentRepository;
 import com.example.back_end.repository.RoleRepository;
 import com.example.back_end.repository.UserRepository;
 import lombok.AccessLevel;
@@ -10,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -30,16 +35,32 @@ public class ApplicationInitConfig {
     static final String ADMIN_USER_NAME = "admin";
 
     @NonFinal
-    static final String ADMIN_PASSWORD = "admin";
+    static final String ADMIN_PASSWORD = "Tam123456@";
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
 
     @Bean
     @ConditionalOnProperty(
             prefix = "spring",
             value = "datasource.driverClassName",
             havingValue = "com.mysql.cj.jdbc.Driver")
-    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
+    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository, PaymentRepository paymentRepository, DiscountRepository discountRepository) {
         log.info("Initializing application.....");
         return args -> {
+            if (!paymentRepository.existsPaymentMethodByTypePayment(PredefinedPayment.COD)) {
+                paymentRepository.save(PaymentMethod.builder()
+                        .typePayment(PredefinedPayment.COD)
+                        .build());
+            }
+
+            if (!paymentRepository.existsPaymentMethodByTypePayment(PredefinedPayment.VN_PAY)) {
+                paymentRepository.save(PaymentMethod.builder()
+                        .typePayment(PredefinedPayment.VN_PAY)
+                        .build());
+            }
             if (userRepository.existsByUsername(ADMIN_USER_NAME) != true) {
                 roleRepository.save(Role.builder()
                         .name(PredefinedRole.USER_ROLE)

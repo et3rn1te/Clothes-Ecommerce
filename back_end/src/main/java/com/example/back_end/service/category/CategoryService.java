@@ -1,15 +1,13 @@
-package com.example.back_end.service.impl;
+package com.example.back_end.service.category;
 
 import com.example.back_end.dto.request.category.CategoryCreationRequest;
 import com.example.back_end.dto.request.category.UpdateCategoryRequest;
-import com.example.back_end.dto.response.category.CategoryListResponse;
 import com.example.back_end.dto.response.category.CategoryResponse;
 import com.example.back_end.entity.Category;
 import com.example.back_end.exception.AppException;
 import com.example.back_end.exception.ErrorCode;
 import com.example.back_end.mapper.CategoryMapper;
 import com.example.back_end.repository.CategoryRepository;
-import com.example.back_end.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +20,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
