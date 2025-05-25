@@ -12,4 +12,6 @@ public class CategorySummary {
     private String description;
     private Long parentId;
     private String parentName;
+    private String imageUrl;
+    private String slug;
 }

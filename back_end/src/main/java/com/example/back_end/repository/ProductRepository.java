@@ -1,10 +1,13 @@
 package com.example.back_end.repository;
 
+import com.example.back_end.entity.Category;
+import com.example.back_end.entity.Gender;
 import com.example.back_end.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,6 +27,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByBrandIdAndActiveTrue(Long brandId);
     
     List<Product> findByGenderIdAndActiveTrue(Long genderId);
+
+    List<Product> findByGenderName(String genderName);
     
     List<Product> findByCategoriesIdAndActiveTrue(Long categoryId);
     
@@ -34,7 +39,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT DISTINCT p FROM Product p " +
            "JOIN p.categories c " +
-           "WHERE (c.name = :categoryName OR c.parent.name = :categoryName) " +
+           "WHERE (c = :category OR c.parent = :category) " +
            "AND p.active = true")
     Page<Product> findByCategoryNameIncludingSubcategories(String categoryName, Pageable pageable);
 
@@ -49,4 +54,37 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findBySlugWithDetails(String slug);
 
     boolean existsBySlug(String slug);
+
+    @Query("SELECT DISTINCT p FROM Product p " +
+           "JOIN p.categories c " +
+           "WHERE (c = :category OR c.parent = :category) " +
+           "AND p.gender = :gender " +
+           "AND p.active = true")
+    Page<Product> findByCategoriesAndGenderAndActiveTrue(Category category, Gender gender, Pageable pageable);
+
+    @Query("SELECT p FROM Product p " +
+            "JOIN p.categories c " +
+            "WHERE c.slug = :categorySlug " +
+            "AND (:genderSlug IS NULL OR p.gender.slug = :genderSlug) " +
+            "AND p.active = true")
+    Page<Product> findByCategorySlugAndGenderSlug(
+            @Param("categorySlug") String categorySlug,
+            @Param("genderSlug") String genderSlug,
+            Pageable pageable);
+
+    @Query("SELECT DISTINCT p FROM Product p " +
+            "LEFT JOIN p.categories c " +
+            "WHERE p.id != :productId " +
+            "AND p.active = true " +
+            "AND (" +
+            "   c.id IN :categoryIds " +
+            "   OR p.brand.id = :brandId " +
+            "   OR (:genderId IS NOT NULL AND p.gender.id = :genderId)" +
+            ")")
+    Page<Product> findRelatedProducts(
+            @Param("productId") Long productId,
+            @Param("categoryIds") List<Long> categoryIds,
+            @Param("brandId") Long brandId,
+            @Param("genderId") Long genderId,
+            Pageable pageable);
 } 

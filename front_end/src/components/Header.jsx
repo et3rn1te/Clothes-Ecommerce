@@ -62,29 +62,25 @@ const Header = () => {
   // Effect to fetch category names and create links when component mounts
   useEffect(() => {
     const fetchCategoryLinks = async () => {
-      // Define the main categories you want in the header menu
-      const menuCategories = ["Men", "Women", "Accessories"]; // Names corresponding to backend categories
+      // Define the main categories with their Vietnamese names and slugs
+      const menuCategories = [
+        { name: "Đồ Nam", slug: "nam" },
+        { name: "Đồ Nữ", slug: "nu" }
+      ];
       const fetchedLinks = [];
 
-      // Create links using category names for the new URL structure /category/{name}
-      for (const categoryName of menuCategories) {
-        // Construct the link using the category name as a path parameter
+      for (const category of menuCategories) {
         fetchedLinks.push({ 
-          name: categoryName,
-          link: `/${encodeURIComponent(categoryName.toLowerCase())}` // Use lower case for URL consistency and encode name
+          name: category.name,
+          link: `/${category.slug}`
         });
       }
       
       setCategoryLinks(fetchedLinks);
     };
 
-    // Removed fetching JWT token and setting isLogin from this useEffect
-    // This logic seems unrelated to fetching category links
-    // You might want to move the login check to a separate useEffect or a context provider
-
     fetchCategoryLinks();
-
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
    // Effect to check login status (moved from previous useEffect)
    useEffect(() => {

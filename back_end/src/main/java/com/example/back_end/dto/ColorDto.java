@@ -1,4 +1,4 @@
-package com.example.back_end.dto.response;
+package com.example.back_end.dto;
 
 import lombok.*;
 
@@ -6,8 +6,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ColorSummary {
+public class ColorDto {
     private Long id;
     private String name;
     private String hexCode;
-}
+} 

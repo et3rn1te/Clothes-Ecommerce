@@ -31,7 +31,7 @@ public class SecurityConfig {
             "/categories/**", "/users/**" };
     private final String[] PUBLIC_ENDPOINTS_GET = { "cart/listCartItem/**" };
     private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = { "/users/**", "/categories/**", "/products/**",
-            "/auth/verifyAccount", "/discount/getDiscount" };
+            "/auth/verifyAccount", "/discount/getDiscount", "/genders/**", "/colors/**", "/sizes/**" };
     private final String[] PUBLIC_ENDPOINTS_PUT = { "/users/**", "/categories/**", "/products/**" };
     private final String[] PUBLIC_ENDPOINTS_PATCH = { "/users/**", "/categories/**", "/products/**" };
     private final String[] PUBLIC_ENDPOINTS_DELETE = { "/users/**", "/categories/**", "/products/**" };

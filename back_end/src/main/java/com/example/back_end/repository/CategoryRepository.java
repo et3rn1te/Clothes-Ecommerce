@@ -1,6 +1,7 @@
 package com.example.back_end.repository;
 
 import com.example.back_end.entity.Category;
+import com.example.back_end.entity.Gender;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -24,4 +25,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT c FROM Category c LEFT JOIN FETCH c.subcategories WHERE c.slug = :slug")
     Optional<Category> findBySlugWithSubcategories(String slug);
+
+    List<Category> findByGender(Gender gender);
 } 

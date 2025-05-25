@@ -82,8 +82,8 @@ public class ProductController {
      * @return JSON body contains detailed Product info including variants and images
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    public ResponseEntity<ProductDetailResponse> getProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProductDetailById(id));
     }
 
     @GetMapping("/slug/{slug}")
@@ -146,12 +146,12 @@ public class ProductController {
     /**
      * Method to get Products by Gender
      *
-     * @param genderId: Gender's id
+     * @param genderName: Gender's name
      * @return JSON body contains list of Product summaries for the specified gender
      */
-    @GetMapping("/gender/{genderId}")
-    public ResponseEntity<List<ProductSummary>> getProductsByGender(@PathVariable Long genderId) {
-        return ResponseEntity.ok(productService.getProductsByGender(genderId));
+    @GetMapping("/gender/{genderName}")
+    public ResponseEntity<List<ProductSummary>> getProductsByGender(@PathVariable String genderName) {
+        return ResponseEntity.ok(productService.getProductsByGender(genderName));
     }
 
     /**
@@ -189,5 +189,28 @@ public class ProductController {
     public ResponseEntity<Void> toggleFeaturedStatus(@PathVariable Long id) {
         productService.toggleFeaturedStatus(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Method to get Products by Category Slug and Gender Slug with pagination
+     *
+     * @param categorySlug: Category's slug
+     * @param genderSlug: Gender's slug
+     * @param pageable: Pagination parameters (page, size, sort)
+     * @return JSON body contains paginated list of Product summaries for the specified category and gender
+     */
+    @GetMapping("/category/slug/{categorySlug}")
+    public ResponseEntity<PageResponse<ProductSummary>> getProductsByCategorySlug(
+            @PathVariable String categorySlug,
+            @RequestParam String genderSlug,
+            Pageable pageable) {
+        return ResponseEntity.ok(productService.getProductsByCategorySlug(categorySlug, genderSlug, pageable));
+    }
+
+    @GetMapping("/{id}/related")
+    public ResponseEntity<PageResponse<ProductSummary>> getRelatedProducts(
+            @PathVariable Long id,
+            Pageable pageable) {
+        return ResponseEntity.ok(productService.getRelatedProducts(id, pageable));
     }
 } 

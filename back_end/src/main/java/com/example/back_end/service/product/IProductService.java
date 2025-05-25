@@ -20,6 +20,8 @@ public interface IProductService {
     
     Product getProductById(Long id);
     
+    ProductDetailResponse getProductDetailById(Long id);
+    
     ProductDetailResponse getProductBySlug(String slug);
     
     boolean existsBySlug(String slug);
@@ -32,7 +34,7 @@ public interface IProductService {
     
     List<ProductSummary> getProductsByBrand(Long brandId);
     
-    List<ProductSummary> getProductsByGender(Long genderId);
+    List<ProductSummary> getProductsByGender(String genderName);
     
     List<ProductSummary> getProductsByCategory(Long categoryId);
     
@@ -41,4 +43,8 @@ public interface IProductService {
     void toggleFeaturedStatus(Long id);
 
     PageResponse<ProductSummary> getProductsByCategoryName(String categoryName, Pageable pageable);
+
+    PageResponse<ProductSummary> getProductsByCategorySlug(String categorySlug, String genderSlug, Pageable pageable);
+
+    PageResponse<ProductSummary> getRelatedProducts(Long productId, Pageable pageable);
 } 
