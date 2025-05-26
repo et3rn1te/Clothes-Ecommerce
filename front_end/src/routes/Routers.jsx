@@ -4,19 +4,7 @@ import { lazy } from 'react';
 const routes = [
   {
     path: '/',
-    component: lazy(() => import('../pages/home/HomePage')),
-  },
-  {
-    path: '/categories/:slug',
-    component: lazy(() => import('../pages/product/ProductListPage')),
-  },
-  {
-    path: '/product/:productId',
-    component: lazy(() => import('../pages/product/ProductDetailPage')),
-  },
-  {
-    path: '/products/:slug',
-    component: lazy(() => import('../pages/product/ProductDetailPage')),
+    component: lazy(() => import('../pages/HomePage')),
   },
   {
     path: '/cart',
@@ -32,8 +20,20 @@ const routes = [
   },
   {
     path: '/profile',
-    component: ('../Pages/Profile'),
-  }
+    component: lazy(() => import('../pages/Profile')),
+  },
+  {
+    path: '/product/:slug',
+    component: lazy(() => import('../pages/ProductDetailPage')),
+  },
+  {
+    path: '/:genderSlug',
+    component: lazy(() => import('../pages/GenderPage')),
+  },
+  {
+    path: '/:genderSlug/:categorySlug',
+    component: lazy(() => import('../pages/CategoryPage')),
+  },
 ];
 
 export default routes;

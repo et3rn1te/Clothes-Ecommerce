@@ -1,11 +1,11 @@
 package com.example.back_end.mapper;
 
+import com.example.back_end.dto.ColorDto;
+import com.example.back_end.dto.SizeDto;
 import com.example.back_end.dto.request.product.ProductVariantCreationRequest;
 import com.example.back_end.dto.request.product.ProductVariantUpdateRequest;
 import com.example.back_end.dto.response.product.ProductVariantResponse;
 import com.example.back_end.dto.response.product.ProductVariantSummary;
-import com.example.back_end.dto.response.ColorSummary;
-import com.example.back_end.dto.response.SizeSummary;
 import com.example.back_end.entity.ProductVariant;
 import org.mapstruct.*;
 
@@ -23,7 +23,6 @@ public interface ProductVariantMapper {
 
     @Mapping(target = "size", source = "size")
     @Mapping(target = "color", source = "color")
-    @Mapping(target = "images", source = "images")
     ProductVariantSummary toSummary(ProductVariant variant);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

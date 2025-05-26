@@ -1,7 +1,7 @@
 package com.example.back_end.dto.response.product;
 
-import com.example.back_end.dto.response.ColorSummary;
-import com.example.back_end.dto.response.SizeSummary;
+import com.example.back_end.dto.ColorDto;
+import com.example.back_end.dto.SizeDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,8 +19,8 @@ import java.util.List;
 public class ProductVariantResponse {
     private Long id;
     private ProductSummary product;
-    private SizeSummary size;
-    private ColorSummary color;
+    private SizeDto size;
+    private ColorDto color;
     private String sku;
     private BigDecimal price;
     private Integer stockQuantity;

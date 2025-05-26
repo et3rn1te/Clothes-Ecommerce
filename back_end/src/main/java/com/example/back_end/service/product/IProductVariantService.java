@@ -4,6 +4,7 @@ import com.example.back_end.dto.request.product.ProductVariantCreationRequest;
 import com.example.back_end.dto.request.product.ProductVariantUpdateRequest;
 import com.example.back_end.dto.response.product.ProductVariantResponse;
 import com.example.back_end.dto.response.product.ProductVariantSummary;
+import com.example.back_end.dto.request.product.VariantFilterRequest;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface IProductVariantService {
     boolean existsByProductAndColorAndSize(Long productId, Long colorId, Long sizeId);
 
     ProductVariantResponse getVariantBySku(String sku);
+
+    List<ProductVariantSummary> filterVariants(Long productId, VariantFilterRequest filter);
 } 

@@ -2,6 +2,7 @@ package com.example.back_end.service.product;
 
 import com.example.back_end.dto.request.product.ProductVariantCreationRequest;
 import com.example.back_end.dto.request.product.ProductVariantUpdateRequest;
+import com.example.back_end.dto.request.product.VariantFilterRequest;
 import com.example.back_end.dto.response.product.ProductVariantResponse;
 import com.example.back_end.dto.response.product.ProductVariantSummary;
 import com.example.back_end.entity.*;
@@ -117,5 +118,20 @@ public class ProductVariantService implements IProductVariantService {
         ProductVariant variant = variantRepository.findBySkuAndActiveTrue(sku)
                 .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND));
         return variantMapper.toResponse(variant);
+    }
+
+    @Override
+    public List<ProductVariantSummary> filterVariants(Long productId, VariantFilterRequest filter) {
+        List<ProductVariant> variants = variantRepository.findByProductIdAndActiveTrue(productId);
+        
+        return variants.stream()
+                .filter(variant -> filter.getColorId() == null || 
+                        variant.getColor().getId().equals(filter.getColorId()))
+                .filter(variant -> filter.getSizeId() == null || 
+                        variant.getSize().getId().equals(filter.getSizeId()))
+                .filter(variant -> filter.getActive() == null || 
+                        variant.isActive() == filter.getActive())
+                .map(variantMapper::toSummary)
+                .toList();
     }
 } 

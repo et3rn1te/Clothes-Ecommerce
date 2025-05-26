@@ -106,6 +106,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
+    public ProductDetailResponse getProductDetailById(Long id) {
+        Product product = productRepository.findByIdWithDetails(id)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        return productMapper.toDetailResponse(product);
+    }
+
+    @Override
     public ProductDetailResponse getProductBySlug(String slug) {
         Product product = productRepository.findBySlugWithDetails(slug)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -189,8 +196,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductSummary> getProductsByGender(Long genderId) {
-        return productRepository.findByGenderIdAndActiveTrue(genderId)
+    public List<ProductSummary> getProductsByGender(String genderName) {
+        return productRepository.findByGenderName(genderName)
                 .stream()
                 .map(productMapper::toSummary)
                 .toList();
@@ -234,6 +241,57 @@ public class ProductService implements IProductService {
                 .totalElements(productPage.getTotalElements())
                 .totalPages(productPage.getTotalPages())
                 .last(productPage.isLast())
+                .build();
+    }
+
+    @Override
+    public PageResponse<ProductSummary> getProductsByCategorySlug(String categorySlug, String genderSlug, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByCategorySlugAndGenderSlug(categorySlug, genderSlug, pageable);
+        return PageResponse.<ProductSummary>builder()
+                .content(productPage.getContent().stream()
+                        .map(productMapper::toSummary)
+                        .toList())
+                .pageNo(productPage.getNumber())
+                .pageSize(productPage.getSize())
+                .totalElements(productPage.getTotalElements())
+                .totalPages(productPage.getTotalPages())
+                .last(productPage.isLast())
+                .build();
+    }
+
+    @Override
+    public PageResponse<ProductSummary> getRelatedProducts(Long productId, Pageable pageable) {
+        Product product = productRepository.findByIdWithDetails(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        // Lấy danh sách category IDs của sản phẩm
+        List<Long> categoryIds = product.getCategories().stream()
+                .map(Category::getId)
+                .toList();
+
+        // Lấy danh sách sản phẩm liên quan dựa trên:
+        // 1. Cùng category
+        // 2. Cùng brand
+        // 3. Cùng gender
+        // 4. Không phải sản phẩm hiện tại
+        // 5. Sản phẩm đang active
+        Page<Product> relatedProducts = productRepository.findRelatedProducts(
+                productId,
+                categoryIds,
+                product.getBrand().getId(),
+                product.getGender() != null ? product.getGender().getId() : null,
+                pageable
+        );
+
+        return PageResponse.<ProductSummary>builder()
+                .content(relatedProducts.getContent().stream()
+                        .map(productMapper::toSummary)
+                        .toList())
+                .pageNo(relatedProducts.getNumber())
+                .pageSize(relatedProducts.getSize())
+                .totalElements(relatedProducts.getTotalElements())
+                .totalPages(relatedProducts.getTotalPages())
+                .last(relatedProducts.isLast())
                 .build();
     }
 }

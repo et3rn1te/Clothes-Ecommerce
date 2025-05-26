@@ -1,93 +1,51 @@
 import axiosClient from './axiosClient';
 
 const CategoryService = {
+    // Lấy tất cả danh mục
     getAllCategories: async (params) => {
         try {
-            // const queryParams = new URLSearchParams({
-            //     page: params.page || 0,
-            //     size: params.size || 6,
-            //     sort: params.sort || 'name,asc'
-            // });
-
-            // Original fetch for all categories - might not be needed anymore if only using subcategories
-            // Keeping for now if getAllCategories is used elsewhere
-            const response = await fetch(`http://localhost:8080/api/categories`);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            // Add default images for categories that don't have images (still useful if getAllCategories is used)
-            const categoryImages = {
-                "Men's Fashion": 'https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=400&h=300&fit=crop',
-                "Women's Fashion": 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop',
-                "Accessories": 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
-                "Men's T-Shirts": 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop',
-                "Men's Jeans": 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=300&fit=crop',
-                "Women's Dresses": 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=300&fit=crop',
-                "Women's Skirts": 'https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=400&h=300&fit=crop',
-                "Bags": 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=300&fit=crop',
-                "Hats": 'https://images.unsplash.com/photo-1521369909029-2afed882baee?w=400&h=300&fit=crop'
-            };
-
-            // Enhance categories with images and filter only parent categories for main display
-            const enhancedContent = data.content
-                .filter(category => category.parentId === null) // Only show main categories
-                .map(category => ({
-                    ...category,
-                    imageUrl: categoryImages[category.name] || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop'
-                }));
-
-            return {
-                data: {
-                    ...data,
-                    content: enhancedContent
-                }
-            };
+            const response = await axiosClient.get('/categories', { params });
+            return response;
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error('Lỗi khi lấy danh mục:', error);
             throw error;
         }
     },
 
-    // New method to get subcategories by parent ID
+    // Lấy danh mục con theo ID danh mục cha
     getSubCategoriesByParentId: async (parentId) => {
         try {
-            // Assuming your backend endpoint is /api/categories/{parentId}/subcategories
             const response = await axiosClient.get(`/categories/${parentId}/subcategories`);
             return response;
         } catch (error) {
-            console.error(`Error fetching subcategories for parent ID ${parentId}:`, error);
+            console.error(`Lỗi khi lấy danh mục con cho ID ${parentId}:`, error);
             throw error;
         }
     },
 
-    // New method to get category by name
+    // Lấy danh mục theo tên
     getCategoryByName: async (name) => {
         try {
-            // Assuming your backend endpoint is /api/categories/name/{name}
             const response = await axiosClient.get(`/categories/name/${name}`);
             return response;
         } catch (error) {
-            console.error(`Error fetching category by name ${name}:`, error);
+            console.error(`Lỗi khi lấy danh mục theo tên ${name}:`, error);
             throw error;
         }
     },
 
-    // New method to get category by slug
+    // Lấy danh mục theo slug
     getCategoryBySlug: async (slug) => {
         try {
             const response = await axiosClient.get(`/categories/slug/${slug}`);
             return response;
         } catch (error) {
-            console.error(`Error fetching category by slug ${slug}:`, error);
+            console.error(`Lỗi khi lấy danh mục theo slug ${slug}:`, error);
             throw error;
         }
     },
 
-    // New method to check if a slug exists
+    // Kiểm tra slug đã tồn tại chưa
     checkSlugExists: async (slug) => {
         try {
             const response = await axiosClient.get('/categories/check-slug', {
@@ -95,7 +53,95 @@ const CategoryService = {
             });
             return response;
         } catch (error) {
-            console.error(`Error checking if slug ${slug} exists:`, error);
+            console.error(`Lỗi khi kiểm tra slug ${slug}:`, error);
+            throw error;
+        }
+    },
+
+    // Lấy danh mục theo ID giới tính
+    getCategoriesByGender: async (genderId) => {
+        try {
+            const response = await axiosClient.get(`/categories/gender/${genderId}`);
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi lấy danh mục theo ID giới tính ${genderId}:`, error);
+            throw error;
+        }
+    },
+
+    // Lấy danh mục theo slug giới tính
+    getCategoriesByGenderSlug: async (genderSlug) => {
+        try {
+            const response = await axiosClient.get(`/categories/gender/slug/${genderSlug}`);
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi lấy danh mục theo slug giới tính ${genderSlug}:`, error);
+            throw error;
+        }
+    },
+
+    // Lấy danh mục con theo slug giới tính
+    getSubCategoriesByGenderSlug: async (genderSlug) => {
+        try {
+            const response = await axiosClient.get(`/categories/gender/slug/${genderSlug}/subcategories`);
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi lấy danh mục con theo slug giới tính ${genderSlug}:`, error);
+            throw error;
+        }
+    },
+
+    // Tạo danh mục mới
+    createCategory: async (categoryData) => {
+        try {
+            const response = await axiosClient.post('/categories', categoryData);
+            return response;
+        } catch (error) {
+            console.error('Lỗi khi tạo danh mục:', error);
+            throw error;
+        }
+    },
+
+    // Cập nhật danh mục
+    updateCategory: async (id, categoryData) => {
+        try {
+            const response = await axiosClient.put(`/categories/${id}`, categoryData);
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi cập nhật danh mục ${id}:`, error);
+            throw error;
+        }
+    },
+
+    // Xóa danh mục
+    deleteCategory: async (id) => {
+        try {
+            const response = await axiosClient.delete(`/categories/${id}`);
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi xóa danh mục ${id}:`, error);
+            throw error;
+        }
+    },
+
+    // Lấy danh mục theo ID
+    getCategoryById: async (id) => {
+        try {
+            const response = await axiosClient.get(`/categories/${id}`);
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi lấy danh mục ${id}:`, error);
+            throw error;
+        }
+    },
+
+    // Chuyển đổi trạng thái danh mục
+    toggleCategoryStatus: async (id) => {
+        try {
+            const response = await axiosClient.patch(`/categories/${id}/toggle`);
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi chuyển đổi trạng thái danh mục ${id}:`, error);
             throw error;
         }
     }
