@@ -147,4 +147,15 @@ public class CategoryController {
     public ResponseEntity<List<CategoryResponse>> getCategoriesByGenderSlug(@PathVariable String genderSlug) {
         return ResponseEntity.ok(categoryService.getCategoriesByGenderSlug(genderSlug));
     }
+
+    /**
+     * Method to get sub-categories by gender slug
+     *
+     * @param genderSlug: Slug của giới tính (nam/nu)
+     * @return JSON body chứa danh sách các danh mục con thuộc giới tính đó
+     */
+    @GetMapping("/gender/slug/{genderSlug}/subcategories")
+    public ResponseEntity<List<CategoryResponse>> getSubCategoriesByGenderSlug(@PathVariable String genderSlug) {
+        return ResponseEntity.ok(categoryService.getSubCategoriesByGenderSlug(genderSlug));
+    }
 }

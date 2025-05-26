@@ -12,7 +12,7 @@ const CategoryCard = ({ category, genderSlug }) => {
       className="relative bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 group flex flex-col cursor-pointer h-full"
     >
       {/* Hình ảnh danh mục và overlay */}
-      <div className="relative w-full h-100 rounded-t-xl overflow-hidden">
+      <div className="relative w-full h-80 rounded-t-xl overflow-hidden">
         <img
           src={category?.imageUrl || PLACEHOLDER_IMAGE_URL}
           alt={category?.name || 'Category Image'}

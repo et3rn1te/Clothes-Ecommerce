@@ -80,6 +80,17 @@ const CategoryService = {
         }
     },
 
+    // Lấy danh mục con theo slug giới tính
+    getSubCategoriesByGenderSlug: async (genderSlug) => {
+        try {
+            const response = await axiosClient.get(`/categories/gender/slug/${genderSlug}/subcategories`);
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi lấy danh mục con theo slug giới tính ${genderSlug}:`, error);
+            throw error;
+        }
+    },
+
     // Tạo danh mục mới
     createCategory: async (categoryData) => {
         try {

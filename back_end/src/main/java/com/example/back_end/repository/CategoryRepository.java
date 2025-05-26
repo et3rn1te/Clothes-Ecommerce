@@ -27,4 +27,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findBySlugWithSubcategories(String slug);
 
     List<Category> findByGender(Gender gender);
+
+    @Query("SELECT c FROM Category c WHERE c.gender.slug = :genderSlug AND c.parent IS NOT NULL")
+    List<Category> findSubCategoriesByGenderSlug(String genderSlug);
 } 

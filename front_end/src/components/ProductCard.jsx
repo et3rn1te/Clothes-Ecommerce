@@ -39,7 +39,7 @@ function ProductCard({ product }) {
       }}
     >
       {/* Hình ảnh sản phẩm và overlay cho icons */}
-      <div className="relative w-full h-100 rounded-t-xl overflow-hidden">
+      <div className="relative w-full h-80 rounded-t-xl overflow-hidden">
         <img
           src={product?.primaryImage?.imageUrl || PLACEHOLDER_IMAGE_URL}
           alt={product?.primaryImage?.altText || product?.name || 'Product Image'}

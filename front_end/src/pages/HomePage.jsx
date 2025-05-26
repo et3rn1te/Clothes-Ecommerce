@@ -54,12 +54,12 @@ function HomePage() {
         setLoadingCategories(true);
         setError(null);
         try {
-          const response = await GenderService.getCategoriesByGenderSlug(selectedGender.slug);
-          console.log('Categories data:', response.data);
+          const response = await CategoryService.getSubCategoriesByGenderSlug(selectedGender.slug);
+          console.log('Sub-categories data:', response.data);
           setCategoriesByGender(response.data);
         } catch (err) {
-          setError(`Không thể tải danh mục cho ${selectedGender.name}.`);
-          console.error(`Error fetching categories for ${selectedGender.name}:`, err);
+          setError(`Không thể tải danh mục con cho ${selectedGender.name}.`);
+          console.error(`Error fetching sub-categories for ${selectedGender.name}:`, err);
         } finally {
           setLoadingCategories(false);
         }
@@ -149,9 +149,10 @@ function HomePage() {
           {genders.map(gender => (
             <button
               key={gender.id}
-              className={`px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition duration-200 ${
-                selectedGender?.id === gender.id ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+              className={`px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition duration-200 ${selectedGender?.id === gender.id
+                  ? 'bg-gradient-to-r from-blue-800 to-blue-900 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+                  : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:from-gray-200 hover:to-gray-300 shadow-md'
+                }`}
               onClick={() => handleGenderSelect(gender)}
             >
               {gender.name.toUpperCase()}
@@ -209,35 +210,35 @@ function HomePage() {
           className="men-wear-section relative h-80 rounded-lg overflow-hidden flex items-center justify-center shadow-lg"
           style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${PLACEHOLDER_IMAGE_URL})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
-           {/* Overlay và nội dung */}
-           <div className="relative z-10 text-white text-center">
-             <h2 className="text-3xl font-bold mb-4">MEN WEAR</h2>
-             <button className="px-6 py-2 bg-white text-gray-800 font-semibold rounded-full shadow hover:bg-gray-200 transition duration-300">MUA NGAY</button>
-           </div>
+          {/* Overlay và nội dung */}
+          <div className="relative z-10 text-white text-center">
+            <h2 className="text-3xl font-bold mb-4">MEN WEAR</h2>
+            <button className="px-6 py-2 bg-white text-gray-800 font-semibold rounded-full shadow hover:bg-gray-200 transition duration-300">MUA NGAY</button>
+          </div>
         </div>
         {/* Women Active Section */}
         <div
           className="women-active-section relative h-80 rounded-lg overflow-hidden flex items-center justify-center shadow-lg"
           style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${PLACEHOLDER_IMAGE_URL})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
-           {/* Overlay và nội dung */}
-           <div className="relative z-10 text-white text-center">
-             <h2 className="text-3xl font-bold mb-4">WOMEN ACTIVE</h2>
-             <button className="px-6 py-2 bg-white text-gray-800 font-semibold rounded-full shadow hover:bg-gray-200 transition duration-300">MUA NGAY</button>
-           </div>
+          {/* Overlay và nội dung */}
+          <div className="relative z-10 text-white text-center">
+            <h2 className="text-3xl font-bold mb-4">WOMEN ACTIVE</h2>
+            <button className="px-6 py-2 bg-white text-gray-800 font-semibold rounded-full shadow hover:bg-gray-200 transition duration-300">MUA NGAY</button>
+          </div>
         </div>
       </section>
 
       {/* Casualwear Collection Banner */}
-       <section
+      <section
         className="casualwear-banner relative text-white text-center py-16 mb-8 rounded-lg overflow-hidden bg-gradient-to-r from-purple-700 via-purple-800 to-purple-700 shadow-lg"
-         style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${PLACEHOLDER_IMAGE_URL})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${PLACEHOLDER_IMAGE_URL})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
       >
         {/* Nội dung banner Casualwear */}
         <div className="relative z-10">
-           <h2 className="text-4xl md:text-5xl font-extrabold mb-4">CASUALWEAR COLLECTION</h2>
-           <p className="text-lg md:text-xl opacity-90 mb-6">Nhập COOLNEW giảm 30k cho đơn từ 299k</p>
-           <button className="mt-4 px-8 py-3 bg-white text-purple-700 font-bold rounded-full shadow-xl hover:bg-gray-100 transition duration-300 text-lg uppercase tracking-wide">MUA NGAY &rarr;</button>
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4">CASUALWEAR COLLECTION</h2>
+          <p className="text-lg md:text-xl opacity-90 mb-6">Nhập COOLNEW giảm 30k cho đơn từ 299k</p>
+          <button className="mt-4 px-8 py-3 bg-white text-purple-700 font-bold rounded-full shadow-xl hover:bg-gray-100 transition duration-300 text-lg uppercase tracking-wide">MUA NGAY &rarr;</button>
         </div>
       </section>
 
@@ -265,13 +266,13 @@ function HomePage() {
             >
               {featuredProducts.map(product => (
                 <div key={product.id} className="flex-none w-64">
-                   <ProductCard product={product} />
+                  <ProductCard product={product} />
                 </div>
               ))}
             </div>
 
             {/* Nút cuộn phải */}
-             <button
+            <button
               onClick={() => scrollProducts('right')}
               className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 text-blue-900 p-2 rounded-full shadow-md hover:bg-opacity-100 focus:outline-none z-10 mr-2"
             >

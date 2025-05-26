@@ -23,11 +23,7 @@ const routes = [
     component: lazy(() => import('../pages/Profile')),
   },
   {
-    path: '/product/:id',
-    component: lazy(() => import('../pages/ProductDetailPage')),
-  },
-  {
-    path: '/product/slug/:slug',
+    path: '/product/:slug',
     component: lazy(() => import('../pages/ProductDetailPage')),
   },
   {

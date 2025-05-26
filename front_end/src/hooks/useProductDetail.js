@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import ProductService from '../API/ProductService';
 
 export const useProductDetail = () => {
-  const { id, slug } = useParams();
+  const { slug } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,9 +13,7 @@ export const useProductDetail = () => {
       try {
         setLoading(true);
         setError(null);
-        const response = id 
-          ? await ProductService.getProductById(id)
-          : await ProductService.getProductBySlug(slug);
+        const response = await ProductService.getProductBySlug(slug);
         setProduct(response.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Có lỗi xảy ra khi tải thông tin sản phẩm');
@@ -25,7 +23,7 @@ export const useProductDetail = () => {
     };
 
     fetchProduct();
-  }, [id, slug]);
+  }, [slug]);
 
   return { product, loading, error };
 }; 

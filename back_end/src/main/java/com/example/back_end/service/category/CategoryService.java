@@ -174,6 +174,15 @@ public class CategoryService implements ICategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<CategoryResponse> getSubCategoriesByGenderSlug(String genderSlug) {
+        Gender gender = genderRepository.findBySlug(genderSlug)
+                .orElseThrow(() -> new AppException(ErrorCode.GENDER_NOT_FOUND));
+        return categoryRepository.findSubCategoriesByGenderSlug(genderSlug).stream()
+                .map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
     private String generateSlug(String name) {
         // Convert to lowercase and replace spaces with hyphens
         String baseSlug = name.toLowerCase()
