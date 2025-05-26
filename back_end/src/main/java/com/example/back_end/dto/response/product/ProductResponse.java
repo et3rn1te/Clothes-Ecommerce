@@ -1,7 +1,7 @@
 package com.example.back_end.dto.response.product;
 
-
-import com.example.back_end.dto.response.*;
+import com.example.back_end.dto.BrandDto;
+import com.example.back_end.dto.GenderDto;
 import com.example.back_end.dto.response.category.CategorySummary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,8 +22,8 @@ public class ProductResponse {
     private String name;
     private String description;
     private BigDecimal basePrice;
-    private BrandSummary brand;
-    private GenderSummary gender;
+    private BrandDto brand;
+    private GenderDto gender;
     private List<CategorySummary> categories = new ArrayList<>();
     private ProductImageSummary primaryImage;
     private boolean featured;

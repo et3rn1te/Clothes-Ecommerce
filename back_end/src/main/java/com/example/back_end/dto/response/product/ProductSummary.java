@@ -13,6 +13,7 @@ public class ProductSummary {
     private String name;
     private BigDecimal basePrice;
     private String brandName;
+    private String slug;
     private ProductImageSummary primaryImage;
     private boolean featured;
 }

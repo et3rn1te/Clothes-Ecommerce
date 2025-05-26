@@ -34,4 +34,8 @@ public class Category extends BaseEntity {
 
     @ManyToMany(mappedBy = "categories")
     private List<Product> products = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "gender_id")
+    private Gender gender;
 }

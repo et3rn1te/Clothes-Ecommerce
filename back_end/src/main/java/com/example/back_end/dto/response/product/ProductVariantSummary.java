@@ -1,7 +1,6 @@
 package com.example.back_end.dto.response.product;
 
-
-import com.example.back_end.dto.response.*;
+import com.example.back_end.dto.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,11 +12,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductVariantSummary {
     private Long id;
-    private SizeSummary size;
-    private ColorSummary color;
+    private SizeDto size;
+    private ColorDto color;
     private String sku;
     private BigDecimal price;
     private Integer stockQuantity;
     private boolean active;
-    private List<ProductImageSummary> images;
 }

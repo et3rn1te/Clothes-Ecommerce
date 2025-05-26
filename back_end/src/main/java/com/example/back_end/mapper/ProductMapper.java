@@ -1,10 +1,10 @@
 package com.example.back_end.mapper;
 
+import com.example.back_end.dto.BrandDto;
+import com.example.back_end.dto.ColorDto;
+import com.example.back_end.dto.SizeDto;
 import com.example.back_end.dto.request.product.*;
 import com.example.back_end.dto.response.product.*;
-import com.example.back_end.dto.response.BrandSummary;
-import com.example.back_end.dto.response.ColorSummary;
-import com.example.back_end.dto.response.SizeSummary;
 import com.example.back_end.entity.*;
 import org.mapstruct.*;
 

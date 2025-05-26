@@ -30,4 +30,10 @@ public interface ICategoryService {
     List<CategoryResponse> getSubCategoriesByParentId(Long parentId);
 
     CategoryResponse getCategoryByName(String name);
+
+    List<CategoryResponse> getCategoriesByGender(Long genderId);
+
+    List<CategoryResponse> getCategoriesByGenderSlug(String genderSlug);
+
+    List<CategoryResponse> getSubCategoriesByGenderSlug(String genderSlug);
 } 

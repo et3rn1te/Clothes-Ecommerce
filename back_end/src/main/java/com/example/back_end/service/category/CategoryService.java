@@ -14,8 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.back_end.dto.response.PageResponse;
-
+import com.example.back_end.entity.Gender;
+import com.example.back_end.repository.GenderRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ import java.util.List;
 public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
+    private final GenderRepository genderRepository;
 
     @Override
     public CategoryResponse createCategory(CategoryCreationRequest request) {
@@ -136,7 +139,7 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public CategoryResponse getCategoryByName(String name) {
-        Category category = categoryRepository.findByName(name) // Assume findByName method exists in CategoryRepository
+        Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
         return categoryMapper.toResponse(category);
     }
@@ -151,6 +154,33 @@ public class CategoryService implements ICategoryService {
     @Override
     public boolean existsBySlug(String slug) {
         return categoryRepository.existsBySlug(slug);
+    }
+
+    @Override
+    public List<CategoryResponse> getCategoriesByGender(Long genderId) {
+        Gender gender = genderRepository.findById(genderId)
+                .orElseThrow(() -> new AppException(ErrorCode.GENDER_NOT_FOUND));
+        return categoryRepository.findByGender(gender).stream()
+                .map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategoryResponse> getCategoriesByGenderSlug(String genderSlug) {
+        Gender gender = genderRepository.findBySlug(genderSlug)
+                .orElseThrow(() -> new AppException(ErrorCode.GENDER_NOT_FOUND));
+        return categoryRepository.findByGender(gender).stream()
+                .map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CategoryResponse> getSubCategoriesByGenderSlug(String genderSlug) {
+        Gender gender = genderRepository.findBySlug(genderSlug)
+                .orElseThrow(() -> new AppException(ErrorCode.GENDER_NOT_FOUND));
+        return categoryRepository.findSubCategoriesByGenderSlug(genderSlug).stream()
+                .map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     private String generateSlug(String name) {

@@ -1,5 +1,6 @@
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import { FiMail } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
     return (
@@ -17,19 +18,14 @@ const Footer = () => {
                         <h3 className="text-xl font-bold mb-4 text-white">Quick Links</h3>
                         <ul className="space-y-3">
                             <li>
-                                <a href="/category/men" className="text-gray-300 hover:text-white transition-colors duration-300">
-                                    Men
-                                </a>
+                                <Link to="/nam" className="text-gray-300 hover:text-white transition-colors duration-300">
+                                    Đồ Nam
+                                </Link>
                             </li>
                             <li>
-                                <a href="/category/women" className="text-gray-300 hover:text-white transition-colors duration-300">
-                                    Women
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/category/accessories" className="text-gray-300 hover:text-white transition-colors duration-300">
-                                    Accessories
-                                </a>
+                                <Link to="/nu" className="text-gray-300 hover:text-white transition-colors duration-300">
+                                    Đồ Nữ
+                                </Link>
                             </li>
                         </ul>
                     </div>

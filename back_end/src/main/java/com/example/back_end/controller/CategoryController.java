@@ -126,4 +126,36 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoryByName(name));
     }
 
+    /**
+     * Method to get Categories by gender
+     *
+     * @param genderId: ID của giới tính
+     * @return JSON body chứa danh sách các danh mục thuộc giới tính đó
+     */
+    @GetMapping("/gender/{genderId}")
+    public ResponseEntity<List<CategoryResponse>> getCategoriesByGender(@PathVariable Long genderId) {
+        return ResponseEntity.ok(categoryService.getCategoriesByGender(genderId));
+    }
+
+    /**
+     * Method to get Categories by gender slug
+     *
+     * @param genderSlug: Slug của giới tính (nam/nu)
+     * @return JSON body chứa danh sách các danh mục thuộc giới tính đó
+     */
+    @GetMapping("/gender/slug/{genderSlug}")
+    public ResponseEntity<List<CategoryResponse>> getCategoriesByGenderSlug(@PathVariable String genderSlug) {
+        return ResponseEntity.ok(categoryService.getCategoriesByGenderSlug(genderSlug));
+    }
+
+    /**
+     * Method to get sub-categories by gender slug
+     *
+     * @param genderSlug: Slug của giới tính (nam/nu)
+     * @return JSON body chứa danh sách các danh mục con thuộc giới tính đó
+     */
+    @GetMapping("/gender/slug/{genderSlug}/subcategories")
+    public ResponseEntity<List<CategoryResponse>> getSubCategoriesByGenderSlug(@PathVariable String genderSlug) {
+        return ResponseEntity.ok(categoryService.getSubCategoriesByGenderSlug(genderSlug));
+    }
 }

@@ -2,6 +2,7 @@ package com.example.back_end.controller;
 
 import com.example.back_end.dto.request.product.ProductVariantCreationRequest;
 import com.example.back_end.dto.request.product.ProductVariantUpdateRequest;
+import com.example.back_end.dto.request.product.VariantFilterRequest;
 import com.example.back_end.dto.response.product.ProductVariantResponse;
 import com.example.back_end.dto.response.product.ProductVariantSummary;
 import com.example.back_end.service.product.IProductVariantService;
@@ -68,5 +69,12 @@ public class ProductVariantController {
     @GetMapping("/sku/{sku}")
     public ResponseEntity<ProductVariantResponse> getVariantBySku(@PathVariable String sku) {
         return ResponseEntity.ok(variantService.getVariantBySku(sku));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<ProductVariantSummary>> filterVariants(
+            @PathVariable Long productId,
+            @ModelAttribute VariantFilterRequest filter) {
+        return ResponseEntity.ok(variantService.filterVariants(productId, filter));
     }
 } 

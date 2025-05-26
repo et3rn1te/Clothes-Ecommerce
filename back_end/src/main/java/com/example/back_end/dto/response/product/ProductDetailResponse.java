@@ -1,6 +1,7 @@
 package com.example.back_end.dto.response.product;
 
-import com.example.back_end.dto.response.*;
+import com.example.back_end.dto.BrandDto;
+import com.example.back_end.dto.GenderDto;
 import com.example.back_end.dto.response.category.CategorySummary;
 import lombok.*;
 
@@ -18,8 +19,8 @@ public class ProductDetailResponse {
     private String name;
     private String description;
     private BigDecimal basePrice;
-    private BrandSummary brand;
-    private GenderSummary gender;
+    private BrandDto brand;
+    private GenderDto gender;
     private List<CategorySummary> categories = new ArrayList<>();
     private List<ProductImageSummary> images = new ArrayList<>();
     private List<ProductVariantSummary> variants = new ArrayList<>();
