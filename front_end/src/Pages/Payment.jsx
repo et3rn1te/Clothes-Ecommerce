@@ -5,9 +5,10 @@ import { listCartItem } from "../API/CartService.jsx";
 import { addOrder } from "../API/CheckoutService.jsx";
 
 const CheckoutPage = () => {
+  const session = JSON.parse(localStorage.getItem("session"));
   const [formData, setFormData] = useState({
-    fullName: "",
-    phoneNumber: "",
+    fullName: session.currentUser.fullname,
+    phoneNumber: session.currentUser.phone,
     province: "",
     provinceId: "",
     district: "",
@@ -27,7 +28,6 @@ const CheckoutPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  const session = JSON.parse(localStorage.getItem("session"));
   const total = JSON.parse(localStorage.getItem("total"));
   const [cartItems, setCartItems] = useState([]);
   const fetchCartItems = async () => {
@@ -76,6 +76,7 @@ const CheckoutPage = () => {
     if (!formData.district) newErrors.district = "District is required";
     if (!formData.ward) newErrors.ward = "Ward is required";
     if (!formData.address) newErrors.address = "Address is required";
+    if (!formData.paymentMethod) newErrors.paymentMethod = "Hãy chọn phương thức thanh toán";
 
     if (formData.paymentMethod === "card") {
       if (!/^\d{16}$/.test(formData.cardNumber)) {
@@ -116,18 +117,24 @@ const CheckoutPage = () => {
        console.log(formData);
     }
     const session = JSON.parse(localStorage.getItem("session"));
+    console.log(formData.fullName,formData.phoneNumber,formData.province + ","+ formData.ward+","+formData.district+","+formData.address);
+    if(formData.paymentMethod === "1"){
+      await addOrder({
+        idUser: session.currentUser.id,
+        receiver: formData.fullName,
+        phone: formData.phoneNumber,
+        idPaymentMethod: 1,
+        address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
+        idStatus: 1,
+        total:calculateTotal()
+      }
+        ,session.token
+      );
+      console.log("okee");
 
-    await addOrder({
-      idUser: session.currentUser.id,
-      receiver: formData.fullName,
-      phone: formData.phoneNumber,
-      idPaymentMethod: 1,
-      address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
-      idStatus: 1,
-      total:calculateTotal()
     }
-      ,session.token
-    );
+
+    
    
   };
 
@@ -199,8 +206,8 @@ const CheckoutPage = () => {
                         type="radio"
                         id="cod"
                         name="payment"
-                        value="cod"
-                        checked={formData.paymentMethod === "cod"}
+                        value="1"
+                        checked={formData.paymentMethod === "1"}
                         onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
                         className="h-4 w-4 text-blue-600"
                       />
@@ -215,8 +222,8 @@ const CheckoutPage = () => {
                         type="radio"
                         id="card"
                         name="payment"
-                        value="vnpay"
-                        checked={formData.paymentMethod === "vnpay"}
+                        value="2"
+                        checked={formData.paymentMethod === "2"}
                         onChange={(e) => setFormData({...formData, paymentMethod: e.target.value})}
                         className="h-4 w-4 text-blue-600"
                       />
@@ -225,8 +232,9 @@ const CheckoutPage = () => {
                         <span className="text-sm font-medium text-gray-900">VnPay</span>
                       </label>
                     </div>
+                    {errors.paymentMethod && <p className="text-red-500 text-sm mt-1">{errors.paymentMethod}</p>}
 
-                    {formData.paymentMethod === "card" && (
+                    {/* {formData.paymentMethod === "card" && (
                       <div className="ml-7 space-y-4">
                         <input
                           type="text"
@@ -252,7 +260,7 @@ const CheckoutPage = () => {
                           />
                         </div>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </form>
@@ -267,12 +275,12 @@ const CheckoutPage = () => {
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex items-center space-x-4">
                     <img
-                      src={item.image}
-                      alt={item.product.name}
+                      src={item.product.images?.[0]?.imageUrl || '/default-image.jpg'}
+                      alt={item.product.product.name}
                       className="w-20 h-20 object-cover rounded"
                     />
                     <div className="flex-1">
-                      <h3 className="font-medium">{item.name}</h3>
+                      <h3 className="font-medium">{item.product.product.name}</h3>
                       <p className="text-sm text-gray-500">
                         Size: 200 | Color: trắng
                       </p>

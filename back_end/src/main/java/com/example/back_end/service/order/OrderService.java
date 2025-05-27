@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -57,7 +58,9 @@ public class OrderService implements IOrderService{
             oderDetail.setIdOrder(order);
             oderDetail.setIdProduct(product);
             oderDetail.setQuantity(cartQuantity);
-            oderDetail.setTotalPrice(request.getTotal());
+            oderDetail.setTotalPrice(
+                    product.getBasePrice().multiply(BigDecimal.valueOf(cartQuantity))
+            );
 
             orderDetailRepository.save(oderDetail);
         }

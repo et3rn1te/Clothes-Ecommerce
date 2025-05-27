@@ -1,11 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaShoppingCart } from 'react-icons/fa'; // Import icons
+import { updateCartItem } from '../API/CartService';
 
 // URL hình ảnh placeholder tạm thời
 const PLACEHOLDER_IMAGE_URL = 'https://picsum.photos/1080/1920';
 
 function ProductCard({ product }) {
+  const session = JSON.parse(localStorage.getItem("session"));
   const navigate = useNavigate();
   // Đảm bảo product và basePrice tồn tại trước khi định dạng
   const formattedPrice = product?.basePrice != null ? product.basePrice.toLocaleString('vi-VN') : 'Đang cập nhật';
@@ -16,9 +18,15 @@ function ProductCard({ product }) {
     }
   };
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart =async (e,idProduct) => {
     e.stopPropagation();
     // TODO: Implement add to cart
+    await updateCartItem({
+      idUser: session.currentUser.id,
+      action: true,
+      idProduct: idProduct,
+      amount: 1
+    },session.token);
   };
 
   const handleAddToWishlist = (e) => {
@@ -50,7 +58,7 @@ function ProductCard({ product }) {
           {/* Nút Thêm vào giỏ hàng */}
           <button 
             className="p-3 rounded-full bg-white text-gray-800 hover:bg-blue-900 hover:text-white transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:ring-opacity-50"
-            onClick={handleAddToCart}
+            onClick={(e)=> handleAddToCart(e,product.id)}
             aria-label="Thêm vào giỏ hàng"
           >
             <FaShoppingCart className="h-6 w-6" />

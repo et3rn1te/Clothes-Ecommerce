@@ -118,13 +118,13 @@ const Cart = () => {
           {cartItems.map(item => (
             <div key={item.id} className="flex gap-4 bg-white p-4 rounded-lg shadow">
               <img
-                src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab'
+                src={item.product.images?.[0]?.imageUrl || '/default-image.jpg'}
                 alt={item.product.name}
                 className="w-24 h-24 object-cover rounded"
               />
               <div className="flex-1">
                 <div className="flex justify-between">
-                  <h3 className="font-semibold">{item.product.name}</h3>
+                  <h3 className="font-semibold">{item.product.product.name}</h3>
                   <button
                     onClick={() => removeItem(item.id)}
                     className="text-gray-400 hover:text-red-500"

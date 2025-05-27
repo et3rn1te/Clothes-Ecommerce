@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FiSearch, FiShoppingCart, FiHeart, FiMenu, FiX, FiMic } from "react-icons/fi";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { MdEmail, MdPhone } from "react-icons/md";
@@ -6,12 +6,16 @@ import { useNavigate, Link } from "react-router-dom";
 import { introspect, logOutApi } from "../API/AuthService";
 import { listCartItem } from "../API/CartService";
 import CategoryService from '../API/CategoryService';
+import { FavoriteContext } from "./FavoriteContext/FavoriteContext";
 
 const Header = () => {
+  const { wishlistItems }= useContext(FavoriteContext);
+  const wishlistCount = wishlistItems.length;
+  console.log(wishlistItems.length);
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
-  const [wishlistCount, setWishlistCount] = useState(0);
+  // const [wishlistCount, setWishlistCount] = useState(wishlistItems.length);
   //Tìm kiếm giọng nói
   const [isListening, setIsListening] = useState(false);
 
@@ -20,7 +24,8 @@ const Header = () => {
   const recognition = SpeechRecognition ? new SpeechRecognition() : null;
   // xử lý login
   const [isLogin,setIsLogin] = useState(false);
-  const [cartClick, setCartClick] = useState(() => () => {navigate('/cart')});
+  const cartClick = () => {navigate('/cart')};
+  const wishlistClick =()=> {navigate('/wishList')}
   const checkToken = async (token) => {
     try {
       const response = await introspect({token});
@@ -46,7 +51,8 @@ const Header = () => {
               const { code, message, result } = res.data;
               // console.log(res.data);
               setCartCount(result.length);
-            })
+            });
+
         } else {
           setIsLogin(false);
           setCartCount(0);
@@ -99,6 +105,7 @@ const Header = () => {
     localStorage.clear();
     await logOutApi({token:session.token});
     setIsLogin(false);
+    clearWishlist();
   };
   
   if (recognition) {
@@ -240,7 +247,7 @@ const Header = () => {
                 </button>
               </div>
               <div className="flex items-center space-x-6">
-                <div className="relative group">
+                <div className="relative group" onClick={wishlistClick}>
                   <FiHeart className="text-2xl text-gray-600 group-hover:text-blue-900 transition-colors duration-300 cursor-pointer" />
                   <span className="absolute -top-2 -right-2 bg-blue-900 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
                     {wishlistCount}

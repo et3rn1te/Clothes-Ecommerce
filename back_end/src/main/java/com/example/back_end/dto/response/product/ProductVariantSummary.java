@@ -15,6 +15,7 @@ public class ProductVariantSummary {
     private SizeDto size;
     private ColorDto color;
     private String sku;
+    private ProductImageSummary primaryImage;
     private BigDecimal price;
     private Integer stockQuantity;
     private boolean active;
