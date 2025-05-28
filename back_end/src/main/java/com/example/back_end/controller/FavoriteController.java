@@ -18,7 +18,7 @@ import java.util.List;
 public class FavoriteController {
     private final FavoriteService favoriteService;
     @PostMapping("/add")
-    public ApiResponse<Void> addFavorite(@RequestBody FavoriteRequest request) {
+    public ApiResponse<ProductResponse> addFavorite(@RequestBody FavoriteRequest request) {
         return favoriteService.addFavorite(request.getUserId(), request.getProductId());
     }
     @DeleteMapping ("/delete")

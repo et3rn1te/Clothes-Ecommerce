@@ -4,18 +4,18 @@ import { FavoriteContext } from "../components/FavoriteContext/FavoriteContext";
 
 const WishList = () => {
   // Added: Initial wishlist items state
-  const { wishlistItems, setWishlistItems } = useContext(FavoriteContext);
+  const { wishlistItems ,removeFromWishlist} = useContext(FavoriteContext);
   console.log(wishlistItems)
 
   // Added: Handler functions
-  const removeFromWishlist = (id) => {
-    setWishlistItems(wishlistItems.filter(item => item.id !== id));
-  };
+  // const removeFromWishlist = (id) => {
+  //   setWishlistItems(wishlistItems.filter(item => item.id !== id));
+  // };
 
   const toggleFavorite = (id) => {
-    setWishlistItems(wishlistItems.map(item =>
-      item.id === id ? {...item, isFavorite: !item.isFavorite} : item
-    ));
+    // setWishlistItems(wishlistItems.map(item =>
+    //   item.id === id ? {...item, isFavorite: !item.isFavorite} : item
+    // ));
   };
 
   const addToCart = (id) => {

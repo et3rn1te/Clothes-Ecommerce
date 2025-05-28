@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaShoppingCart } from 'react-icons/fa'; // Import icons
 import { updateCartItem } from '../API/CartService';
+import { FavoriteContext } from './FavoriteContext/FavoriteContext';
 
 // URL hình ảnh placeholder tạm thời
 const PLACEHOLDER_IMAGE_URL = 'https://picsum.photos/1080/1920';
 
 function ProductCard({ product }) {
   const session = JSON.parse(localStorage.getItem("session"));
+  const { addToWishlist} = useContext(FavoriteContext);
   const navigate = useNavigate();
   // Đảm bảo product và basePrice tồn tại trước khi định dạng
   const formattedPrice = product?.basePrice != null ? product.basePrice.toLocaleString('vi-VN') : 'Đang cập nhật';
@@ -29,8 +31,9 @@ function ProductCard({ product }) {
     },session.token);
   };
 
-  const handleAddToWishlist = (e) => {
+  const handleAddToWishlist = (e,idProduct) => {
     e.stopPropagation();
+    addToWishlist(idProduct);
     // TODO: Implement add to wishlist
   };
 
@@ -66,7 +69,7 @@ function ProductCard({ product }) {
           {/* Nút Yêu thích */}
           <button 
             className="p-3 rounded-full bg-white text-red-600 hover:bg-red-700 hover:text-white transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
-            onClick={handleAddToWishlist}
+            onClick={(e)=> handleAddToWishlist(e,product.id)}
             aria-label="Thêm vào yêu thích"
           >
              <FaHeart className="h-6 w-6" />

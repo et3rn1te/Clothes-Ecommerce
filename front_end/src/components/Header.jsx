@@ -9,7 +9,7 @@ import CategoryService from '../API/CategoryService';
 import { FavoriteContext } from "./FavoriteContext/FavoriteContext";
 
 const Header = () => {
-  const { wishlistItems }= useContext(FavoriteContext);
+  const { wishlistItems,clearWishlist,setSession }= useContext(FavoriteContext);
   const wishlistCount = wishlistItems.length;
   console.log(wishlistItems.length);
   const [isOpen, setIsOpen] = useState(false);
@@ -41,6 +41,7 @@ const Header = () => {
     const check = async () => {
       const session = JSON.parse(localStorage.getItem("session"));
       if (session && session !== "undefined") {
+        setSession(session);
         const isValid = await checkToken(session.token);
         console.log("Token valid:", isValid);
         if (isValid) {

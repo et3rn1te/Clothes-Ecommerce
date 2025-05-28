@@ -30,23 +30,32 @@ public class FavoriteService implements IFavoriteService{
     private final ProductMapper productMapper;
 
     @Override
-    public ApiResponse<Void> addFavorite(Long userId, Long productId) {
+    public ApiResponse<ProductResponse> addFavorite(Long userId, Long productId) {
         User user = userRepository.findUserById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
         if (user == null || product == null) {
-            return ApiResponse.<Void>builder()
+            return ApiResponse.<ProductResponse>builder()
                     .code(1)
                     .message("User hoặc Product không tồn tại.")
                     .build();
+        }else{
+            if(favoriteRepository.existsByIdUser_IdAndIdProduct_Id(userId,productId)){
+                return ApiResponse.<ProductResponse>builder()
+                        .code(1)
+                        .message("Sản phẩm đã được thêm vào yêu thích trước đó")
+                        .build();
+            }
         }
         Favorite favorite = new Favorite();
         favorite.setIdUser(user);
         favorite.setIdProduct(product);
         favoriteRepository.save(favorite);
-        return ApiResponse.<Void>builder()
+        ProductResponse newOne = productMapper.toResponse(product);
+        return ApiResponse.<ProductResponse>builder()
+                .result(newOne)
                 .message("Thêm thành công vào danh sách yêu thích.")
                 .build();
     }
