@@ -23,6 +23,10 @@ const routes = [
     component: lazy(() => import('../pages/Profile')),
   },
   {
+    path: '/wishList',
+    component: lazy(() => import('../pages/WishList')),
+  },
+  {
     path: '/product/:slug',
     component: lazy(() => import('../pages/ProductDetailPage')),
   },

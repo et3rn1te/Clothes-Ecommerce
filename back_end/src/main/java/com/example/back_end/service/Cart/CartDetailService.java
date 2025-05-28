@@ -80,6 +80,5 @@ public class CartDetailService implements ICartService{
         return list.stream()
                 .map(cartDetail -> modelMapper.map(cartDetail, CartDetailDto.class))
                 .collect(Collectors.toList());
-
     }
 }
