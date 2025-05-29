@@ -1,20 +1,23 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FiSearch, FiShoppingCart, FiHeart, FiMenu, FiX, FiMic } from "react-icons/fi";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaUserCircle } from "react-icons/fa";
 import { MdEmail, MdPhone } from "react-icons/md";
 import { useNavigate, Link } from "react-router-dom";
 import { introspect, logOutApi } from "../API/AuthService";
 import { listCartItem } from "../API/CartService";
 import CategoryService from '../API/CategoryService';
 import { FavoriteContext } from "./FavoriteContext/FavoriteContext";
+import { checkAndRefreshSession } from "../utils/tokenUtils";
+import { toast } from "react-toastify";
 
 const Header = () => {
-  const { wishlistItems,clearWishlist,setSession }= useContext(FavoriteContext);
+  const { wishlistItems, clearWishlist, setSession } = useContext(FavoriteContext);
   const wishlistCount = wishlistItems.length;
   console.log(wishlistItems.length);
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [userAvatar, setUserAvatar] = useState(null);
   // const [wishlistCount, setWishlistCount] = useState(wishlistItems.length);
   //Tìm kiếm giọng nói
   const [isListening, setIsListening] = useState(false);
@@ -23,7 +26,7 @@ const Header = () => {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const recognition = SpeechRecognition ? new SpeechRecognition() : null;
   // xử lý login
-  const [isLogin,setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(false);
   const cartClick = () => {navigate('/cart')};
   const wishlistClick =()=> {navigate('/wishList')}
   const checkToken = async (token) => {
@@ -38,30 +41,39 @@ const Header = () => {
   };
   
   useEffect(() => {
-    const check = async () => {
-      const session = JSON.parse(localStorage.getItem("session"));
-      if (session && session !== "undefined") {
-        setSession(session);
-        const isValid = await checkToken(session.token);
-        console.log("Token valid:", isValid);
-        if (isValid) {
-          setIsLogin(true);
-          
-          await listCartItem({userId:session.currentUser.id,token:session.token})
-            .then((res)=>{
-              const { code, message, result } = res.data;
-              // console.log(res.data);
-              setCartCount(result.length);
-            });
-
+    const checkSession = async () => {
+      const currentSession = checkAndRefreshSession();
+      if (currentSession) {
+        setSession(currentSession);
+        setIsLogin(true);
+        if (currentSession.currentUser?.imageUrl) {
+          setUserAvatar(currentSession.currentUser.imageUrl);
         } else {
-          setIsLogin(false);
-          setCartCount(0);
+          setUserAvatar(null);
         }
+        try {
+          const response = await listCartItem({
+            userId: currentSession.currentUser.id,
+            token: currentSession.token
+          });
+          const { result } = response.data;
+          setCartCount(result.length);
+        } catch (error) {
+          if (error.response?.status === 401) {
+            handleLogout();
+          } else {
+            console.error("Error fetching cart:", error);
+          }
+        }
+      } else {
+        setIsLogin(false);
+        setCartCount(0);
+        setUserAvatar(null);
       }
     };
-    check();
-  }, [isLogin]);
+
+    checkSession();
+  }, []);
   
   // State to store category links (name and link)
   const [categoryLinks, setCategoryLinks] = useState([]);
@@ -98,15 +110,23 @@ const Header = () => {
     console.log("Login status: "+isLogin);
    }, []);
 
-  //Xử lý logout
-  const logOut = async (e)=> {
-    const session = JSON.parse(localStorage.getItem("session"));
-    setIsOpen(false);
-    setCartCount(0);
-    localStorage.clear();
-    await logOutApi({token:session.token});
-    setIsLogin(false);
-    clearWishlist();
+  const handleLogout = async () => {
+    try {
+      const currentSession = checkAndRefreshSession();
+      if (currentSession) {
+        await logOutApi({ token: currentSession.token });
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    } finally {
+      setIsOpen(false);
+      setCartCount(0);
+      localStorage.removeItem("session");
+      setIsLogin(false);
+      clearWishlist();
+      toast.success("Đăng xuất thành công");
+      navigate('/auth/login');
+    }
   };
   
   if (recognition) {
@@ -177,25 +197,54 @@ const Header = () => {
               <div className="relative">
                 <button 
                   onClick={() => setIsOpen(!isOpen)} 
-                  className="w-8 h-8 rounded-full overflow-hidden focus:outline-none ring-2 ring-gray-200 hover:ring-blue-500"
+                  className="w-8 h-8 rounded-full overflow-hidden focus:outline-none ring-2 ring-gray-200 hover:ring-blue-500 flex items-center justify-center bg-gray-100"
                 >
-                  <img 
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                    alt="User avatar" 
-                    className="w-full h-full object-cover"
-                  />
+                  {userAvatar ? (
+                    <img 
+                      src={userAvatar}
+                      alt="User avatar" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        setUserAvatar(null);
+                      }}
+                    />
+                  ) : (
+                    <FaUserCircle className="w-full h-full text-gray-400" />
+                  )}
                 </button>
                 {isOpen && ( // Positioned under the button
                   <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                     <div className="py-1" role="menu">
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
-                      <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Settings</a>
-                      <a onClick={logOut} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Log out</a>
+                      <Link 
+                        to="/profile" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" 
+                        role="menuitem"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Thông tin cá nhân
+                      </Link>
+                      <button 
+                        onClick={() => {
+                          setIsOpen(false);
+                          handleLogout();
+                        }} 
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" 
+                        role="menuitem"
+                      >
+                        Đăng xuất
+                      </button>
                     </div>
                   </div>
                 )}
               </div>
-              : <button className="text-sm text-gray-300 hover:text-white transition-colors duration-300" onClick={loginClick}>Login</button>
+              : <button 
+                className="text-sm text-gray-300 hover:text-white transition-colors duration-300 flex items-center gap-2" 
+                onClick={loginClick}
+              >
+                <FaUserCircle className="w-5 h-5" />
+                Login
+              </button>
               }
           </div>
         </div>

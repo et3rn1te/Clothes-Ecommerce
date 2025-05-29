@@ -1,19 +1,21 @@
 package com.example.back_end.exception;
 
-public class AppException extends RuntimeException{
+import lombok.Getter;
+
+@Getter
+public class AppException extends RuntimeException {
+    private final ErrorCode errorCode;
+    private final String message;
+
     public AppException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
+        this.message = errorCode.getMessage();
     }
 
-    private ErrorCode errorCode;
-
-    public ErrorCode getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(ErrorCode errorCode) {
+    public AppException(ErrorCode errorCode, String message) {
+        super(message);
         this.errorCode = errorCode;
+        this.message = message;
     }
-
 }

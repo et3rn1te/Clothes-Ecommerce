@@ -26,16 +26,16 @@ import java.util.List;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     // Xác thực yêu cầu
-    private final String[] PUBLIC_ENDPOINTS_POST = { "users/createUser",
+    private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
             "auth/login", "auth/introspect", "/verifyRegister", "auth/register", "users/existUser", "/products/**",
-            "/categories/**", "/users/**" };
-    private final String[] PUBLIC_ENDPOINTS_GET = { "cart/listCartItem/**" ,"favorite/idUser/**"};
-    private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = { "/users/**", "/categories/**", "/products/**",
-            "/auth/verifyAccount", "/discount/getDiscount", "/genders/**", "/colors/**", "/sizes/**" };
-    private final String[] PUBLIC_ENDPOINTS_PUT = { "/users/**", "/categories/**", "/products/**" };
-    private final String[] PUBLIC_ENDPOINTS_PATCH = { "/users/**", "/categories/**", "/products/**" };
-    private final String[] PUBLIC_ENDPOINTS_DELETE = { "/users/**", "/categories/**", "/products/**","/favorite/delete" };
-    private final String[] PUBLIC_ENDPOINTS_LOGIN = { "/logout", "/cart/updateItem", "/order/add" ,"/favorite/add"};
+            "/categories/**", "/users/**"};
+    private final String[] PUBLIC_ENDPOINTS_GET = {"cart/listCartItem/**", "favorite/idUser/**"};
+    private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = {"/users/**", "/categories/**", "/products/**",
+            "/auth/verifyAccount", "/discount/getDiscount", "/genders/**", "/colors/**", "/sizes/**", "brands/**"};
+    private final String[] PUBLIC_ENDPOINTS_PUT = {"/users/**", "/categories/**", "/products/**"};
+    private final String[] PUBLIC_ENDPOINTS_PATCH = {"/users/**", "/categories/**", "/products/**"};
+    private final String[] PUBLIC_ENDPOINTS_DELETE = {"/users/**", "/categories/**", "/products/**", "/favorite/delete"};
+    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout", "/cart/updateItem", "/order/add", "/favorite/add"};
 
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
