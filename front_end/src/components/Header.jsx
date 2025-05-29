@@ -27,11 +27,11 @@ const Header = () => {
   const recognition = SpeechRecognition ? new SpeechRecognition() : null;
   // xử lý login
   const [isLogin, setIsLogin] = useState(false);
-  const cartClick = () => {navigate('/cart')};
-  const wishlistClick =()=> {navigate('/wishList')}
+  const cartClick = () => { navigate('/cart') };
+  const wishlistClick = () => { navigate('/wishList') }
   const checkToken = async (token) => {
     try {
-      const response = await introspect({token});
+      const response = await introspect({ token });
       console.log(response.data.result.valid);
       return response.data.result.valid;
     } catch (error) {
@@ -39,7 +39,7 @@ const Header = () => {
       return false; // Nếu có lỗi thì coi token không hợp lệ
     }
   };
-  
+
   useEffect(() => {
     const checkSession = async () => {
       const currentSession = checkAndRefreshSession();
@@ -74,7 +74,7 @@ const Header = () => {
 
     checkSession();
   }, []);
-  
+
   // State to store category links (name and link)
   const [categoryLinks, setCategoryLinks] = useState([]);
 
@@ -89,26 +89,26 @@ const Header = () => {
       const fetchedLinks = [];
 
       for (const category of menuCategories) {
-        fetchedLinks.push({ 
+        fetchedLinks.push({
           name: category.name,
           link: `/${category.slug}`
         });
       }
-      
+
       setCategoryLinks(fetchedLinks);
     };
 
     fetchCategoryLinks();
   }, []);
 
-   // Effect to check login status (moved from previous useEffect)
-   useEffect(() => {
+  // Effect to check login status (moved from previous useEffect)
+  useEffect(() => {
     const jwtToken = localStorage.getItem("jwtToken");
     if (jwtToken && jwtToken !== "null" && jwtToken !== "undefined") {
       setIsLogin(true);
-    } 
-    console.log("Login status: "+isLogin);
-   }, []);
+    }
+    console.log("Login status: " + isLogin);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -128,41 +128,41 @@ const Header = () => {
       navigate('/auth/login');
     }
   };
-  
+
   if (recognition) {
-  recognition.continuous = false;
-  recognition.lang = "vi-VN";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+    recognition.lang = "vi-VN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-  recognition.onresult = (event) => {
-    const text = event.results[0][0].transcript;
-    setSearchQuery(text);
-    setIsListening(false);
-  };
+    recognition.onresult = (event) => {
+      const text = event.results[0][0].transcript;
+      setSearchQuery(text);
+      setIsListening(false);
+    };
 
-  recognition.onerror = (event) => {
-    console.error("Speech recognition error", event.error);
-    setIsListening(false);
-  };
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error", event.error);
+      setIsListening(false);
+    };
   }
   const handleVoiceSearch = () => {
-  if (!recognition) {
-    alert("Speech recognition is not supported in your browser");
-    return;
-  }
+    if (!recognition) {
+      alert("Speech recognition is not supported in your browser");
+      return;
+    }
 
-  if (isListening) {
-    recognition.stop();
-    setIsListening(false);
-  } else {
-    recognition.start();
-    setIsListening(true);
-  }
+    if (isListening) {
+      recognition.stop();
+      setIsListening(false);
+    } else {
+      recognition.start();
+      setIsListening(true);
+    }
   };
   //
-  const navigate = useNavigate(); 
-  
+  const navigate = useNavigate();
+
   const loginClick = () => {
     navigate('/auth/login');
   }
@@ -193,16 +193,16 @@ const Header = () => {
               <FaLinkedinIn className="text-gray-300 hover:text-white transition-colors duration-300 cursor-pointer" />
             </div>
             {/* Add login/logout status here if needed in top bar */}
-             {isLogin ?
+            {isLogin ?
               <div className="relative">
-                <button 
-                  onClick={() => setIsOpen(!isOpen)} 
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
                   className="w-8 h-8 rounded-full overflow-hidden focus:outline-none ring-2 ring-gray-200 hover:ring-blue-500 flex items-center justify-center bg-gray-100"
                 >
                   {userAvatar ? (
-                    <img 
+                    <img
                       src={userAvatar}
-                      alt="User avatar" 
+                      alt="User avatar"
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.onerror = null;
@@ -216,20 +216,20 @@ const Header = () => {
                 {isOpen && ( // Positioned under the button
                   <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                     <div className="py-1" role="menu">
-                      <Link 
-                        to="/profile" 
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" 
+                      <Link
+                        to="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         role="menuitem"
                         onClick={() => setIsOpen(false)}
                       >
                         Thông tin cá nhân
                       </Link>
-                      <button 
+                      <button
                         onClick={() => {
                           setIsOpen(false);
                           handleLogout();
-                        }} 
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" 
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         role="menuitem"
                       >
                         Đăng xuất
@@ -238,14 +238,14 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              : <button 
-                className="text-sm text-gray-300 hover:text-white transition-colors duration-300 flex items-center gap-2" 
+              : <button
+                className="text-sm text-gray-300 hover:text-white transition-colors duration-300 flex items-center gap-2"
                 onClick={loginClick}
               >
                 <FaUserCircle className="w-5 h-5" />
                 Login
               </button>
-              }
+            }
           </div>
         </div>
       </div>
@@ -284,16 +284,23 @@ const Header = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && searchQuery.trim()) {
+                      navigate(`/search?keyword=${encodeURIComponent(searchQuery)}`);
+                    }
+                  }}
+                  placeholder="Tìm kiếm sản phẩm..."
                   className="w-40 lg:w-80 px-4 py-2 rounded-full border border-gray-200 focus:outline-none focus:border-blue-900 focus:ring-2 focus:ring-blue-100 transition-all duration-300"
                 />
-                <button 
-                  onClick={handleVoiceSearch}
-                  className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full ${
-                    isListening ? "text-blue-900" : "text-gray-400"
-                  } hover:bg-blue-50 transition-colors duration-300`}
+                <button
+                  onClick={() => {
+                    if (searchQuery.trim()) {
+                      navigate(`/search?keyword=${encodeURIComponent(searchQuery)}`);
+                    }
+                  }}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-blue-900"
                 >
-                  <FiMic className="w-5 h-5" />
+                  <FiSearch className="w-5 h-5" />
                 </button>
               </div>
               <div className="flex items-center space-x-6">
@@ -328,7 +335,7 @@ const Header = () => {
             <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)} />
             <div className="absolute top-0 right-0 w-64 h-full bg-white shadow-lg py-4 px-6 transform transition-transform duration-300">
               <div className="flex justify-end">
-                <button 
+                <button
                   onClick={() => setIsMenuOpen(false)}
                   className="text-gray-600 hover:text-blue-900 transition-colors duration-300"
                 >

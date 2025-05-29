@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -46,33 +47,6 @@ public class ProductController {
             @PathVariable Long id,
             @RequestBody ProductUpdateRequest request) {
         return ResponseEntity.ok(productService.updateProduct(id, request));
-    }
-
-    /**
-     * Method to delete Product
-     *
-     * @param id: Product's id
-     * @return No content if deleted successfully
-     */
-    @DeleteMapping("/{id}")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Method to get Products by Category Name with pagination
-     *
-     * @param name: Category's name
-     * @param pageable: Pagination parameters (page, size, sort)
-     * @return JSON body contains paginated list of Product summaries for the specified category name
-     */
-    @GetMapping("/category/name/{name}")
-    public ResponseEntity<PageResponse<ProductSummary>> getProductsByCategoryName(
-            @PathVariable String name,
-            Pageable pageable) {
-        return ResponseEntity.ok(productService.getProductsByCategoryName(name, pageable));
     }
 
     /**
@@ -195,17 +169,24 @@ public class ProductController {
      * Method to get Products by Category Slug and Gender Slug with pagination
      *
      * @param categorySlug: Category's slug
-     * @param genderSlug: Gender's slug
      * @param pageable: Pagination parameters (page, size, sort)
      * @return JSON body contains paginated list of Product summaries for the specified category and gender
      */
     @GetMapping("/category/slug/{categorySlug}")
     public ResponseEntity<PageResponse<ProductSummary>> getProductsByCategorySlug(
             @PathVariable String categorySlug,
-            @RequestParam String genderSlug,
+            @RequestParam(required = false) List<Long> colorIds,
+            @RequestParam(required = false) List<Long> sizeIds,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
             Pageable pageable) {
-        return ResponseEntity.ok(productService.getProductsByCategorySlug(categorySlug, genderSlug, pageable));
+
+        PageResponse<ProductSummary> response = productService.getFilteredProductsByCategorySlugWithFilter(
+                categorySlug, colorIds, sizeIds, minPrice, maxPrice, pageable
+        );
+        return ResponseEntity.ok(response);
     }
+
 
     @GetMapping("/{id}/related")
     public ResponseEntity<PageResponse<ProductSummary>> getRelatedProducts(

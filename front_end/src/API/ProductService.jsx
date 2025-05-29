@@ -86,16 +86,22 @@ const ProductService = {
   },
 
   // Lấy sản phẩm theo danh mục
-  getProductsByCategory: async (categorySlug, genderSlug, page = 0, size = 12, sort = 'createdAt,desc') => {
+  getProductsByCategory: async (
+    categorySlug,
+    { colorIds, sizeIds, minPrice, maxPrice, page = 0, size = 12, sort = 'createdAt,desc' }
+  ) => {
     try {
-      const response = await axiosClient.get(`/products/category/slug/${categorySlug}`, {
-        params: {
-          genderSlug,
-          page,
-          size,
-          sort
-        }
-      });
+      const params = {
+        page,
+        size,
+        sort,
+      };
+      if (colorIds?.length) params.colorIds = colorIds.join(',');
+      if (sizeIds?.length) params.sizeIds = sizeIds.join(',');
+      if (minPrice) params.minPrice = minPrice;
+      if (maxPrice) params.maxPrice = maxPrice;
+
+      const response = await axiosClient.get(`/products/category/slug/${categorySlug}`, { params });
       return response;
     } catch (error) {
       console.error(`Lỗi khi lấy sản phẩm theo danh mục ${categorySlug}:`, error);

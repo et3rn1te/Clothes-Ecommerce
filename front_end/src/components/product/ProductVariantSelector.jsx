@@ -1,85 +1,71 @@
-import { useVariantSelection } from '../../hooks/useVariantSelection';
+import React, { useState, useEffect } from 'react';
 
 const ProductVariantSelector = ({ product, onVariantChange }) => {
-  const {
-    selectedColor,
-    selectedSize,
-    availableSizes,
-    handleColorChange,
-    handleSizeChange,
-    isVariantAvailable,
-    selectedVariant,
-    isLoading
-  } = useVariantSelection(product, onVariantChange);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [availableSizes, setAvailableSizes] = useState([]);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
-        <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
-      </div>
-    );
-  }
+  // Cập nhật danh sách size theo màu
+  useEffect(() => {
+    if (selectedColor) {
+      const sizes = product.variants
+        .filter(variant => variant.color.id === selectedColor.id)
+        .map(variant => variant.size);
+      setAvailableSizes(sizes);
+    } else {
+      setAvailableSizes([]);
+    }
+    setSelectedSize(null);
+    onVariantChange(null);
+  }, [selectedColor]);
 
-  // Lấy danh sách màu sắc duy nhất từ các biến thể
-  const uniqueColors = Array.from(new Set(
-    product.variants
-      .filter(v => v.active)
-      .map(v => JSON.stringify(v.color))
-  )).map(str => JSON.parse(str));
+  // Chọn variant
+  useEffect(() => {
+    if (selectedColor && selectedSize) {
+      const variant = product.variants.find(
+        v => v.color.id === selectedColor.id && v.size.id === selectedSize.id
+      );
+      onVariantChange(variant || null);
+    }
+  }, [selectedColor, selectedSize]);
 
   return (
     <div className="space-y-6">
-      {/* Chọn màu sắc */}
+      {/* Color Picker */}
       <div>
-        <h3 className="text-sm font-medium text-gray-900 mb-2">
-          Màu sắc
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {uniqueColors.map((color) => (
-            <button
-              key={color.id}
-              onClick={() => handleColorChange(color)}
-              className={`relative p-1 rounded-full border-2 ${
-                selectedColor?.id === color.id
-                  ? 'border-blue-500'
-                  : 'border-transparent'
-              }`}
-              disabled={!color.available}
-            >
-              <span
-                className="block w-8 h-8 rounded-full"
-                style={{ backgroundColor: color.hexCode }}
-                title={color.name}
-              />
-              {!color.available && (
-                <span className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full" />
-              )}
-            </button>
-          ))}
+        <h4 className="text-sm font-semibold mb-2">Màu sắc</h4>
+        <div className="flex gap-3">
+          {Array.from(new Set(product.variants.map(v => v.color.id)))
+            .map(colorId => {
+              const color = product.variants.find(v => v.color.id === colorId).color;
+              return (
+                <button
+                  key={color.id}
+                  onClick={() => setSelectedColor(color)}
+                  className={`w-8 h-8 rounded-full border-2 ${
+                    selectedColor?.id === color.id ? 'border-gray-800 scale-110' : 'border-gray-300'
+                  }`}
+                  style={{ backgroundColor: color.hexCode }}
+                  title={color.name}
+                />
+              );
+            })}
         </div>
       </div>
 
-      {/* Chọn kích thước */}
-      {availableSizes.length > 0 && (
+      {/* Size Picker */}
+      {selectedColor && (
         <div>
-          <h3 className="text-sm font-medium text-gray-900 mb-2">
-            Kích thước
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {availableSizes.map((size) => (
+          <h4 className="text-sm font-semibold mb-2">Kích thước</h4>
+          <div className="flex gap-3 flex-wrap">
+            {availableSizes.map(size => (
               <button
                 key={size.id}
-                onClick={() => handleSizeChange(size)}
-                disabled={!isVariantAvailable(selectedColor, size)}
-                className={`px-4 py-2 text-sm font-medium rounded-md border ${
+                onClick={() => setSelectedSize(size)}
+                className={`px-4 py-2 border rounded ${
                   selectedSize?.id === size.id
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                } ${
-                  !isVariantAvailable(selectedColor, size)
-                    ? 'opacity-50 cursor-not-allowed'
-                    : ''
+                    ? 'bg-gray-800 text-white'
+                    : 'border-gray-300 text-gray-700 hover:border-gray-400'
                 }`}
               >
                 {size.name}
@@ -88,27 +74,8 @@ const ProductVariantSelector = ({ product, onVariantChange }) => {
           </div>
         </div>
       )}
-
-      {/* Thông tin biến thể đã chọn */}
-      {selectedVariant && (
-        <div className="p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">
-                Đã chọn: {selectedColor?.name} - {selectedSize?.name}
-              </p>
-              <p className="text-sm font-medium text-gray-900">
-                Mã biến thể: {selectedVariant.sku}
-              </p>
-            </div>
-            <p className="text-sm font-medium text-gray-900">
-              Số lượng: {selectedVariant.stockQuantity}
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default ProductVariantSelector; 
+export default ProductVariantSelector;
