@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.example.back_end.dto.response.PageResponse;
@@ -245,8 +246,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public PageResponse<ProductSummary> getProductsByCategorySlug(String categorySlug, String genderSlug, Pageable pageable) {
-        Page<Product> productPage = productRepository.findByCategorySlugAndGenderSlug(categorySlug, genderSlug, pageable);
+    public PageResponse<ProductSummary> getProductsByCategorySlug(String categorySlug, Pageable pageable) {
+        Page<Product> productPage = productRepository.findByCategorySlug(categorySlug, pageable);
         return PageResponse.<ProductSummary>builder()
                 .content(productPage.getContent().stream()
                         .map(productMapper::toSummary)
@@ -294,4 +295,34 @@ public class ProductService implements IProductService {
                 .last(relatedProducts.isLast())
                 .build();
     }
+
+    public PageResponse<ProductSummary> getFilteredProductsByCategorySlugWithFilter(
+            String categorySlug,
+            List<Long> colorIds,
+            List<Long> sizeIds,
+            BigDecimal minPrice,
+            BigDecimal maxPrice,
+            Pageable pageable) {
+
+        boolean categoryExists = categoryRepository.existsBySlug(categorySlug);
+        if (!categoryExists) {
+            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
+        }
+
+        Page<Product> productPage = productRepository.findByCategorySlugWithFilters(
+                categorySlug, colorIds, sizeIds, minPrice, maxPrice, pageable
+        );
+
+        List<ProductSummary> summaries = productMapper.toSummaryList(productPage.getContent());
+
+        return PageResponse.<ProductSummary>builder()
+                .content(summaries)
+                .pageNo(productPage.getNumber())
+                .pageSize(productPage.getSize())
+                .totalElements(productPage.getTotalElements())
+                .totalPages(productPage.getTotalPages())
+                .last(productPage.isLast())
+                .build();
+    }
+
 }

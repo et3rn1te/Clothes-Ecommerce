@@ -244,4 +244,10 @@ public class ProductImageService implements IProductImageService {
         image.setPrimary(true);
         imageRepository.save(image);
     }
+
+    @Override
+    public List<ProductImageResponse> getImagesByVariantId(Long variantId) {
+        List<ProductImage> images = imageRepository.findByVariantId(variantId);
+        return imageMapper.toResponseList(images);
+    }
 }

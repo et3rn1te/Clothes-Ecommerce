@@ -4,6 +4,7 @@ import com.example.back_end.constant.PredefinedRole;
 import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.request.UserCreationRequest;
+import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.AuthenticationResponse;
 import com.example.back_end.dto.response.IntrospectResponse;
 import com.example.back_end.entity.Role;
@@ -34,6 +35,16 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import com.example.back_end.dto.response.PageResponse;
+import com.example.back_end.dto.request.user.ChangePasswordRequest;
+import com.example.back_end.dto.request.user.UpdateUserProfileRequest;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -46,6 +57,9 @@ public class UserService implements IUserService {
 
     @Value("${jwt.signer-key}")
     private String SIGNER_KEY;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Override
     public User createRequest(UserCreationRequest request) {
@@ -155,5 +169,93 @@ public class UserService implements IUserService {
             user.getRoles().forEach(role -> joiner.add(role.getName()));
         }
         return joiner.toString();
+    }
+
+    @Override
+    public UserDto getCurrentUser() {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    public UserDto updateProfile(Long userId, UpdateUserProfileRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Kiểm tra xem số điện thoại mới có bị trùng không
+        if (!user.getPhone().equals(request.getPhone()) &&
+            userRepository.existsByPhone(request.getPhone())) {
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Số điện thoại đã được sử dụng");
+        }
+
+        user.setFullname(request.getFullname());
+        user.setPhone(request.getPhone());
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
+    }
+
+    @Override
+    public ApiResponse<Void> changePassword(Long userId, ChangePasswordRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Kiểm tra mật khẩu hiện tại
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Mật khẩu xác nhận không khớp");
+        }
+
+        // Kiểm tra mật khẩu mới không được trùng với mật khẩu cũ
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+            throw new AppException(ErrorCode.INVALID_REQUEST, "Mật khẩu mới không được trùng với mật khẩu cũ");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        return ApiResponse.<Void>builder()
+                .code(0)
+                .message("Đổi mật khẩu thành công")
+                .build();
+    }
+
+    @Override
+    public UserDto updateAvatar(Long userId, MultipartFile file) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        try {
+            // Upload ảnh lên Cloudinary
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(
+                file.getBytes(),
+                ObjectUtils.asMap(
+                    "folder", "user_avatars",
+                    "resource_type", "image"
+                )
+            );
+
+            // Xóa ảnh cũ nếu có
+            if (user.getImageUrl() != null) {
+                String publicId = user.getImageUrl().split("/")[user.getImageUrl().split("/").length - 1].split("\\.")[0];
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            }
+
+            // Cập nhật URL ảnh mới
+            user.setImageUrl((String) uploadResult.get("secure_url"));
+            User updatedUser = userRepository.save(user);
+            return userMapper.toDto(updatedUser);
+
+        } catch (IOException e) {
+            log.error("Failed to upload avatar", e);
+            throw new AppException(ErrorCode.CLOUDINARY_ERROR);
+        }
     }
 }

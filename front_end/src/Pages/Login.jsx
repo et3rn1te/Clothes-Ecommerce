@@ -192,7 +192,7 @@ const Login = () => {
     } else if (authState === "forgot" ) {
       return validateEmail(formData.email) && isCheckingEmail;
     } else if (authState === "register"){
-      return validateEmail(formData.email) && !isCheckingEmail;
+      return validateEmail(formData.email) && isCheckingEmail;
     }
     return false;
   };

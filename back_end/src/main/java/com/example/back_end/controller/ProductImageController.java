@@ -5,6 +5,7 @@ import com.example.back_end.dto.request.product.ProductImageUpdateRequest;
 import com.example.back_end.dto.response.product.ProductImageResponse;
 import com.example.back_end.dto.response.product.ProductImageSummary;
 import com.example.back_end.service.product.IProductImageService;
+import com.example.back_end.service.product.ProductImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductImageController {
     private final IProductImageService imageService;
+    private final ProductImageService productImageService;
 
     /**
      * Create a new product image with file upload.
@@ -132,4 +134,10 @@ public class ProductImageController {
         imageService.deleteImagesByProduct(productId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/variant/{variantId}")
+    public List<ProductImageResponse> getImagesByVariantId(@PathVariable Long variantId) {
+        return productImageService.getImagesByVariantId(variantId);
+    }
+
 }

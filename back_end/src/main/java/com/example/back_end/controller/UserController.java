@@ -2,6 +2,8 @@ package com.example.back_end.controller;
 
 import com.example.back_end.dto.UserDto;
 import com.example.back_end.dto.request.UserCreationRequest;
+import com.example.back_end.dto.request.user.ChangePasswordRequest;
+import com.example.back_end.dto.request.user.UpdateUserProfileRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.entity.User;
 import com.example.back_end.repository.UserRepository;
@@ -9,8 +11,11 @@ import com.example.back_end.service.user.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Pageable;
 import com.example.back_end.dto.response.PageResponse;
 
@@ -102,21 +107,113 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/me")
-//    public ResponseEntity<ApiResponse<UserDto>> getCurrentUser() {
-//        String username = SecurityContextHolder.getContext()
-//                .getAuthentication().getName();
-//        UserDto dto = userService.convertToDto(
-//                userService.getUserByUsername(username)
-//        );
-//        return ResponseEntity.ok(
-//                ApiResponse.<UserDto>builder()
-//                        .code(0)
-//                        .message("Current user retrieved successfully")
-//                        .data(dto)
-//                        .build()
-//        );
-//    }
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<UserDto>> getCurrentUser() {
+        try {
+            UserDto userDto = userService.getCurrentUser();
+            return ResponseEntity.ok(
+                    ApiResponse.<UserDto>builder()
+                            .code(0)
+                            .message("Lấy thông tin người dùng thành công")
+                            .data(userDto)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to get current user", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserDto>builder()
+                            .code(1)
+                            .message("Không thể lấy thông tin người dùng: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    @PutMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<UserDto>> updateProfile(
+            @RequestBody @Valid UpdateUserProfileRequest request) {
+        try {
+            UserDto currentUser = userService.getCurrentUser();
+            UserDto updatedUser = userService.updateProfile(currentUser.getId(), request);
+            return ResponseEntity.ok(
+                    ApiResponse.<UserDto>builder()
+                            .code(0)
+                            .message("Cập nhật thông tin thành công")
+                            .data(updatedUser)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to update profile", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserDto>builder()
+                            .code(1)
+                            .message("Không thể cập nhật thông tin: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    @PutMapping("/me/password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> changePassword(
+            @RequestBody @Valid ChangePasswordRequest request) {
+        try {
+            UserDto currentUser = userService.getCurrentUser();
+            ApiResponse<Void> response = userService.changePassword(currentUser.getId(), request);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Failed to change password", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<Void>builder()
+                            .code(1)
+                            .message("Không thể đổi mật khẩu: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    @PutMapping(value = "/me/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<UserDto>> updateAvatar(
+            @RequestParam("file") MultipartFile file) {
+        try {
+            // Kiểm tra định dạng file
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return ResponseEntity.badRequest()
+                        .body(ApiResponse.<UserDto>builder()
+                                .code(1)
+                                .message("File không phải là hình ảnh")
+                                .build());
+            }
+
+            // Kiểm tra kích thước file (tối đa 5MB)
+            if (file.getSize() > 5 * 1024 * 1024) {
+                return ResponseEntity.badRequest()
+                        .body(ApiResponse.<UserDto>builder()
+                                .code(1)
+                                .message("Kích thước file quá lớn (tối đa 5MB)")
+                                .build());
+            }
+
+            UserDto currentUser = userService.getCurrentUser();
+            UserDto updatedUser = userService.updateAvatar(currentUser.getId(), file);
+            return ResponseEntity.ok(
+                    ApiResponse.<UserDto>builder()
+                            .code(0)
+                            .message("Cập nhật ảnh đại diện thành công")
+                            .data(updatedUser)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to update avatar", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserDto>builder()
+                            .code(1)
+                            .message("Không thể cập nhật ảnh đại diện: " + e.getMessage())
+                            .build());
+        }
+    }
+
     @PostMapping("/existUser")
     ApiResponse<Boolean> existUser(@RequestParam ("email") String email) {
         boolean rs = true;
