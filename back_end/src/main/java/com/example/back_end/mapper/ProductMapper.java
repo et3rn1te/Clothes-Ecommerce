@@ -20,7 +20,7 @@ public interface ProductMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "brand", ignore = true)
     @Mapping(target = "gender", ignore = true)
-    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "category", ignore = true)
     @Mapping(target = "images", ignore = true)
     @Mapping(target = "variants", ignore = true)
     Product toEntity(ProductCreationRequest request);

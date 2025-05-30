@@ -39,11 +39,9 @@ public class ProductCreationRequest {
     private Long genderId;
 
     @NotNull(message = "Category IDs are required")
-    private List<Long> categoryIds;
+    private List<Long> categoryIds = new ArrayList<>();
 
     private boolean featured;
 
-    private boolean active = true;
-
-    private List<ProductVariantCreationRequest> variants = new ArrayList<>();
+    private boolean active = false;
 }
