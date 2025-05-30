@@ -37,7 +37,11 @@ public class ProductImage extends BaseEntity {
     @JoinColumn(name = "variant_id")
     private ProductVariant variant;
 
-    @PrePersist
+    // New association to Color
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "color_id")
+    private Color color;
+
     @Override
     public void prePersist() {
         super.prePersist();

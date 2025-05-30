@@ -23,7 +23,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class FavoriteService implements IFavoriteService{
+public class FavoriteService implements IFavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
@@ -41,8 +41,8 @@ public class FavoriteService implements IFavoriteService{
                     .code(1)
                     .message("User hoặc Product không tồn tại.")
                     .build();
-        }else{
-            if(favoriteRepository.existsByIdUser_IdAndIdProduct_Id(userId,productId)){
+        } else {
+            if (favoriteRepository.existsByIdUser_IdAndIdProduct_Id(userId, productId)) {
                 return ApiResponse.<ProductResponse>builder()
                         .code(1)
                         .message("Sản phẩm đã được thêm vào yêu thích trước đó")
@@ -90,8 +90,8 @@ public class FavoriteService implements IFavoriteService{
     @Override
     public List<ProductResponse> getFavoritesByUserId(Long userId) {
         List<Favorite> favorites = favoriteRepository.findByIdUser_Id(userId);
-        List<ProductResponse> result= new ArrayList<>();
-        for (Favorite a : favorites){
+        List<ProductResponse> result = new ArrayList<>();
+        for (Favorite a : favorites) {
             Product product = productRepository.findById(a.getIdProduct().getId())
                     .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
             ProductResponse newOne = productMapper.toResponse(product);
@@ -99,4 +99,10 @@ public class FavoriteService implements IFavoriteService{
         }
         return result;
     }
+
+    @Override
+    public boolean isFavorite(Long userId, Long productId) {
+        return favoriteRepository.existsByIdUser_IdAndIdProduct_Id(userId, productId);
+    }
+
 }

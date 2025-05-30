@@ -16,6 +16,7 @@ public class ProductImageResponse {
     private Long id;
     private Long productId;
     private Long variantId;
+    private Long colorId;
     private String imageUrl;
     private String altText;
     private boolean primary;

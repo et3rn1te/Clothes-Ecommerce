@@ -4,6 +4,7 @@ import com.example.back_end.dto.request.product.ProductImageCreationRequest;
 import com.example.back_end.dto.request.product.ProductImageUpdateRequest;
 import com.example.back_end.dto.response.product.ProductImageResponse;
 import com.example.back_end.dto.response.product.ProductImageSummary;
+import com.example.back_end.repository.ProductImageRepository;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface IProductImageService {
     void toggleImageStatus(Long id);
 
     void setPrimaryImage(Long id);
+
+    List<ProductImageResponse> getImagesByVariantId(Long variantId);
 } 

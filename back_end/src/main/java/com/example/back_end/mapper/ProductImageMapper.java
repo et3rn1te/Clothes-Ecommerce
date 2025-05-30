@@ -27,6 +27,7 @@ public interface ProductImageMapper {
 
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "variantId", source = "variant.id")
+    @Mapping(target = "colorId", source = "variant.color.id")
     ProductImageResponse toResponse(ProductImage image);
 
     List<ProductImageResponse> toResponseList(List<ProductImage> images);

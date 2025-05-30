@@ -5,7 +5,6 @@ import { MdEmail, MdPhone } from "react-icons/md";
 import { useNavigate, Link } from "react-router-dom";
 import { introspect, logOutApi } from "../API/AuthService";
 import { listCartItem } from "../API/CartService";
-import CategoryService from '../API/CategoryService';
 import { FavoriteContext } from "./FavoriteContext/FavoriteContext";
 import { checkAndRefreshSession } from "../utils/tokenUtils";
 import { toast } from "react-toastify";

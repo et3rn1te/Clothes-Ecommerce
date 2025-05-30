@@ -187,7 +187,6 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-
     @GetMapping("/{id}/related")
     public ResponseEntity<PageResponse<ProductSummary>> getRelatedProducts(
             @PathVariable Long id,

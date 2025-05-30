@@ -10,13 +10,12 @@ const formatCurrency = (price) => {
   }).format(price);
 };
 
-const ProductListPage = ({ categorySlug = 'quan-jogger-nam' }) => {
-  // Mock navigation function
-// ✅ Đúng cách
-const navigate = useNavigate();
-
-
+const ProductListPage = () => {
+  
+  const navigate = useNavigate();
+  
   // States
+  const { categorySlug } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [colors, setColors] = useState([]);
@@ -151,8 +150,8 @@ const navigate = useNavigate();
                     key={color.id}
                     onClick={() => handleColorFilter(color.id)}
                     className={`w-8 h-8 rounded-full border-2 ${selectedColors.includes(color.id)
-                        ? 'border-gray-800 scale-110'
-                        : 'border-gray-300'
+                      ? 'border-gray-800 scale-110'
+                      : 'border-gray-300'
                       } transition-all duration-200`}
                     style={{ backgroundColor: color.hexCode }}
                     title={color.name}
@@ -172,8 +171,8 @@ const navigate = useNavigate();
                     key={size.id}
                     onClick={() => handleSizeFilter(size.id)}
                     className={`px-3 py-2 text-sm border rounded ${selectedSizes.includes(size.id)
-                        ? 'border-gray-800 bg-gray-800 text-white'
-                        : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                      ? 'border-gray-800 bg-gray-800 text-white'
+                      : 'border-gray-300 text-gray-700 hover:border-gray-400'
                       } transition-colors duration-200`}
                   >
                     {size.name}
@@ -334,8 +333,8 @@ const navigate = useNavigate();
                       key={page}
                       onClick={() => handlePageChange(page)}
                       className={`px-3 py-2 border text-sm rounded ${currentPage === page
-                          ? 'border-gray-800 bg-gray-800 text-white'
-                          : 'border-gray-300 hover:bg-gray-50'
+                        ? 'border-gray-800 bg-gray-800 text-white'
+                        : 'border-gray-300 hover:bg-gray-50'
                         }`}
                     >
                       {page + 1}

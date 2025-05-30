@@ -2,6 +2,7 @@ package com.example.back_end.dto.response.product;
 
 import com.example.back_end.dto.BrandDto;
 import com.example.back_end.dto.GenderDto;
+import com.example.back_end.dto.response.category.CategoryResponse;
 import com.example.back_end.dto.response.category.CategorySummary;
 import lombok.*;
 
@@ -18,12 +19,11 @@ public class ProductDetailResponse {
     private Long id;
     private String name;
     private String description;
-    private BigDecimal basePrice;
     private BrandDto brand;
     private GenderDto gender;
-    private List<CategorySummary> categories = new ArrayList<>();
-    private List<ProductImageSummary> images = new ArrayList<>();
-    private List<ProductVariantSummary> variants = new ArrayList<>();
+    private List<CategoryResponse> categories = new ArrayList<>();
+    private List<ProductImageResponse> images = new ArrayList<>();
+    private List<ProductVariantResponse> variants = new ArrayList<>();
     private boolean featured;
     private boolean active;
     private LocalDateTime createdAt;

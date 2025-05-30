@@ -38,7 +38,7 @@ const ProductService = {
   getProductBySlug: async (slug) => {
     try {
       const response = await axiosClient.get(`/products/slug/${slug}`);
-      return response;
+      return response.data;
     } catch (error) {
       console.error(`Lỗi khi lấy thông tin sản phẩm ${slug}:`, error);
       throw error;
@@ -200,6 +200,17 @@ const ProductService = {
           sort: 'createdAt,desc'
         }
       });
+      return response;
+    } catch (error) {
+      console.error(`Lỗi khi lấy sản phẩm liên quan của ${productId}:`, error);
+      throw error;
+    }
+  },
+
+  // Lấy sản phẩm liên quan theo ID
+  getRelatedProducts: async (productId, params = {}) => {
+    try {
+      const response = await axiosClient.get(`/products/${productId}/related`, { params });
       return response;
     } catch (error) {
       console.error(`Lỗi khi lấy sản phẩm liên quan của ${productId}:`, error);
