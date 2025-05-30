@@ -24,10 +24,10 @@ public class ProductController {
     private final IProductService productService;
 
     /**
-     * Method to create Product
+     * Method to create a new product
      *
      * @param request: Product creation request containing name, description, price, brand, etc.
-     * @return JSON body contains Product info if created successfully
+     * @return JSON body contains created product information
      */
     @PostMapping
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
@@ -36,11 +36,11 @@ public class ProductController {
     }
 
     /**
-     * Method to update Product
+     * Method to update an existing product
      *
      * @param id: Product's id
      * @param request: Product update request containing fields to update
-     * @return JSON body contains updated Product info
+     * @return JSON body contains updated product information
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
@@ -51,31 +51,43 @@ public class ProductController {
     }
 
     /**
-     * Method to get Product by ID
+     * Method to get product details by ID
      *
      * @param id: Product's id
-     * @return JSON body contains detailed Product info including variants and images
+     * @return JSON body contains detailed product information including variants and images
      */
     @GetMapping("/{id}")
     public ResponseEntity<ProductDetailResponse> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductDetailById(id));
     }
 
+    /**
+     * Method to get product details by slug
+     *
+     * @param slug: Product's slug
+     * @return JSON body contains detailed product information including variants and images
+     */
     @GetMapping("/slug/{slug}")
     public ResponseEntity<ProductDetailResponse> getProductBySlug(@PathVariable String slug) {
         return ResponseEntity.ok(productService.getProductBySlug(slug));
     }
 
+    /**
+     * Method to check if a product slug exists
+     *
+     * @param slug: Product's slug to check
+     * @return JSON body contains boolean indicating if slug exists
+     */
     @GetMapping("/check-slug")
     public ResponseEntity<Boolean> checkSlugExists(@RequestParam String slug) {
         return ResponseEntity.ok(productService.existsBySlug(slug));
     }
 
     /**
-     * Method to get all Products with pagination
+     * Method to get all products with pagination
      *
      * @param pageable: Pagination parameters (page, size, sort)
-     * @return JSON body contains paginated list of Product summaries
+     * @return JSON body contains paginated list of product summaries
      */
     @GetMapping
     public ResponseEntity<PageResponse<ProductSummary>> getAllProducts(Pageable pageable) {
@@ -83,10 +95,10 @@ public class ProductController {
     }
 
     /**
-     * Method to get featured Products with pagination
+     * Method to get featured products with pagination
      *
      * @param pageable: Pagination parameters (page, size, sort)
-     * @return JSON body contains paginated list of featured Product summaries
+     * @return JSON body contains paginated list of featured product summaries
      */
     @GetMapping("/featured")
     public ResponseEntity<PageResponse<ProductSummary>> getFeaturedProducts(Pageable pageable) {
@@ -94,11 +106,11 @@ public class ProductController {
     }
 
     /**
-     * Method to search Products by keyword
+     * Method to search products by keyword
      *
      * @param keyword: Search keyword to match against product name and description
      * @param pageable: Pagination parameters (page, size, sort)
-     * @return JSON body contains paginated list of matching Product summaries
+     * @return JSON body contains paginated list of matching product summaries
      */
     @GetMapping("/search")
     public ResponseEntity<PageResponse<ProductSummary>> searchProducts(
@@ -108,10 +120,10 @@ public class ProductController {
     }
 
     /**
-     * Method to get Products by Brand
+     * Method to get products by brand ID
      *
      * @param brandId: Brand's id
-     * @return JSON body contains list of Product summaries for the specified brand
+     * @return JSON body contains list of product summaries for the specified brand
      */
     @GetMapping("/brand/{brandId}")
     public ResponseEntity<List<ProductSummary>> getProductsByBrand(@PathVariable Long brandId) {
@@ -119,10 +131,10 @@ public class ProductController {
     }
 
     /**
-     * Method to get Products by Gender
+     * Method to get products by gender name
      *
      * @param genderName: Gender's name
-     * @return JSON body contains list of Product summaries for the specified gender
+     * @return JSON body contains list of product summaries for the specified gender
      */
     @GetMapping("/gender/{genderName}")
     public ResponseEntity<List<ProductSummary>> getProductsByGender(@PathVariable String genderName) {
@@ -130,10 +142,10 @@ public class ProductController {
     }
 
     /**
-     * Method to get Products by Category
+     * Method to get products by category ID
      *
      * @param categoryId: Category's id
-     * @return JSON body contains list of Product summaries for the specified category
+     * @return JSON body contains list of product summaries for the specified category
      */
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<ProductSummary>> getProductsByCategory(@PathVariable Long categoryId) {
@@ -141,7 +153,7 @@ public class ProductController {
     }
 
     /**
-     * Method to toggle Product's active status
+     * Method to toggle product's active status
      *
      * @param id: Product's id
      * @return No content if status toggled successfully
@@ -154,7 +166,7 @@ public class ProductController {
     }
 
     /**
-     * Method to toggle Product's featured status
+     * Method to toggle product's featured status
      *
      * @param id: Product's id
      * @return No content if featured status toggled successfully
@@ -167,11 +179,15 @@ public class ProductController {
     }
 
     /**
-     * Method to get Products by Category Slug and Gender Slug with pagination
+     * Method to get filtered products by category slug with additional filters
      *
      * @param categorySlug: Category's slug
+     * @param colorIds: Optional list of color IDs to filter by
+     * @param sizeIds: Optional list of size IDs to filter by
+     * @param minPrice: Optional minimum price filter
+     * @param maxPrice: Optional maximum price filter
      * @param pageable: Pagination parameters (page, size, sort)
-     * @return JSON body contains paginated list of Product summaries for the specified category and gender
+     * @return JSON body contains paginated list of filtered product summaries
      */
     @GetMapping("/category/slug/{categorySlug}")
     public ResponseEntity<PageResponse<ProductSummary>> getProductsByCategorySlug(
@@ -188,6 +204,13 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Method to get related products for a specific product
+     *
+     * @param id: Product's id to find related products for
+     * @param pageable: Pagination parameters (page, size, sort)
+     * @return JSON body contains paginated list of related product summaries
+     */
     @GetMapping("/{id}/related")
     public ResponseEntity<PageResponse<ProductSummary>> getRelatedProducts(
             @PathVariable Long id,

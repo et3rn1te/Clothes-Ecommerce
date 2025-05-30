@@ -14,16 +14,33 @@ import java.util.List;
 public class SizeController {
     private final ISizeService sizeService;
 
+    /**
+     * Method to get all sizes
+     *
+     * @return JSON body contains list of size information
+     */
     @GetMapping
     public ResponseEntity<List<SizeDto>> getAllSizes() {
         return ResponseEntity.ok(sizeService.getAllSizes());
     }
 
+    /**
+     * Method to get size by ID
+     *
+     * @param id: Size's id
+     * @return JSON body contains size information
+     */
     @GetMapping("/{id}")
     public ResponseEntity<SizeDto> getSizeById(@PathVariable Long id) {
         return ResponseEntity.ok(sizeService.getSizeById(id));
     }
 
+    /**
+     * Method to get size by name
+     *
+     * @param name: Size's name
+     * @return JSON body contains size information
+     */
     @GetMapping("/name/{name}")
     public ResponseEntity<SizeDto> getSizeByName(@PathVariable String name) {
         return ResponseEntity.ok(sizeService.getSizeByName(name));

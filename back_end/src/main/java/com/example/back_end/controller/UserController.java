@@ -29,6 +29,12 @@ public class UserController {
     private final UserRepository userRepository;
     private final IUserService userService;
 
+    /**
+     * Method to create a new user
+     *
+     * @param request: User creation request containing user details
+     * @return JSON body contains created user information
+     */
     @PostMapping("/createUser")
     public ResponseEntity<ApiResponse<UserDto>> createUser(
             @RequestBody @Valid UserCreationRequest request) {
@@ -82,6 +88,12 @@ public class UserController {
         }
     }
 
+    /**
+     * Method to get user by ID
+     *
+     * @param id: User's id
+     * @return JSON body contains user information
+     */
     @GetMapping("/{userId}")
     public ResponseEntity<ApiResponse<UserDto>> getUserById(
             @PathVariable Long userId) {
@@ -129,6 +141,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Method to update user profile
+     *
+     * @param id: User's id
+     * @param request: User profile update request containing fields to update
+     * @return JSON body contains updated user information
+     */
     @PutMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<UserDto>> updateProfile(
@@ -153,6 +172,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Method to change user's password
+     *
+     * @param id: User's id
+     * @param request: Password change request containing old and new passwords
+     * @return No content if password changed successfully
+     */
     @PutMapping("/me/password")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> changePassword(
@@ -171,6 +197,13 @@ public class UserController {
         }
     }
 
+    /**
+     * Method to update user's avatar
+     *
+     * @param id: User's id
+     * @param file: New avatar image file
+     * @return JSON body contains updated user information
+     */
     @PutMapping(value = "/me/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<UserDto>> updateAvatar(
