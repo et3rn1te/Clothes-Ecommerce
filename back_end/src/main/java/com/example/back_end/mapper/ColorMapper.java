@@ -6,8 +6,7 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ColorMapper {
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "hexCode", source = "hexCode")
+
+    // ENTITY -> DTO
     ColorDto toDto(Color color);
 }

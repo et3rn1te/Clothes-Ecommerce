@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -29,4 +30,6 @@ public class ProductUpdateRequest {
     private Boolean featured;
 
     private Boolean active;
+
+    private List<ProductVariantUpdateRequest> variants = new ArrayList<>();
 }

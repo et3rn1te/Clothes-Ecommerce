@@ -6,8 +6,7 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface BrandMapper {
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    @Mapping(target = "logoUrl", source = "logoUrl")
+
+    // ENTITY -> DTO
     BrandDto toDto(Brand brand);
 }

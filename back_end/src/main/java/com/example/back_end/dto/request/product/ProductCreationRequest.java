@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -28,14 +29,21 @@ public class ProductCreationRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "Base price must be greater than 0")
     private BigDecimal basePrice;
 
+    @NotNull(message = "Slug is required")
+    private String slug;
+
     @NotNull(message = "Brand ID is required")
     private Long brandId;
 
+    @NotNull(message = "Gender ID is required")
     private Long genderId;
 
+    @NotNull(message = "Category IDs are required")
     private List<Long> categoryIds;
 
     private boolean featured;
 
     private boolean active = true;
+
+    private List<ProductVariantCreationRequest> variants = new ArrayList<>();
 }
