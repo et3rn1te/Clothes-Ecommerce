@@ -38,6 +38,10 @@ const routes = [
     path: '/:genderSlug/:categorySlug',
     component: lazy(() => import('../pages/CategoryPage')),
   },
+  {
+    path: 'auth/orderHistory',
+    component: lazy(() => import('../pages/OrderHistory')),
+  },
 ];
 
 export default routes;

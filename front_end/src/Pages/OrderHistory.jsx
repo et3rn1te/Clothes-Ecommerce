@@ -1,0 +1,196 @@
+import React, { useState } from "react";
+import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo } from "react-icons/fi";
+
+const OrderHistory = () => {
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const orders = [
+    {
+      id: 1,
+      shopName: "Tech Store",
+      orderDate: "2024-01-15T10:30:00",
+      status: "completed",
+      products: [
+        {
+          id: 1,
+          name: "Smartphone X Pro",
+          image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
+          variant: "Black, 256GB",
+          quantity: 1,
+          price: 999.99
+        },
+        {
+          id: 2,
+          name: "Wireless Earbuds",
+          image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb",
+          variant: "White",
+          quantity: 1,
+          price: 199.99
+        }
+      ],
+      totalPrice: 1199.98
+    },
+    {
+      id: 2,
+      shopName: "Fashion Hub",
+      orderDate: "2024-01-14T15:45:00",
+      status: "processing",
+      products: [
+        {
+          id: 3,
+          name: "Premium T-Shirt",
+          image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+          variant: "White, Size L",
+          quantity: 2,
+          price: 29.99
+        },
+        {
+          id: 4,
+          name: "Designer Jeans",
+          image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a",
+          variant: "Blue, Size 32",
+          quantity: 1,
+          price: 89.99
+        }
+      ],
+      totalPrice: 149.97
+    }
+  ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "processing":
+        return "bg-yellow-100 text-yellow-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+      case "shipping":
+        return "bg-blue-100 text-blue-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case "completed":
+        return "Đã giao";
+      case "processing":
+        return "Đang xử lý";
+      case "cancelled":
+        return "Đã hủy";
+      case "shipping":
+        return "Đang giao";
+      default:
+        return status;
+    }
+  };
+
+  const filteredOrders = orders.filter(order => {
+    const matchesStatus = selectedStatus === "all" || order.status === selectedStatus;
+    const matchesSearch = order.shopName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.products.some(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesStatus && matchesSearch;
+  });
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Lịch Sử Đơn Hàng</h1>
+
+        <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="relative flex-1">
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Tìm kiếm đơn hàng..."
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <div className="relative w-full md:w-48">
+            <select
+              className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              <option value="all">Tất cả trạng thái</option>
+              <option value="processing">Đang xử lý</option>
+              <option value="shipping">Đang giao</option>
+              <option value="completed">Đã giao</option>
+              <option value="cancelled">Đã hủy</option>
+            </select>
+            <FiChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
+        </div>
+
+        {filteredOrders.length === 0 ? (
+          <div className="text-center py-12">
+            <FiShoppingBag className="mx-auto h-12 w-12 text-gray-400" />
+            <p className="mt-4 text-gray-600">Không tìm thấy đơn hàng nào</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredOrders.map((order) => (
+              <div key={order.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-gray-900">{order.shopName}</span>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                      {getStatusText(order.status)}
+                    </span>
+                  </div>
+                </div>
+
+                {order.products.map((product) => (
+                  <div key={product.id} className="p-4 flex items-center border-b border-gray-100">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-20 h-20 rounded-md object-cover"
+                    />
+                    <div className="ml-4 flex-1">
+                      <h3 className="font-medium text-gray-900">{product.name}</h3>
+                      <p className="text-sm text-gray-500">{product.variant}</p>
+                      <div className="mt-1 flex items-center justify-between">
+                        <span className="text-sm text-gray-500">x{product.quantity}</span>
+                        <span className="text-sm font-medium text-gray-900">${product.price.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="p-4 bg-gray-50">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-gray-600">Tổng tiền:</span>
+                    <span className="text-lg font-medium text-gray-900">${order.totalPrice.toFixed(2)}</span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                      Mua lại
+                    </button>
+                    {order.status === "completed" && (
+                      <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                        Đánh giá
+                      </button>
+                    )}
+                    <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                      Chi tiết
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default OrderHistory;
