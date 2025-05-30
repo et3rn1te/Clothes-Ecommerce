@@ -44,7 +44,9 @@ public enum ErrorCode {
     PASSWORD_MISMATCH(1023, "Mật khẩu xác nhận không khớp", HttpStatus.BAD_REQUEST),
     PASSWORD_SAME_AS_OLD(1024, "Mật khẩu mới không được trùng với mật khẩu cũ", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD_FORMAT(1025, "Mật khẩu không đáp ứng yêu cầu bảo mật", HttpStatus.BAD_REQUEST),
-    USER_AVATAR_TOO_LARGE(1027, "Kích thước ảnh đại diện quá lớn", HttpStatus.BAD_REQUEST);
+    USER_AVATAR_TOO_LARGE(1027, "Kích thước ảnh đại diện quá lớn", HttpStatus.BAD_REQUEST),
+    CATEGORY_IMAGE_NOT_FOUND(1028, "Category image not found", HttpStatus.NOT_FOUND),
+    CATEGORY_IMAGE_ALREADY_EXISTS(1029, "Category image already exists", HttpStatus.BAD_REQUEST);
 
     private final int code;
     private final String message;

@@ -1,23 +1,19 @@
 package com.example.back_end.dto.response.category;
 
+import com.example.back_end.entity.Category;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryResponse {
+public class CategoryImageResponse {
     private Long id;
-    private String name;
-    private String description;
-    private String slug;
     private String imageUrl;
-    private Long parentId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String publicId;
+    private String altText;
 }

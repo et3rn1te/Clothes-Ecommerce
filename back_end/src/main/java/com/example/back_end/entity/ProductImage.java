@@ -37,7 +37,6 @@ public class ProductImage extends BaseEntity {
     @JoinColumn(name = "variant_id")
     private ProductVariant variant;
 
-    // New association to Color
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "color_id")
     private Color color;
