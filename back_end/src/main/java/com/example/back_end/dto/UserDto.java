@@ -13,4 +13,5 @@ public class UserDto {
     private String fullname;
     private String phone;
     private Boolean active = false;
+    private String imageUrl;
 }

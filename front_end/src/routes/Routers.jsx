@@ -32,11 +32,15 @@ const routes = [
   },
   {
     path: '/:genderSlug',
-    component: lazy(() => import('../pages/GenderPage')),
+    component: lazy(() => import('../pages/CategoryListPage')),
   },
   {
-    path: '/:genderSlug/:categorySlug',
-    component: lazy(() => import('../pages/CategoryPage')),
+    path: '/collections/:categorySlug',
+    component: lazy(() => import('../pages/ProductListPage')),
+  }, 
+  {
+    path: '/search',
+    component: lazy(() => import('../pages/SearchResultPage')),
   },
   {
     path: 'auth/orderHistory',

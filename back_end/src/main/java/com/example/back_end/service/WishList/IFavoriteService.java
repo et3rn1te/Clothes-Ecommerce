@@ -7,6 +7,10 @@ import java.util.List;
 
 public interface IFavoriteService {
     ApiResponse<ProductResponse> addFavorite(Long userId, Long productId);
+
     ApiResponse<Void> removeFavoriteByUserIdAndProductId(Long userId, Long productId);
+
     List<ProductResponse> getFavoritesByUserId(Long userId);
+
+    boolean isFavorite(Long userId, Long productId);
 }
