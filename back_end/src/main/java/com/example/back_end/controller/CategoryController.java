@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import com.example.back_end.dto.response.PageResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class CategoryController {
      * @return JSON body contains Category info if created successfully
      */
     @PostMapping
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryCreationRequest request) {
         return ResponseEntity.ok(categoryService.createCategory(request));
     }
@@ -38,7 +39,7 @@ public class CategoryController {
      * @return JSON body contains updated Category info
      */
     @PutMapping("/{id}")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<CategoryResponse> updateCategory(
             @PathVariable Long id,
             @RequestBody UpdateCategoryRequest request) {
@@ -52,7 +53,7 @@ public class CategoryController {
      * @return JSON body contains Category info
      */
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
@@ -96,7 +97,7 @@ public class CategoryController {
      * @return changing the Category's status
      */
     @PatchMapping("/{id}/toggle")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> toggleCategoryStatus(@PathVariable Long id) {
         categoryService.toggleCategoryStatus(id);
         return ResponseEntity.noContent().build();

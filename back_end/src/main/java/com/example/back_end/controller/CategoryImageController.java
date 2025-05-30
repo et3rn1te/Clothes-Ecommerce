@@ -6,6 +6,7 @@ import com.example.back_end.dto.response.category.CategoryImageResponse;
 import com.example.back_end.service.category.ICategoryImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class CategoryImageController {
     private final ICategoryImageService categoryImageService;
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<CategoryImageResponse> createImage(
             @PathVariable Long categoryId,
             @ModelAttribute CategoryImageCreationRequest request) {
@@ -22,6 +24,7 @@ public class CategoryImageController {
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<CategoryImageResponse> updateImage(
             @PathVariable Long categoryId,
             @ModelAttribute CategoryImageUpdateRequest request) {
@@ -29,6 +32,7 @@ public class CategoryImageController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> deleteImage(@PathVariable Long categoryId) {
         categoryImageService.deleteImage(categoryId);
         return ResponseEntity.noContent().build();

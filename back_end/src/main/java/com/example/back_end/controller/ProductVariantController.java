@@ -8,6 +8,7 @@ import com.example.back_end.dto.response.product.ProductVariantSummary;
 import com.example.back_end.service.product.IProductVariantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class ProductVariantController {
     private final IProductVariantService variantService;
 
     @PostMapping
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductVariantResponse> createVariant(
             @PathVariable Long productId,
             @RequestBody ProductVariantCreationRequest request) {
@@ -27,7 +28,7 @@ public class ProductVariantController {
     }
 
     @PutMapping("/{id}")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductVariantResponse> updateVariant(
             @PathVariable Long id,
             @RequestBody ProductVariantUpdateRequest request) {
@@ -35,7 +36,7 @@ public class ProductVariantController {
     }
 
     @DeleteMapping("/{id}")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> deleteVariant(@PathVariable Long id) {
         variantService.deleteVariant(id);
         return ResponseEntity.noContent().build();
@@ -52,7 +53,7 @@ public class ProductVariantController {
     }
 
     @PatchMapping("/{id}/toggle")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> toggleVariantStatus(@PathVariable Long id) {
         variantService.toggleVariantStatus(id);
         return ResponseEntity.noContent().build();

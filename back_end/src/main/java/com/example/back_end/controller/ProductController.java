@@ -11,6 +11,7 @@ import com.example.back_end.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -29,7 +30,7 @@ public class ProductController {
      * @return JSON body contains Product info if created successfully
      */
     @PostMapping
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductCreationRequest request) {
         return ResponseEntity.ok(productService.createProduct(request));
     }
@@ -42,7 +43,7 @@ public class ProductController {
      * @return JSON body contains updated Product info
      */
     @PutMapping("/{id}")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
             @RequestBody ProductUpdateRequest request) {
@@ -146,7 +147,7 @@ public class ProductController {
      * @return No content if status toggled successfully
      */
     @PatchMapping("/{id}/toggle-status")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> toggleProductStatus(@PathVariable Long id) {
         productService.toggleProductStatus(id);
         return ResponseEntity.noContent().build();
@@ -159,7 +160,7 @@ public class ProductController {
      * @return No content if featured status toggled successfully
      */
     @PatchMapping("/{id}/toggle-featured")
-    // @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> toggleFeaturedStatus(@PathVariable Long id) {
         productService.toggleFeaturedStatus(id);
         return ResponseEntity.noContent().build();
