@@ -1,7 +1,7 @@
 package com.example.back_end.controller;
 
 import com.example.back_end.dto.ColorDto;
-import com.example.back_end.service.IColorService;
+import com.example.back_end.service.color.IColorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

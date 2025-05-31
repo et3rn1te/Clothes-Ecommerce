@@ -2,7 +2,7 @@ package com.example.back_end.controller;
 
 import com.example.back_end.dto.GenderDto;
 import com.example.back_end.dto.response.category.CategorySummary;
-import com.example.back_end.service.GenderService;
+import com.example.back_end.service.gender.GenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

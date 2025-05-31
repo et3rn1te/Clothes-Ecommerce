@@ -116,7 +116,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public List<OrderResponse> getOrdersByUser(Long userId) {
-        List<Order> orders = orderRepository.findByUser_Id(userId);
+        List<Order> orders = orderRepository.findByIdUser_Id(userId);
         return orders.stream()
                 .map(order -> modelMapper.map(order, OrderResponse.class))
                 .collect(Collectors.toList());

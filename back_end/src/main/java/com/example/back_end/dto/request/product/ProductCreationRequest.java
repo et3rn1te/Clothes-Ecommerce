@@ -43,5 +43,5 @@ public class ProductCreationRequest {
 
     private boolean featured;
 
-    private boolean active = false;
+    private boolean active = true;
 }

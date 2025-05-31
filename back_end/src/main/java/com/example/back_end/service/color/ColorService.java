@@ -1,4 +1,4 @@
-package com.example.back_end.service;
+package com.example.back_end.service.color;
 
 import com.example.back_end.dto.ColorDto;
 import com.example.back_end.entity.Color;

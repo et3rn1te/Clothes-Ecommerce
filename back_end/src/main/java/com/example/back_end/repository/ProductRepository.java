@@ -90,12 +90,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
     SELECT DISTINCT p FROM Product p
     JOIN p.categories c
-    JOIN p.variants v
+    LEFT JOIN p.variants v
     WHERE c.slug = :categorySlug
     AND (:colorIds IS NULL OR v.color.id IN :colorIds)
     AND (:sizeIds IS NULL OR v.size.id IN :sizeIds)
-    AND (:minPrice IS NULL OR v.price >= :minPrice)
-    AND (:maxPrice IS NULL OR v.price <= :maxPrice)
+    AND (:minPrice IS NULL OR p.basePrice >= :minPrice)
+    AND (:maxPrice IS NULL OR p.basePrice <= :maxPrice)
 """)
     Page<Product> findByCategorySlugWithFilters(
             @Param("categorySlug") String categorySlug,

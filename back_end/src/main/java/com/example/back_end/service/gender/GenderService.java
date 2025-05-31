@@ -1,8 +1,7 @@
-package com.example.back_end.service;
+package com.example.back_end.service.gender;
 
 import com.example.back_end.dto.GenderDto;
 import com.example.back_end.dto.response.category.CategorySummary;
-import com.example.back_end.entity.Category;
 import com.example.back_end.entity.Gender;
 import com.example.back_end.exception.AppException;
 import com.example.back_end.exception.ErrorCode;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class GenderService {
+public class GenderService implements IGenderService {
 
     private final GenderRepository genderRepository;
     private final CategoryRepository categoryRepository;
