@@ -43,7 +43,7 @@ const routes = [
     component: lazy(() => import('../pages/SearchResultPage')),
   },
   {
-    path: 'auth/orderHistory',
+    path: '/orderHistory',
     component: lazy(() => import('../pages/OrderHistory')),
   },
 ];

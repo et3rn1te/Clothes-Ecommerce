@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo } from "react-icons/fi";
+import axiosClient from "../API/axiosClient";
 
 const OrderHistory = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -57,6 +58,13 @@ const OrderHistory = () => {
       totalPrice: 149.97
     }
   ];
+  const [orderList,setOrderList] =useState([]);
+  useEffect(() => {
+    const check = async () => {
+     
+    };
+    check();
+  });
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -170,18 +178,25 @@ const OrderHistory = () => {
                     <span className="text-lg font-medium text-gray-900">${order.totalPrice.toFixed(2)}</span>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                      Mua lại
-                    </button>
-                    {order.status === "completed" && (
-                      <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
-                        Đánh giá
+                  <div className="flex flex-wrap gap-2 justify-between items-center">
+                    <div className="flex gap-2">
+                      <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        Mua lại
+                      </button>
+                      {order.status === "completed" && (
+                        <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                          Đánh giá
+                        </button>
+                      )}
+                      <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                        Chi tiết
+                      </button>
+                    </div>
+                    {order.status === "processing" && (
+                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ml-auto">
+                        Hủy đơn hàng
                       </button>
                     )}
-                    <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                      Chi tiết
-                    </button>
                   </div>
                 </div>
               </div>
