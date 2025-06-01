@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import ProductService from '../API/ProductService';
-import ColorFilter from '../components/filters/ColorFilter';
-import SizeFilter from '../components/filters/SizeFilter';
-import PriceFilter from '../components/filters/PriceFilter';
-import ProductCard from '../components/products/ProductCard';
-import Pagination from '../components/common/Pagination';
+import ProductService from '../../API/ProductService';
+import ColorFilter from '../../components/filters/ColorFilter';
+import SizeFilter from '../../components/filters/SizeFilter';
+import PriceFilter from '../../components/filters/PriceFilter';
+import ProductCard from '../../components/product/ProductCard';
+import Pagination from '../../components/common/Pagination';
 
 // Currency formatter
 const formatCurrency = (price) => {
@@ -27,7 +27,7 @@ const ProductListPage = () => {
   const [pagination, setPagination] = useState({
     pageNo: 0,
     pageSize: 8,
-    totalElements: 10,
+    totalElements: 0,
     totalPages: 0,
     last: false
   });

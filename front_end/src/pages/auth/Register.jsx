@@ -3,8 +3,8 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { checkEmailExists, register } from "../API/AuthService";
-import useQueryParam from "../utils/useQueryParam";
+import { checkEmailExists, register } from "../../API/AuthService";
+import useQueryParam from "../../utils/useQueryParam";
 
 const PasswordStrength = ({ password }) => {
   const getStrength = (pass) => {

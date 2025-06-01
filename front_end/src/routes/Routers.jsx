@@ -16,11 +16,11 @@ const routes = [
   },
   {
     path: '/auth/*',
-    component: lazy(() => import('../pages/Authentication')),
+    component: lazy(() => import('../pages/auth/Authentication')),
   },
   {
     path: '/profile',
-    component: lazy(() => import('../pages/Profile')),
+    component: lazy(() => import('../pages/auth/Profile')),
   },
   {
     path: '/wishList',
@@ -28,19 +28,19 @@ const routes = [
   },
   {
     path: '/product/:slug',
-    component: lazy(() => import('../pages/ProductDetailPage')),
+    component: lazy(() => import('../pages/product/ProductDetailPage')),
   },
   {
     path: '/:genderSlug',
-    component: lazy(() => import('../pages/CategoryListPage')),
+    component: lazy(() => import('../pages/product/CategoryListPage')),
   },
   {
     path: '/collections/:categorySlug',
-    component: lazy(() => import('../pages/ProductListPage')),
+    component: lazy(() => import('../pages/product/ProductListPage')),
   }, 
   {
     path: '/search',
-    component: lazy(() => import('../pages/SearchResultPage')),
+    component: lazy(() => import('../pages/product/SearchResultPage')),
   },
 ];
 

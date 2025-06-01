@@ -13,13 +13,11 @@ public interface CategoryImageMapper {
     
     // CREATE MAPPING
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "category.id", source = "categoryId")
     @Mapping(target = "imageUrl", ignore = true)
     @Mapping(target = "publicId", ignore = true)
     CategoryImage toEntity(CategoryImageCreationRequest request);
 
     // RESPONSE MAPPING
     CategoryImageResponse toResponse(CategoryImage image);
-
-    List<CategoryImageResponse> toResponseList(List<CategoryImage> images);
 }

@@ -19,5 +19,8 @@ public class CategoryCreationRequest {
     @Size(max = 1000, message = "Description must be less than 1000 characters")
     private String description;
 
+    @Size(max = 255, message = "Slug must be less than 255 characters")
+    private String slug;
+
     private Long parentId;
 }

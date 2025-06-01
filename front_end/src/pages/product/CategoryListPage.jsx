@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import CategoryService from '../API/CategoryService';
+import CategoryService from '../../API/CategoryService';
 
 const CategoryListPage = () => {
   const { genderSlug } = useParams(); // Lấy genderSlug từ URL params

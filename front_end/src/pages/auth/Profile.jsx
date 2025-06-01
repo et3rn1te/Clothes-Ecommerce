@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { FiSettings, FiLogOut, FiCamera, FiSave, FiLock } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import UserService from "../API/UserService";
+import UserService from "../../API/UserService";
 import { toast } from "react-toastify";
-import { checkAndRefreshSession, getTokenExpiryTime } from "../utils/tokenUtils";
+import { checkAndRefreshSession, getTokenExpiryTime } from "../../utils/tokenUtils";
 
 const Profile = () => {
   const navigate = useNavigate();

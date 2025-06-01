@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import ProductService from '../API/ProductService';
+import ProductService from '../../API/ProductService';
 
 const formatCurrency = (price) => {
   return new Intl.NumberFormat('vi-VN', {

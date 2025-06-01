@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader } from 'lucide-react';
-import ProductService from '../API/ProductService';
-import ProductImageGallery from '../components/product/ProductImageGallery';
-import ProductInfo from '../components/product/ProductInfo';
-import ProductVariantSelector from '../components/product/ProductVariantSelector';
-import ProductActions from '../components/product/ProductActions';
-import RelatedProducts from '../components/product/RelatedProducts';
+import ProductService from '../../API/ProductService';
+import ProductImageGallery from '../../components/product/ProductImageGallery';
+import ProductInfo from '../../components/product/ProductInfo';
+import ProductVariantSelector from '../../components/product/ProductVariantSelector';
+import ProductActions from '../../components/product/ProductActions';
+import RelatedProducts from '../../components/product/RelatedProducts';
 
 const ProductDetailPage = () => {
   const { slug } = useParams();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductService from '../API/ProductService';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../components/product/ProductCard';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 // URL hình ảnh placeholder tạm thời

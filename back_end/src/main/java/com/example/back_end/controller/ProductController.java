@@ -30,7 +30,7 @@ public class ProductController {
      * @return JSON body contains created product information
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductCreationRequest request) {
         return ResponseEntity.ok(productService.createProduct(request));
     }
@@ -43,7 +43,7 @@ public class ProductController {
      * @return JSON body contains updated product information
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
             @RequestBody ProductUpdateRequest request) {
@@ -159,7 +159,7 @@ public class ProductController {
      * @return No content if status toggled successfully
      */
     @PatchMapping("/{id}/toggle-status")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> toggleProductStatus(@PathVariable Long id) {
         productService.toggleProductStatus(id);
         return ResponseEntity.noContent().build();
@@ -172,7 +172,7 @@ public class ProductController {
      * @return No content if featured status toggled successfully
      */
     @PatchMapping("/{id}/toggle-featured")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> toggleFeaturedStatus(@PathVariable Long id) {
         productService.toggleFeaturedStatus(id);
         return ResponseEntity.noContent().build();

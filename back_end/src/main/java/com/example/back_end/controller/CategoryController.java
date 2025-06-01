@@ -26,7 +26,7 @@ public class CategoryController {
      * @return JSON body contains Category info if created successfully
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public ResponseEntity<CategoryResponse> createCategory(@RequestBody CategoryCreationRequest request) {
         return ResponseEntity.ok(categoryService.createCategory(request));
     }
@@ -39,7 +39,7 @@ public class CategoryController {
      * @return JSON body contains updated Category info
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public ResponseEntity<CategoryResponse> updateCategory(
             @PathVariable Long id,
             @RequestBody UpdateCategoryRequest request) {
@@ -53,7 +53,7 @@ public class CategoryController {
      * @return JSON body contains Category info
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
@@ -97,7 +97,7 @@ public class CategoryController {
      * @return changing the Category's status
      */
     @PatchMapping("/{id}/toggle")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> toggleCategoryStatus(@PathVariable Long id) {
         categoryService.toggleCategoryStatus(id);
         return ResponseEntity.noContent().build();

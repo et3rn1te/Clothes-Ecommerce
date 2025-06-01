@@ -1,9 +1,9 @@
 package com.example.back_end.dto.response.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.back_end.entity.Role;
+import lombok.*;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -15,5 +15,7 @@ public class UserResponse {
     private String email;
     private String fullname;
     private String phone;
-    private boolean active;
-} 
+    private Boolean active = false;
+    private String imageUrl;
+    private Set<Role> roles;
+}

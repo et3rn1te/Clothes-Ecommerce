@@ -3,7 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
-import { checkEmailExists, signIn, verifyRegister} from "../API/AuthService";
+import { checkEmailExists, signIn, verifyRegister} from "../../API/AuthService";
 import { useNavigate } from "react-router-dom";
 
 const VerificationPage = ({ email, onResend }) => {

@@ -1,5 +1,9 @@
 package com.example.back_end.dto.request.product;
 
+import com.example.back_end.entity.Color;
+import com.example.back_end.entity.Product;
+import com.example.back_end.entity.ProductVariant;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,4 +24,12 @@ public class ProductImageCreationRequest {
 
     @Size(max = 100, message = "Alt text cannot exceed 100 characters")
     private String altText;
+
+    private boolean primary = false;
+
+    private Long productId;
+
+    private Long variantId;
+
+    private Long colorId;
 }

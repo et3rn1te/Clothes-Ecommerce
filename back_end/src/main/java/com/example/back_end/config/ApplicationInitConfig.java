@@ -77,15 +77,15 @@ public class ApplicationInitConfig {
             // Tạo role USER nếu chưa tồn tại
             Role userRole = roleRepository.findByName(PredefinedRole.USER_ROLE)
                     .orElseGet(() -> roleRepository.save(Role.builder()
-                            .name(PredefinedRole.USER_ROLE)
-                            .description("User role")
+                        .name(PredefinedRole.USER_ROLE)
+                        .description("User role")
                             .build()));
 
             // Tạo role ADMIN nếu chưa tồn tại
             Role adminRole = roleRepository.findByName(PredefinedRole.ADMIN_ROLE)
                     .orElseGet(() -> roleRepository.save(Role.builder()
-                            .name(PredefinedRole.ADMIN_ROLE)
-                            .description("Admin role")
+                        .name(PredefinedRole.ADMIN_ROLE)
+                        .description("Admin role")
                             .build()));
 
             // Tạo role MANAGER nếu chưa tồn tại

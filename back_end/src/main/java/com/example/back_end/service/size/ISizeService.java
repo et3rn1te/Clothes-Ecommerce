@@ -1,4 +1,4 @@
-package com.example.back_end.service;
+package com.example.back_end.service.size;
 
 import com.example.back_end.dto.SizeDto;
 import java.util.List;
