@@ -1,4 +1,3 @@
-// src/routes.js
 import { lazy } from 'react';
 
 const routes = [
@@ -41,25 +40,6 @@ const routes = [
   {
     path: '/search',
     component: lazy(() => import('../pages/product/SearchResultPage')),
-  },
-  // Admin routes
-  {
-    path: '/admin',
-    component: lazy(() => import('../layouts/admin/AdminLayout')),
-    children: [
-      {
-        path: '/products',
-        component: lazy(() => import('../pages/admin/products/ProductList')),
-      },
-      {
-        path: '/products/create',
-        component: lazy(() => import('../pages/admin/products/ProductForm')),
-      },
-      {
-        path: '/products/:id/edit',
-        component: lazy(() => import('../pages/admin/products/ProductForm')),
-      },
-    ],
   },
 ];
 
