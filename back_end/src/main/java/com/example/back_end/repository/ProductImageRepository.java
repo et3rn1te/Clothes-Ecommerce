@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
@@ -16,6 +15,4 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     void deleteByProductId(Long productId);
 
     List<ProductImage> findByVariantId(Long variantId);
-
-    Optional<ProductImage> findFirstByProduct_Id(Long productId);
 }

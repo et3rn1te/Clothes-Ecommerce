@@ -81,7 +81,6 @@ const ProductListPage = () => {
 
       const response = await ProductService.getProductsByCategory(categorySlug, filters);
       const data = response.data;
-      console.log(data);
 
       setProducts(data.content);
       setPagination({
