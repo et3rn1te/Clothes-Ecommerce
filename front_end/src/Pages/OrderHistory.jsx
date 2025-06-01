@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo } from "react-icons/fi";
 import axiosClient from "../API/axiosClient";
+import { introspect } from "../API/AuthService";
 
 const OrderHistory = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
@@ -59,12 +60,40 @@ const OrderHistory = () => {
     }
   ];
   const [orderList,setOrderList] =useState([]);
+  const checkToken = async (token) => {
+    try {
+      const response = await introspect({token});
+      console.log(response.data.result.valid);
+      return response.data.result.valid;
+    } catch (error) {
+      console.error("Lỗi kiểm tra token:", error);
+      return false; // Nếu có lỗi thì coi token không hợp lệ
+    }
+  };
   useEffect(() => {
     const check = async () => {
-     
+      const session = JSON.parse(localStorage.getItem("session"));
+      if (session && session !== "undefined") {
+        const isValid = await checkToken(session.token);
+        console.log("Token valid:", isValid);
+        if (isValid) {
+          await axiosClient.get('/order/details/'+session.currentUser.id,{
+            headers: {
+              Authorization: `Bearer ${session.token}`
+            }
+          })
+            .then((res)=>{
+              const { code, message, result } = res.data;
+              console.log(res.data);
+              setOrderList(result);
+            })
+        } else {
+          setCartItems([]);
+        }
+      }
     };
     check();
-  });
+  },[]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -118,6 +147,7 @@ const OrderHistory = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            {console.log(orderList)}
           </div>
 
           <div className="relative w-full md:w-48">

@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 const Header = () => {
   const { wishlistItems, clearWishlist, setSession } = useContext(FavoriteContext);
   const wishlistCount = wishlistItems.length;
-  console.log(wishlistItems.length);
   const [isOpen, setIsOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
