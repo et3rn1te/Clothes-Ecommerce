@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { FavoriteProvider } from '../components/FavoriteContext/FavoriteContext';
 
-function AppLayout() {
+function MainLayout() {
   const location = useLocation();
   const hideHeaderFooter = location.pathname.startsWith("/auth");
 
@@ -20,4 +20,4 @@ function AppLayout() {
     </>
   );
 }
-export default AppLayout;
+export default MainLayout;
