@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FaHeart, FaRegHeart, FaShoppingCart, FaTrash } from "react-icons/fa";
-import { FavoriteContext } from "../components/FavoriteContext/FavoriteContext";
+import { FavoriteContext } from "../../components/FavoriteContext/FavoriteContext";
 
 const WishList = () => {
   // Added: Initial wishlist items state

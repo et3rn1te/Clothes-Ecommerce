@@ -24,7 +24,7 @@ const routes = [
   },
   {
     path: '/wishList',
-    component: lazy(() => import('../pages/WishList')),
+    component: lazy(() => import('../pages/product/WishList')),
   },
   {
     path: '/product/:slug',

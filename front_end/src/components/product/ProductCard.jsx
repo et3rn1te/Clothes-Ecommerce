@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaShoppingCart } from 'react-icons/fa';
 import { updateCartItem } from '../../API/CartService';
 import { FavoriteContext } from '../FavoriteContext/FavoriteContext';
+import WishlistService from '../../API/WishlistService';
 
 // URL hình ảnh placeholder tạm thời
 const PLACEHOLDER_IMAGE_URL = 'https://picsum.photos/1080/1920';
@@ -16,8 +17,27 @@ const formatCurrency = (price) => {
 
 const ProductCard = ({ product, onClick }) => {
   const session = JSON.parse(localStorage.getItem("session"));
-  const { addToWishlist } = useContext(FavoriteContext);
+  const { addToWishlist, removeFromWishlist } = useContext(FavoriteContext);
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (session?.currentUser?.id && product?.id) {
+        try {
+          const isFav = await WishlistService.checkFavorite(
+            session.currentUser.id,
+            product.id,
+            session.token
+          );
+          setIsFavorite(isFav);
+        } catch (error) {
+          console.error('Lỗi kiểm tra trạng thái yêu thích:', error);
+        }
+      }
+    };
+    checkFavoriteStatus();
+  }, [session, product]);
 
   const handleProductClick = () => {
     if (product?.id) {
@@ -28,25 +48,40 @@ const ProductCard = ({ product, onClick }) => {
   const handleAddToCart = async (e) => {
     e.stopPropagation();
     if (session?.currentUser?.id) {
-      await updateCartItem({
-        idUser: session.currentUser.id,
-        action: true,
-        idProduct: product.id,
-        amount: 1
-      }, session.token);
+      try {
+        await updateCartItem({
+          idUser: session.currentUser.id,
+          action: true,
+          idProduct: product.id,
+          amount: 1
+        }, session.token);
+        // Dispatch event để cập nhật cart count
+        window.dispatchEvent(new CustomEvent('cartUpdated'));
+      } catch (error) {
+        console.error('Lỗi thêm vào giỏ hàng:', error);
+      }
     } else {
-      // TODO: Hiển thị thông báo yêu cầu đăng nhập
-      navigate('/login');
+      navigate('/auth/login');
     }
   };
 
-  const handleAddToWishlist = (e) => {
+  const handleToggleWishlist = async (e) => {
     e.stopPropagation();
-    if (session?.currentUser?.id) {
-      addToWishlist(product.id);
-    } else {
-      // TODO: Hiển thị thông báo yêu cầu đăng nhập
-      navigate('/login');
+    if (!session?.currentUser?.id) {
+      navigate('/auth/login');
+      return;
+    }
+
+    try {
+      if (isFavorite) {
+        await removeFromWishlist(product.id);
+        setIsFavorite(false);
+      } else {
+        await addToWishlist(product.id);
+        setIsFavorite(true);
+      }
+    } catch (error) {
+      console.error('Lỗi xử lý yêu thích:', error);
     }
   };
 
@@ -81,9 +116,9 @@ const ProductCard = ({ product, onClick }) => {
           </button>
           {/* Nút Yêu thích */}
           <button 
-            className="p-3 rounded-full bg-white text-red-600 hover:bg-red-700 hover:text-white transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50"
-            onClick={handleAddToWishlist}
-            aria-label="Thêm vào yêu thích"
+            className={`p-3 rounded-full bg-white ${isFavorite ? 'text-red-600' : 'text-gray-800'} hover:bg-red-600 hover:text-white transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-50`}
+            onClick={handleToggleWishlist}
+            aria-label={isFavorite ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
           >
             <FaHeart className="h-6 w-6" />
           </button>
