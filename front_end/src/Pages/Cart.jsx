@@ -68,17 +68,17 @@ const Cart = () => {
   // const shipping = 5.99;
   const tax = 0.1; // 10% tax
 
-  const updateQuantity = async (id, newQuantity,action) => {
+  const updateQuantity = async (id,productId ,newQuantity,action) => {
     setCartItems(items =>
       items.map(item =>
         item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
       )
     );
-    console.log(session.token);
+    console.log(id);
     await updateCartItem({
       idUser: session.currentUser.id,
       action: action,
-      idProduct: id,
+      idProduct: productId,
       amount: 1
     },session.token);
   };
@@ -138,7 +138,7 @@ const Cart = () => {
                 <div className="mt-2 flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() =>{updateQuantity(item.id, item.quantity - 1,false);} }
+                      onClick={() =>{updateQuantity(item.id,item.product.id, item.quantity - 1,false);} }
                       className="p-1 rounded-full border"
                       disabled={item.quantity <= 1}
                     >
@@ -146,7 +146,7 @@ const Cart = () => {
                     </button>
                     <span>{item.quantity}</span>
                     <button
-                      onClick={() => {updateQuantity(item.id, item.quantity + 1,true)}}
+                      onClick={() => {updateQuantity(item.id,item.product.id, item.quantity + 1,true)}}
                       className="p-1 rounded-full border"
                     >
                       <FiPlus />
