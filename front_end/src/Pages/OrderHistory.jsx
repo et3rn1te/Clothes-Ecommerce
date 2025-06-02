@@ -1,64 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo } from "react-icons/fi";
+import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo ,FiChevronUp} from "react-icons/fi";
 import axiosClient from "../API/axiosClient";
 import { introspect } from "../API/AuthService";
 
 const OrderHistory = () => {
+  const [expandedOrders, setExpandedOrders] = useState({});
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-
-  const orders = [
-    {
-      id: 1,
-      shopName: "Tech Store",
-      orderDate: "2024-01-15T10:30:00",
-      status: "completed",
-      products: [
-        {
-          id: 1,
-          name: "Smartphone X Pro",
-          image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
-          variant: "Black, 256GB",
-          quantity: 1,
-          price: 999.99
-        },
-        {
-          id: 2,
-          name: "Wireless Earbuds",
-          image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb",
-          variant: "White",
-          quantity: 1,
-          price: 199.99
-        }
-      ],
-      totalPrice: 1199.98
-    },
-    {
-      id: 2,
-      shopName: "Fashion Hub",
-      orderDate: "2024-01-14T15:45:00",
-      status: "processing",
-      products: [
-        {
-          id: 3,
-          name: "Premium T-Shirt",
-          image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
-          variant: "White, Size L",
-          quantity: 2,
-          price: 29.99
-        },
-        {
-          id: 4,
-          name: "Designer Jeans",
-          image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a",
-          variant: "Blue, Size 32",
-          quantity: 1,
-          price: 89.99
-        }
-      ],
-      totalPrice: 149.97
-    }
-  ];
   const [orderList,setOrderList] =useState([]);
   const checkToken = async (token) => {
     try {
@@ -77,7 +25,7 @@ const OrderHistory = () => {
         const isValid = await checkToken(session.token);
         console.log("Token valid:", isValid);
         if (isValid) {
-          await axiosClient.get('/order/details/'+session.currentUser.id,{
+          await axiosClient.get('/order/individual/'+session.currentUser.id,{
             headers: {
               Authorization: `Bearer ${session.token}`
             }
@@ -125,12 +73,19 @@ const OrderHistory = () => {
     }
   };
 
-  const filteredOrders = orders.filter(order => {
-    const matchesStatus = selectedStatus === "all" || order.status === selectedStatus;
-    const matchesSearch = order.shopName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.products.some(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchesStatus && matchesSearch;
+  const filteredOrders = orderList.filter(order => {
+    const matchesStatus = selectedStatus === "all" || order.statusName === selectedStatus;
+    // const matchesSearch = order.shopName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    //   order.products.some(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()));
+    // return matchesStatus && matchesSearch;
+    return matchesStatus;
   });
+  const toggleOrderExpand = (orderId) => {
+    setExpandedOrders(prev => ({
+      ...prev,
+      [orderId]: !prev[orderId]
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
@@ -174,61 +129,79 @@ const OrderHistory = () => {
         ) : (
           <div className="space-y-4">
             {filteredOrders.map((order) => (
-              <div key={order.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-gray-100">
+              <div key={order.idOrder} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="p-4 border-b border-gray-100 cursor-pointer" onClick={() => toggleOrderExpand(order.idOrder)}>
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-900">{order.shopName}</span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
-                      {getStatusText(order.status)}
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-gray-900">Ngày đặt hàng:{order.dateOrder}</span>
+                      {expandedOrders[order.idOrder] ? (
+                        <FiChevronUp className="text-gray-500" />
+                      ) : (
+                        <FiChevronDown className="text-gray-500" />
+                      )}
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.statusName)}`}>
+                      {getStatusText(order.statusName)}
                     </span>
                   </div>
                 </div>
 
-                {order.products.map((product) => (
-                  <div key={product.id} className="p-4 flex items-center border-b border-gray-100">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-20 h-20 rounded-md object-cover"
-                    />
-                    <div className="ml-4 flex-1">
-                      <h3 className="font-medium text-gray-900">{product.name}</h3>
-                      <p className="text-sm text-gray-500">{product.variant}</p>
-                      <div className="mt-1 flex items-center justify-between">
-                        <span className="text-sm text-gray-500">x{product.quantity}</span>
-                        <span className="text-sm font-medium text-gray-900">${product.price.toFixed(2)}</span>
+                {expandedOrders[order.idOrder] && (
+                  <>
+                  {order.orderDetails.map((product) => (
+                    <div key={product.id} className="p-4 flex items-center border-b border-gray-100">
+                      <img
+                        src={product.idProduct.images?.[0]?.imageUrl || '/default-image.jpg'}
+                        alt={product.idProduct.product.name}
+                        className="w-20 h-20 rounded-md object-cover"
+                      />
+                      <div className="ml-4 flex-1">
+                        <h3 className="font-medium text-gray-900">{product.idProduct.product.name}</h3>
+                        <p className="text-sm text-gray-500">Kích thước:{product.idProduct.size.name},Màu:{product.idProduct.color.name}</p>
+                        <div className="mt-1 flex items-center justify-between">
+                          <span className="text-sm text-gray-500">x{product.quantity}</span>
+                          <span className="text-sm font-medium text-gray-900">${product.totalPrice.toFixed(2)}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-
-                <div className="p-4 bg-gray-50">
+                  ))}
+                  <div className="p-4 bg-gray-50">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-gray-600">Tổng tiền:</span>
-                    <span className="text-lg font-medium text-gray-900">${order.totalPrice.toFixed(2)}</span>
+                    <span className="text-lg font-medium text-gray-900">
+                      20000
+                      {/* ${order.totalPrice.toFixed(2)} */}
+                      </span>
                   </div>
 
                   <div className="flex flex-wrap gap-2 justify-between items-center">
-                    <div className="flex gap-2">
-                      <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        Mua lại
-                      </button>
-                      {order.status === "completed" && (
-                        <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
-                          Đánh giá
+                      <div className="flex gap-2">
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                          Mua lại
+                        </button>
+                        {order.status === "completed" && (
+                          <button className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors">
+                            Đánh giá
+                          </button>
+                        )}
+                        <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                          Chi tiết
+                        </button>
+                      </div>
+                      {order.statusName === "processing" && (
+                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ml-auto">
+                          Hủy đơn hàng
                         </button>
                       )}
-                      <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                        Chi tiết
-                      </button>
                     </div>
-                    {order.status === "processing" && (
-                      <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ml-auto">
-                        Hủy đơn hàng
-                      </button>
-                    )}
                   </div>
-                </div>
+                
+                  </>
+                )}
+
+                
+
+                
               </div>
             ))}
           </div>

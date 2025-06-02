@@ -20,7 +20,7 @@ public class CartDetail {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_product", nullable = false)
-    private Product idProduct;
+    private ProductVariant idProduct;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

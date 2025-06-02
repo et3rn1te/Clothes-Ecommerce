@@ -32,7 +32,7 @@ public class OrderController {
         return ApiResponse.<Void>builder().build();
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/individual/{userId}")
     public ApiResponse<List<OrderDto>> getOrderByUser(@PathVariable Long userId){
         List<OrderDto> orderDtos = orderService.getOrderByUserId(userId);
         return ApiResponse.<List<OrderDto>>builder().result(orderDtos).build();

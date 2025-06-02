@@ -133,7 +133,7 @@ const Cart = () => {
                   </button>
                 </div>
                 <div className="text-sm text-gray-500">
-                  Color: trắng | Size: M
+                  Color: {item.product.color.name} | Size: {item.product.size.name}
                 </div>
                 <div className="mt-2 flex justify-between items-center">
                   <div className="flex items-center gap-2">

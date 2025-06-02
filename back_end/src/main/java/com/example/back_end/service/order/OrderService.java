@@ -4,18 +4,15 @@ import com.example.back_end.dto.OrderDetailDto;
 import com.example.back_end.dto.OrderDto;
 import com.example.back_end.dto.StatusDto;
 import com.example.back_end.dto.request.OrderCreateRequest;
-
 import com.example.back_end.entity.*;
 import com.example.back_end.mapper.OrderDetailMapper;
 import com.example.back_end.mapper.OrderMapper;
 import com.example.back_end.mapper.ProductImageMapper;
-
 import com.example.back_end.dto.response.order.OrderResponse;
 import com.example.back_end.dto.response.PageResponse;
 import com.example.back_end.entity.*;
 import com.example.back_end.exception.AppException;
 import com.example.back_end.exception.ErrorCode;
-
 import com.example.back_end.repository.*;
 import com.example.back_end.service.product.IProductImageService;
 import com.example.back_end.service.product.ProductImageService;
@@ -23,10 +20,8 @@ import com.example.back_end.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -75,18 +70,15 @@ public class OrderService implements IOrderService {
         orderRepository.save(order);
 
         for (CartDetail cartDetail : cartDetails) {
-            Product product = cartDetail.getIdProduct();
+            ProductVariant product = cartDetail.getIdProduct();
             Integer cartQuantity = cartDetail.getQuantity();
-
-//            BigDecimal price = BigDecimal.valueOf(product.getPrice());
-//            BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(cartQuantity));
 
             OrderDetail oderDetail = new OrderDetail();
             oderDetail.setIdOrder(order);
             oderDetail.setIdProduct(product);
             oderDetail.setQuantity(cartQuantity);
             oderDetail.setTotalPrice(
-                    product.getBasePrice().multiply(BigDecimal.valueOf(cartQuantity))
+                    product.getPrice().multiply(BigDecimal.valueOf(cartQuantity))
             );
 
             orderDetailRepository.save(oderDetail);
@@ -101,10 +93,6 @@ public class OrderService implements IOrderService {
     public List<OrderDetailDto> getOrderDetailsByOrderId(Long orderId) {
         List<OrderDetail>orderDetails= orderDetailRepository.findByIdOrder_Id(orderId);
         List<OrderDetailDto> orderDetailDtos= orderDetails.stream().map(orderDetailMapper::toDto).collect(Collectors.toList());
-        for(OrderDetailDto a : orderDetailDtos){
-            ProductImage newImage = productImageService.findFirstByProduct_Id(a.getIdProduct().getId());
-            a.getIdProduct().setPrimaryImage(productImageMapper.toSummary(newImage));
-        }
         return orderDetailDtos;
     }
 
@@ -117,8 +105,6 @@ public class OrderService implements IOrderService {
         }
         return orderDtos;
     }
-
-
 
     public PageResponse<OrderResponse> getAllOrders(Pageable pageable) {
         Page<Order> orderPage = orderRepository.findAll(pageable);
@@ -163,5 +149,4 @@ public class OrderService implements IOrderService {
                 .map(order -> modelMapper.map(order, OrderResponse.class))
                 .collect(Collectors.toList());
     }
-
 }

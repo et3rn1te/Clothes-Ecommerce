@@ -5,6 +5,7 @@ import com.example.back_end.dto.request.product.ProductVariantUpdateRequest;
 import com.example.back_end.dto.response.product.ProductVariantResponse;
 import com.example.back_end.dto.response.product.ProductVariantSummary;
 import com.example.back_end.dto.request.product.VariantFilterRequest;
+import com.example.back_end.entity.ProductVariant;
 
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface IProductVariantService {
     ProductVariantResponse getVariantBySku(String sku);
 
     List<ProductVariantSummary> filterVariants(Long productId, VariantFilterRequest filter);
+
+    ProductVariant getById(Long id);
 } 
