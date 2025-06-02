@@ -22,8 +22,6 @@ public class Brand extends BaseEntity {
 
     private String description;
 
-    private String logoUrl;
-
     private String website;
 
     @OneToMany(mappedBy = "brand", cascade = CascadeType.ALL)

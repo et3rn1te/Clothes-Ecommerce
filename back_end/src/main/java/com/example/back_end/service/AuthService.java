@@ -1,10 +1,8 @@
 package com.example.back_end.service;
 
-import com.example.back_end.dto.CartDetailDto;
-import com.example.back_end.dto.UserDto;
+import com.example.back_end.dto.response.user.UserResponse;
 import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.request.LoginRequest;
-import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.AuthenticationResponse;
 import com.example.back_end.dto.response.IntrospectResponse;
 import com.example.back_end.entity.InvalidatedToken;
@@ -70,7 +68,7 @@ public class AuthService {
     public AuthenticationResponse login (LoginRequest request){
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        UserDto userDto = modelMapper.map(user,UserDto.class);
+        UserResponse userDto = modelMapper.map(user, UserResponse.class);
 
         if(!user.getActive()){
             throw new AppException(ErrorCode.INACTIVE_ACC);

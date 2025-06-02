@@ -4,11 +4,18 @@ import com.example.back_end.dto.OrderDetailDto;
 import com.example.back_end.dto.OrderDto;
 import com.example.back_end.dto.StatusDto;
 import com.example.back_end.dto.request.OrderCreateRequest;
-import com.example.back_end.dto.response.product.ProductSummary;
+
 import com.example.back_end.entity.*;
 import com.example.back_end.mapper.OrderDetailMapper;
 import com.example.back_end.mapper.OrderMapper;
 import com.example.back_end.mapper.ProductImageMapper;
+
+import com.example.back_end.dto.response.order.OrderResponse;
+import com.example.back_end.dto.response.PageResponse;
+import com.example.back_end.entity.*;
+import com.example.back_end.exception.AppException;
+import com.example.back_end.exception.ErrorCode;
+
 import com.example.back_end.repository.*;
 import com.example.back_end.service.product.IProductImageService;
 import com.example.back_end.service.product.ProductImageService;
@@ -16,7 +23,10 @@ import com.example.back_end.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -41,6 +51,7 @@ public class OrderService implements IOrderService {
     private final OrderMapper orderMapper;
     private final IProductImageService productImageService;
     private final ProductImageMapper productImageMapper;
+
     @Override
     public void addOrder(OrderCreateRequest request) {
         Cart cart = cartRepository.findByUser_Id(request.getIdUser())
@@ -86,6 +97,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+
     public List<OrderDetailDto> getOrderDetailsByOrderId(Long orderId) {
         List<OrderDetail>orderDetails= orderDetailRepository.findByIdOrder_Id(orderId);
         List<OrderDetailDto> orderDetailDtos= orderDetails.stream().map(orderDetailMapper::toDto).collect(Collectors.toList());
@@ -106,5 +118,50 @@ public class OrderService implements IOrderService {
         return orderDtos;
     }
 
+
+
+    public PageResponse<OrderResponse> getAllOrders(Pageable pageable) {
+        Page<Order> orderPage = orderRepository.findAll(pageable);
+        List<OrderResponse> orderResponses = orderPage.getContent().stream()
+                .map(order -> modelMapper.map(order, OrderResponse.class))
+                .collect(Collectors.toList());
+
+        return PageResponse.<OrderResponse>builder()
+                .content(orderResponses)
+                .pageNo(orderPage.getNumber())
+                .pageSize(orderPage.getSize())
+                .totalElements(orderPage.getTotalElements())
+                .totalPages(orderPage.getTotalPages())
+                .last(orderPage.isLast())
+                .build();
+    }
+
+    @Override
+    public OrderResponse getOrderById(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        return modelMapper.map(order, OrderResponse.class);
+    }
+
+    @Override
+    public OrderResponse updateOrderStatus(Long id, int statusId) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        
+        Status status = statusRepository.findById(statusId)
+                .orElseThrow(() -> new AppException(ErrorCode.STATUS_NOT_FOUND));
+        
+        order.setIdStatus(status);
+        Order updatedOrder = orderRepository.save(order);
+        return modelMapper.map(updatedOrder, OrderResponse.class);
+    }
+
+    @Override
+    public List<OrderResponse> getOrdersByUser(Long userId) {
+        List<Order> orders = orderRepository.findByIdUser_Id(userId);
+        return orders.stream()
+                .map(order -> modelMapper.map(order, OrderResponse.class))
+                .collect(Collectors.toList());
+    }
 
 }

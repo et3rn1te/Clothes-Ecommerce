@@ -21,6 +21,4 @@ public class ProductImageResponse {
     private String altText;
     private boolean primary;
     private boolean active;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
