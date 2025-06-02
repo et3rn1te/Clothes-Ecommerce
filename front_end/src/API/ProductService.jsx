@@ -191,14 +191,10 @@ const ProductService = {
   },
 
   // Lấy danh sách sản phẩm liên quan
-  getRelatedProducts: async (productId, page = 0, size = 10) => {
+  getRelatedProducts: async (productId, params = {}) => {
     try {
       const response = await axiosClient.get(`/products/${productId}/related`, {
-        params: {
-          page,
-          size,
-          sort: 'createdAt,desc'
-        }
+        params,
       });
       return response;
     } catch (error) {

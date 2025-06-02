@@ -134,4 +134,11 @@ public class ProductVariantService implements IProductVariantService {
                 .map(variantMapper::toSummary)
                 .toList();
     }
+
+    @Override
+    public ProductVariant getById(Long id) {
+        ProductVariant variant = variantRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND));
+        return variant;
+    }
 } 

@@ -250,4 +250,11 @@ public class ProductImageService implements IProductImageService {
         List<ProductImage> images = imageRepository.findByVariantId(variantId);
         return imageMapper.toResponseList(images);
     }
+
+    @Override
+    public ProductImage findFirstByProduct_Id(Long productId) {
+        ProductImage image = imageRepository.findFirstByProduct_Id(productId)
+                .orElseThrow(() ->new AppException(ErrorCode.IMAGE_NOT_FOUND));
+        return image;
+    }
 }

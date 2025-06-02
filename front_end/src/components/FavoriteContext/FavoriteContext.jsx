@@ -1,23 +1,15 @@
 import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
 import axiosClient from '../../API/axiosClient';
+import { listCartItem } from '../../API/CartService';
 
 export const FavoriteContext = createContext();
 
 export const FavoriteProvider = ({ children }) => {
     const [wishlistItems, setWishlistItems] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
     const [session, setSession] = useState(null);
     
-    // useEffect(() => {
-    //   const interval = setInterval(() => {
-    //     const storedSession = JSON.parse(localStorage.getItem("session"));
-    //     if (storedSession?.token && !session) {
-    //       setSession(storedSession); // Đặt lại session để trigger useEffect fetch
-    //     }
-    //   }, 500); // kiểm tra mỗi 500ms
-  
-    //   return () => clearInterval(interval); // clear khi unmount
-    // }, [session]);
     useEffect(() => {
       const fetchFavorites = async () => {
         if (!session?.currentUser?.id || !session?.token) return;
@@ -35,12 +27,26 @@ export const FavoriteProvider = ({ children }) => {
           console.error('Lỗi khi fetch danh sách yêu thích:', error);
         }
       };
+      const fetchCarts = async () => {
+        if (!session?.currentUser?.id || !session?.token) return;
+        try {
+          const response = await listCartItem({userId:session.currentUser.id,token:session.token})
+          setCartItems(response.data.result || []);
+        } catch (error) {
+          console.error('Lỗi khi fetch danh sách giỏ hàng:', error);
+        }
+      };
       fetchFavorites();
+      fetchCarts();
     }, [session]);
 
     const clearWishlist = () => {
       setWishlistItems([]);
     };
+    const clearCart = () => {
+      setCartItems([]);
+    };
+
     const addToWishlist = async (productId) => {
       if (!session?.currentUser?.id || !session?.token) return;
       try {
@@ -85,7 +91,7 @@ export const FavoriteProvider = ({ children }) => {
   
    
   return (
-    <FavoriteContext.Provider value={{ wishlistItems,clearWishlist,session,setSession,removeFromWishlist,addToWishlist}}>
+    <FavoriteContext.Provider value={{ wishlistItems,clearWishlist,session,setSession,removeFromWishlist,addToWishlist,cartItems,clearCart}}>
       {children}
     </FavoriteContext.Provider>
   );

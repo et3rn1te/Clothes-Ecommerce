@@ -14,5 +14,7 @@ import lombok.NoArgsConstructor;
 public class CartDetailDto {
     private long id;
     private ProductVariantResponse product;
+    private String color;
+    private String size;
     private int quantity;
 }
