@@ -1,53 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import CategoryService from '../../../API/CategoryService';
-import BrandService from '../../../API/BrandService';
+import React from 'react';
+import { useFormContext } from 'react-hook-form'; // Import useFormContext
 
-const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, onClose }) => {
-    const [categories, setCategories] = useState([]);
-    const [brands, setBrands] = useState([]);
-
-    // Tải danh mục và thương hiệu
-    useEffect(() => {
-        const fetchCategoriesAndBrands = async () => {
-            try {
-                const categoryRes = await CategoryService.getAllCategories();
-                setCategories(categoryRes.data.content || []);
-                const brandRes = await BrandService.getAllBrands();
-                setBrands(brandRes.data || []);
-            } catch (err) {
-                console.error('Lỗi khi tải danh mục hoặc thương hiệu:', err);
-                // showCustomMessage('Lỗi khi tải danh mục hoặc thương hiệu.', 'error'); // Cần truyền showCustomMessage từ cha
-            }
-        };
-        fetchCategoriesAndBrands();
-    }, []);
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: type === 'checkbox' ? checked : value,
-        }));
-        setErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
-    };
-
-    const handleCategoryChange = (e) => {
-        const { options } = e.target;
-        const selectedCategories = [];
-        for (let i = 0, l = options.length; i < l; i++) {
-            if (options[i].selected) {
-                selectedCategories.push(Number(options[i].value));
-            }
-        }
-        setFormData((prevData) => ({
-            ...prevData,
-            categoryIds: selectedCategories,
-        }));
-        setErrors((prevErrors) => ({ ...prevErrors, categoryIds: '' }));
-    };
+const ProductInfoForm = ({ brands, categories, genders }) => {
+    // Lấy register và errors từ FormContext
+    const { register, formState: { errors } } = useFormContext();
 
     return (
-        <form onSubmit={onSubmit}>
+        <>
             <h3 className="text-2xl font-semibold mb-4 text-gray-700 border-b pb-2">Thông tin sản phẩm</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 {/* Tên sản phẩm */}
@@ -58,13 +17,11 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                     <input
                         type="text"
                         id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
+                        {...register('name')} // Đăng ký input với react-hook-form
                         className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                         placeholder="Nhập tên sản phẩm"
                     />
-                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
                 </div>
                 {/* Slug */}
                 <div>
@@ -74,13 +31,11 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                     <input
                         type="text"
                         id="slug"
-                        name="slug"
-                        value={formData.slug}
-                        onChange={handleChange}
+                        {...register('slug')}
                         className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.slug ? 'border-red-500' : 'border-gray-300'}`}
                         placeholder="Nhập slug (ví dụ: san-pham-moi)"
                     />
-                    {errors.slug && <p className="text-red-500 text-xs mt-1">{errors.slug}</p>}
+                    {errors.slug && <p className="text-red-500 text-xs mt-1">{errors.slug.message}</p>}
                 </div>
                 {/* Giá gốc */}
                 <div>
@@ -90,14 +45,12 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                     <input
                         type="number"
                         id="basePrice"
-                        name="basePrice"
-                        value={formData.basePrice}
-                        onChange={handleChange}
                         step="0.01"
+                        {...register('basePrice')}
                         className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.basePrice ? 'border-red-500' : 'border-gray-300'}`}
                         placeholder="Ví dụ: 99.99"
                     />
-                    {errors.basePrice && <p className="text-red-500 text-xs mt-1">{errors.basePrice}</p>}
+                    {errors.basePrice && <p className="text-red-500 text-xs mt-1">{errors.basePrice.message}</p>}
                 </div>
                 {/* Thương hiệu */}
                 <div>
@@ -106,9 +59,7 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                     </label>
                     <select
                         id="brandId"
-                        name="brandId"
-                        value={formData.brandId}
-                        onChange={handleChange}
+                        {...register('brandId')}
                         className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.brandId ? 'border-red-500' : 'border-gray-300'}`}
                     >
                         <option value="">Chọn thương hiệu</option>
@@ -118,7 +69,7 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                             </option>
                         ))}
                     </select>
-                    {errors.brandId && <p className="text-red-500 text-xs mt-1">{errors.brandId}</p>}
+                    {errors.brandId && <p className="text-red-500 text-xs mt-1">{errors.brandId.message}</p>}
                 </div>
                 {/* Giới tính */}
                 <div>
@@ -127,39 +78,44 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                     </label>
                     <select
                         id="genderId"
-                        name="genderId"
-                        value={formData.genderId}
-                        onChange={handleChange}
+                        {...register('genderId')}
                         className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.genderId ? 'border-red-500' : 'border-gray-300'}`}
                     >
                         <option value="">Chọn giới tính</option>
-                        <option value="1">Nam</option>
-                        <option value="2">Nữ</option>
-                        <option value="3">Unisex</option>
-                    </select>
-                    {errors.genderId && <p className="text-red-500 text-xs mt-1">{errors.genderId}</p>}
-                </div>
-                {/* Danh mục */}
-                <div>
-                    <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="categoryIds">
-                        Danh mục (chọn nhiều): <span className="text-red-500">*</span>
-                    </label>
-                    <select
-                        multiple
-                        id="categoryIds"
-                        name="categoryIds"
-                        value={formData.categoryIds.map(String)}
-                        onChange={handleCategoryChange}
-                        className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 h-32 ${errors.categoryIds ? 'border-red-500' : 'border-gray-300'}`}
-                    >
-                        <option value="" disabled>Chọn danh mục</option>
-                        {categories.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.name}
+                        {genders.map((gender) => ( // Lặp qua danh sách giới tính để tạo tùy chọn
+                            <option key={gender.id} value={gender.id}>
+                                {gender.name}
                             </option>
                         ))}
                     </select>
-                    {errors.categoryIds && <p className="text-red-500 text-xs mt-1">{errors.categoryIds}</p>}
+                    {errors.genderId && <p className="text-red-500 text-xs mt-1">{errors.genderId.message}</p>}
+                </div>
+                {/* Danh mục (Sử dụng Checkbox) */}
+                <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-2">
+                        Danh mục (chọn nhiều): <span className="text-red-500">*</span>
+                    </label>
+                    <div className={`border rounded-lg p-3 max-h-40 overflow-y-auto ${errors.categoryIds ? 'border-red-500' : 'border-gray-300'}`}>
+                        {categories.length > 0 ? (
+                            categories.map((category) => (
+                                <div key={category.id} className="flex items-center mb-2">
+                                    <input
+                                        type="checkbox"
+                                        id={`category-${category.id}`}
+                                        value={category.id}
+                                        {...register('categoryIds')} // Đăng ký với tên trường là 'categoryIds'
+                                        className="form-checkbox h-4 w-4 text-blue-600 rounded"
+                                    />
+                                    <label htmlFor={`category-${category.id}`} className="ml-2 text-gray-700 text-sm">
+                                        {category.name}
+                                    </label>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="text-gray-500 text-sm">Không có danh mục nào để chọn.</p>
+                        )}
+                    </div>
+                    {errors.categoryIds && <p className="text-red-500 text-xs mt-1">{errors.categoryIds.message}</p>}
                 </div>
             </div>
 
@@ -170,13 +126,12 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                 </label>
                 <textarea
                     id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
+                    {...register('description')}
                     rows="5"
                     className="shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 border-gray-300"
                     placeholder="Nhập mô tả chi tiết sản phẩm"
                 ></textarea>
+                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
             </div>
 
             {/* Checkbox Nổi bật */}
@@ -184,9 +139,7 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                 <input
                     type="checkbox"
                     id="featured"
-                    name="featured"
-                    checked={formData.featured}
-                    onChange={handleChange}
+                    {...register('featured')}
                     className="mr-2 h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
                 <label className="text-gray-700 text-base font-semibold" htmlFor="featured">
@@ -199,33 +152,14 @@ const ProductInfoForm = ({ formData, setFormData, errors, setErrors, onSubmit, o
                 <input
                     type="checkbox"
                     id="active"
-                    name="active"
-                    checked={formData.active}
-                    onChange={handleChange}
+                    {...register('active')}
                     className="mr-2 h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
                 <label className="text-gray-700 text-base font-semibold" htmlFor="active">
                     Sản phẩm hoạt động
                 </label>
             </div>
-
-            {/* Nút lưu sản phẩm chính */}
-            <div className="flex justify-end gap-4 mb-8 border-b pb-4">
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-                >
-                    Hủy
-                </button>
-                <button
-                    type="submit"
-                    className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105"
-                >
-                    {formData.id ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm'}
-                </button>
-            </div>
-        </form>
+        </>
     );
 };
 

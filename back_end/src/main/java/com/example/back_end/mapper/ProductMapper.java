@@ -46,6 +46,7 @@ public interface ProductMapper {
     ProductDetailResponse toDetailResponse(Product product);
 
     @Mapping(target = "brandName", source = "brand.name")
+    @Mapping(target = "genderName", source = "gender.name")
     @Mapping(target = "primaryImage", expression = "java(findPrimaryImage(product.getImages()))")
     ProductSummary toSummary(Product product);
 

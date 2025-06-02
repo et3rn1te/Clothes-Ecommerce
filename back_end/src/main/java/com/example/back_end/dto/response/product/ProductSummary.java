@@ -15,5 +15,7 @@ public class ProductSummary {
     private String brandName;
     private String slug;
     private ProductImageSummary primaryImage;
+    private String genderName;
     private boolean featured;
+    private boolean active;
 }

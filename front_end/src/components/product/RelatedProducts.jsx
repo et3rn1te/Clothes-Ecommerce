@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductService from '../../API/ProductService';
-import ProductCard from '../ProductCard'; // sử dụng ProductCard chung
+import ProductCard from './ProductCard'; // sử dụng ProductCard chung
 
 const RelatedProducts = ({ productId }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);

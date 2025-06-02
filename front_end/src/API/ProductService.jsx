@@ -190,19 +190,15 @@ const ProductService = {
     }
   },
 
-  // Lấy danh sách sản phẩm liên quan
-  getRelatedProducts: async (productId, page = 0, size = 10) => {
+  // Lấy sản phẩm liên quan theo ID sản phẩm
+  getRelatedProducts: async (productId, params = {}) => {
     try {
       const response = await axiosClient.get(`/products/${productId}/related`, {
-        params: {
-          page,
-          size,
-          sort: 'createdAt,desc'
-        }
+        params,
       });
       return response;
     } catch (error) {
-      console.error(`Lỗi khi lấy sản phẩm liên quan của ${productId}:`, error);
+      console.error(`Lỗi khi lấy sản phẩm liên quan của sản phẩm ${productId}:`, error);
       throw error;
     }
   },
