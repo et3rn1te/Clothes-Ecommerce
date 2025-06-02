@@ -1,9 +1,10 @@
 import React from 'react';
-import { useFormContext } from 'react-hook-form'; // Import useFormContext
+import { useFormContext } from 'react-hook-form';
 
 const ProductInfoForm = ({ brands, categories, genders }) => {
-    // Lấy register và errors từ FormContext
-    const { register, formState: { errors } } = useFormContext();
+    const { register, formState: { errors }, watch } = useFormContext(); // Thêm watch để theo dõi giá trị categoryIds
+
+    const watchedCategoryIds = watch('categoryIds'); // Theo dõi giá trị của categoryIds
 
     return (
         <>
@@ -17,7 +18,7 @@ const ProductInfoForm = ({ brands, categories, genders }) => {
                     <input
                         type="text"
                         id="name"
-                        {...register('name')} // Đăng ký input với react-hook-form
+                        {...register('name')}
                         className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                         placeholder="Nhập tên sản phẩm"
                     />
@@ -82,7 +83,7 @@ const ProductInfoForm = ({ brands, categories, genders }) => {
                         className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${errors.genderId ? 'border-red-500' : 'border-gray-300'}`}
                     >
                         <option value="">Chọn giới tính</option>
-                        {genders.map((gender) => ( // Lặp qua danh sách giới tính để tạo tùy chọn
+                        {genders.map((gender) => (
                             <option key={gender.id} value={gender.id}>
                                 {gender.name}
                             </option>
@@ -103,7 +104,9 @@ const ProductInfoForm = ({ brands, categories, genders }) => {
                                         type="checkbox"
                                         id={`category-${category.id}`}
                                         value={category.id}
-                                        {...register('categoryIds')} // Đăng ký với tên trường là 'categoryIds'
+                                        {...register('categoryIds')}
+                                        // Sử dụng checked để hiển thị trạng thái đã chọn
+                                        checked={watchedCategoryIds?.includes(category.id)}
                                         className="form-checkbox h-4 w-4 text-blue-600 rounded"
                                     />
                                     <label htmlFor={`category-${category.id}`} className="ml-2 text-gray-700 text-sm">

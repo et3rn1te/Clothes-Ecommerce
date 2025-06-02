@@ -1,4 +1,3 @@
-// src/components/admin/product/ProductFormModal.jsx
 import React, { useState, useEffect } from 'react';
 import ProductInfoForm from './ProductInfoForm';
 
@@ -35,13 +34,9 @@ const ProductFormModal = ({ title, product, onSubmit, onClose, showCustomMessage
     // Khởi tạo react-hook-form
     const methods = useForm({
         resolver: yupResolver(productFormSchema),
-        defaultValues: product ? {
-            ...product,
-            brandId: product.brand?.id || '', // Lấy ID từ đối tượng brand
-            genderId: product.gender?.id || '', // Lấy ID từ đối tượng gender
-            categoryIds: product.categories?.map(cat => cat.id) || [], // Lấy mảng IDs từ categories
-            description: product.description || '', // Đảm bảo description không null/undefined
-        } : {
+        // Khi khởi tạo form, chỉ đặt giá trị mặc định cho trường hợp tạo mới.
+        // Đối với cập nhật, chúng ta sẽ dựa vào useEffect và reset.
+        defaultValues: {
             name: '', description: '', basePrice: '', slug: '',
             brandId: '', genderId: '', categoryIds: [],
             featured: false, active: true,
@@ -50,7 +45,7 @@ const ProductFormModal = ({ title, product, onSubmit, onClose, showCustomMessage
 
     const { handleSubmit, reset } = methods;
 
-    // useEffect để fetch brands, categories, genders
+    // useEffect để fetch brands, categories, genders và reset form khi product thay đổi
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -66,13 +61,35 @@ const ProductFormModal = ({ title, product, onSubmit, onClose, showCustomMessage
 
                 // Reset form with fetched data if product is for update
                 if (product) {
+                    console.log("Product object received in ProductFormModal useEffect:", product); // LOG ĐỂ KIỂM TRA
+                    console.log("Product slug (from product object):", product.slug); // LOG ĐỂ KIỂM TRA
+                    console.log("Product basePrice (from product object):", product.basePrice); // LOG ĐỂ KIỂM TRA
+                    console.log("Product brand ID (from product object):", product.brand?.id); // LOG ĐỂ KIỂM TRA
+                    console.log("Product gender ID (from product object):", product.gender?.id); // LOG ĐỂ KIỂM TRA
+                    console.log("Product category IDs (from product object):", product.categories?.map(cat => cat.id)); // LOG ĐỂ KIỂM TRA
+                    console.log("Product description (from product object):", product.description); // LOG ĐỂ KIỂM TRA
+
+                    // Explicitly map values to ensure they are picked up by reset
                     reset({
-                        ...product,
+                        name: product.name || '',
+                        description: product.description || '',
+                        basePrice: product.basePrice || '', // Sử dụng '' để input number không hiển thị 0 nếu giá trị là 0
+                        slug: product.slug || '',
                         brandId: product.brand?.id || '',
                         genderId: product.gender?.id || '',
                         categoryIds: product.categories?.map(cat => cat.id) || [],
-                        description: product.description || '',
+                        featured: product.featured,
+                        active: product.active,
                     });
+                    console.log("Form has been reset with product data."); // LOG XÁC NHẬN RESET
+                } else {
+                    // Reset form về giá trị mặc định khi tạo mới
+                    reset({
+                        name: '', description: '', basePrice: '', slug: '',
+                        brandId: '', genderId: '', categoryIds: [],
+                        featured: false, active: true,
+                    });
+                    console.log("Form has been reset for new product creation."); // LOG XÁC NHẬN RESET
                 }
             } catch (err) {
                 console.error("Lỗi khi tải dữ liệu:", err);
@@ -81,7 +98,7 @@ const ProductFormModal = ({ title, product, onSubmit, onClose, showCustomMessage
         };
 
         fetchData();
-    }, [product, reset, showCustomMessage]);
+    }, [product, reset, showCustomMessage]); // product là dependency để kích hoạt lại khi sản phẩm thay đổi
 
 
     // Xử lý submit form sản phẩm chính

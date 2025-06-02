@@ -1,7 +1,5 @@
-// src/components/admin/product/ProductImageFormModal.jsx
 import React, { useState, useEffect } from 'react';
 import ProductImageService from '../../../API/ProductImageService';
-import CustomMessageBox from '../../common/CustomMessageBox'; // Đảm bảo đã import
 
 const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
     const [images, setImages] = useState([]);
@@ -15,10 +13,9 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
             if (productId) {
                 try {
                     const res = await ProductImageService.getImagesByProduct(productId);
-                    console.log("Dữ liệu hình ảnh fetch được (res.data):", res); // LOG QUAN TRỌNG: Kiểm tra dữ liệu này
-                    // Đã sửa lỗi: Truy cập trực tiếp res.data vì API trả về mảng trực tiếp, không phải trong .content
-                    setImages(res || []); // res đã là mảng dữ liệu từ service
-                    if (res && res.length === 0) {
+                    console.log("Dữ liệu hình ảnh fetch được (res.data):", res.data); // Log res.data để thấy mảng hình ảnh
+                    setImages(res.data || []); // Cập nhật state với res.data
+                    if (res.data && res.data.length === 0) {
                         console.warn("Không tìm thấy hình ảnh nào cho sản phẩm này.");
                     }
                 } catch (error) {
@@ -33,8 +30,6 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
     }, [productId, showCustomMessage]);
 
 
-    // Hàm hiển thị hộp thoại xác nhận (giả định có sẵn từ CustomMessageBox hoặc một context khác)
-    // Trong môi trường thực tế, bạn cần có một component hoặc hook để quản lý xác nhận
     const showConfirmation = (message, onConfirm) => {
         if (window.confirm(message)) {
             onConfirm();
@@ -98,8 +93,8 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
                 showCustomMessage('Hình ảnh đã được tạo thành công!', 'success');
             }
             // Tải lại danh sách hình ảnh sau khi lưu
-            const updatedImages = await ProductImageService.getImagesByProduct(productId);
-            setImages(updatedImages || []); // Đã sửa: updatedImages là mảng trực tiếp
+            const updatedImagesRes = await ProductImageService.getImagesByProduct(productId);
+            setImages(updatedImagesRes.data || []); // Đã sửa ở đây: Lấy từ updatedImagesRes.data
             setShowImageForm(false);
             setEditingImage(null);
             setImageFile(null);
@@ -115,8 +110,8 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
             try {
                 await ProductImageService.deleteImage(imageId);
                 // Tải lại danh sách hình ảnh sau khi xóa
-                const updatedImages = await ProductImageService.getImagesByProduct(productId);
-                setImages(updatedImages || []); // Đã sửa: updatedImages là mảng trực tiếp
+                const updatedImagesRes = await ProductImageService.getImagesByProduct(productId);
+                setImages(updatedImagesRes.data || []); // Đã sửa ở đây: Lấy từ updatedImagesRes.data
                 showCustomMessage('Hình ảnh đã được xóa thành công!', 'success');
             } catch (err) {
                 console.error('Lỗi khi xóa hình ảnh:', err);
@@ -129,8 +124,8 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
         try {
             await ProductImageService.setPrimaryImage(imageId);
             // Tải lại danh sách hình ảnh sau khi đặt ảnh chính
-            const updatedImages = await ProductImageService.getImagesByProduct(productId);
-            setImages(updatedImages || []); // Đã sửa: updatedImages là mảng trực tiếp
+            const updatedImagesRes = await ProductImageService.getImagesByProduct(productId);
+            setImages(updatedImagesRes.data || []); // Đã sửa ở đây: Lấy từ updatedImagesRes.data
             showCustomMessage('Ảnh chính đã được đặt thành công!', 'success');
         } catch (err) {
             console.error('Lỗi khi đặt ảnh chính:', err);

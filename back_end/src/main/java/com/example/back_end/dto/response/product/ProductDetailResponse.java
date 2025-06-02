@@ -19,8 +19,10 @@ public class ProductDetailResponse {
     private Long id;
     private String name;
     private String description;
+    private String slug;
     private BrandDto brand;
     private GenderDto gender;
+    private BigDecimal basePrice;
     private List<CategoryResponse> categories = new ArrayList<>();
     private List<ProductImageResponse> images = new ArrayList<>();
     private List<ProductVariantResponse> variants = new ArrayList<>();

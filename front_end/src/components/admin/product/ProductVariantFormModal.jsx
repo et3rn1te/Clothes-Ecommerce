@@ -62,8 +62,8 @@ const ProductVariantFormModal = ({ productId, onClose, showCustomMessage }) => {
 
                 if (productId) {
                     const variants = await ProductVariantService.getVariantsByProductId(productId);
+                    console.log("Variants fetched for product ID", productId, ":", variants);
                     if (variants && variants.length > 0) {
-                        // Map fetched variants to form structure
                         const mappedVariants = variants.map(v => ({
                             id: v.id,
                             sizeId: v.size?.id || '',
@@ -74,8 +74,9 @@ const ProductVariantFormModal = ({ productId, onClose, showCustomMessage }) => {
                             weightInKg: v.weightInKg,
                             active: v.active,
                         }));
+                        console.log("Mapped variants for form:", mappedVariants);
                         reset({ variants: mappedVariants });
-                        setInitialVariantIds(new Set(mappedVariants.map(v => v.id))); // Lưu IDs ban đầu
+                        setInitialVariantIds(new Set(mappedVariants.map(v => v.id)));
                     } else {
                         reset({
                             variants: [{ sizeId: '', colorId: '', sku: '', price: '', stockQuantity: '', weightInKg: '', active: true }],
@@ -116,7 +117,7 @@ const ProductVariantFormModal = ({ productId, onClose, showCustomMessage }) => {
                     sku: variant.sku,
                     price: parseFloat(variant.price),
                     stockQuantity: parseInt(variant.stockQuantity, 10),
-                    weightInKg: variant.weightInKg ? parseFloat(variant.weightInKg) : null,
+                    weightInKg: variant.weightInKg === '' ? null : parseFloat(variant.weightInKg), // Chuyển rỗng thành null khi gửi đi
                     active: variant.active,
                     productId: productId, // Đảm bảo productId được gửi cùng
                 };
