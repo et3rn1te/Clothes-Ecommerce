@@ -72,6 +72,16 @@ const Header = () => {
     };
 
     checkSession();
+
+    // Thêm event listener cho cartUpdated
+    const handleCartUpdate = () => {
+      checkSession();
+    };
+    window.addEventListener('cartUpdated', handleCartUpdate);
+
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
   }, []);
 
   // State to store category links (name and link)

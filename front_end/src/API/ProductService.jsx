@@ -206,17 +206,6 @@ const ProductService = {
       throw error;
     }
   },
-
-  // Lấy sản phẩm liên quan theo ID
-  getRelatedProducts: async (productId, params = {}) => {
-    try {
-      const response = await axiosClient.get(`/products/${productId}/related`, { params });
-      return response;
-    } catch (error) {
-      console.error(`Lỗi khi lấy sản phẩm liên quan của ${productId}:`, error);
-      throw error;
-    }
-  }
 };
 
 export default ProductService; 

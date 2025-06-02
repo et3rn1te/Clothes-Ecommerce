@@ -1,6 +1,6 @@
 package com.example.back_end.controller;
 
-import com.example.back_end.dto.UserDto;
+import com.example.back_end.dto.response.user.UserResponse;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.request.user.ChangePasswordRequest;
 import com.example.back_end.dto.request.user.UpdateUserProfileRequest;
@@ -29,16 +29,22 @@ public class UserController {
     private final UserRepository userRepository;
     private final IUserService userService;
 
+    /**
+     * Method to create a new user
+     *
+     * @param request: User creation request containing user details
+     * @return JSON body contains created user information
+     */
     @PostMapping("/createUser")
-    public ResponseEntity<ApiResponse<UserDto>> createUser(
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(
             @RequestBody @Valid UserCreationRequest request) {
         try {
             User user = userService.createRequest(request);
-            List<UserDto> dtos = userService.getConvertedUsers(List.of(user));
-            UserDto dto = dtos.get(0);
+            List<UserResponse> dtos = userService.getConvertedUsers(List.of(user));
+            UserResponse dto = dtos.get(0);
             
             return ResponseEntity.ok(
-                    ApiResponse.<UserDto>builder()
+                    ApiResponse.<UserResponse>builder()
                             .code(0)
                             .message("User created successfully")
                             .data(dto)
@@ -47,7 +53,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("Failed to create user", e);
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.<UserDto>builder()
+                    .body(ApiResponse.<UserResponse>builder()
                             .code(1)
                             .message("Failed to create user: " + e.getMessage())
                             .build());
@@ -61,12 +67,12 @@ public class UserController {
      * @return JSON body contains paginated list of User DTOs
      */
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<PageResponse<UserDto>>> getAllUsers(Pageable pageable) {
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAllUsers(Pageable pageable) {
         try {
-            PageResponse<UserDto> userPage = userService.getUsers(pageable);
+            PageResponse<UserResponse> userPage = userService.getUsers(pageable);
             
             return ResponseEntity.ok(
-                    ApiResponse.<PageResponse<UserDto>>builder()
+                    ApiResponse.<PageResponse<UserResponse>>builder()
                             .code(0)
                             .message("User list retrieved successfully")
                             .data(userPage)
@@ -75,23 +81,28 @@ public class UserController {
         } catch (Exception e) {
             log.error("Failed to retrieve users", e);
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.<PageResponse<UserDto>>builder()
+                    .body(ApiResponse.<PageResponse<UserResponse>>builder()
                             .code(1)
                             .message("Failed to retrieve users: " + e.getMessage())
                             .build());
         }
     }
 
+    /**
+     * Method to get user by ID
+     *
+     * @return JSON body contains user information
+     */
     @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<UserDto>> getUserById(
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(
             @PathVariable Long userId) {
         try {
             User user = userService.getUserById(userId);
-            List<UserDto> dtos = userService.getConvertedUsers(List.of(user));
-            UserDto dto = dtos.get(0);
+            List<UserResponse> dtos = userService.getConvertedUsers(List.of(user));
+            UserResponse dto = dtos.get(0);
             
             return ResponseEntity.ok(
-                    ApiResponse.<UserDto>builder()
+                    ApiResponse.<UserResponse>builder()
                             .code(0)
                             .message("User retrieved successfully")
                             .data(dto)
@@ -100,7 +111,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("Failed to retrieve user with id: " + userId, e);
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.<UserDto>builder()
+                    .body(ApiResponse.<UserResponse>builder()
                             .code(1)
                             .message("Failed to retrieve user: " + e.getMessage())
                             .build());
@@ -109,11 +120,11 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserDto>> getCurrentUser() {
+    public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser() {
         try {
-            UserDto userDto = userService.getCurrentUser();
+            UserResponse userDto = userService.getCurrentUser();
             return ResponseEntity.ok(
-                    ApiResponse.<UserDto>builder()
+                    ApiResponse.<UserResponse>builder()
                             .code(0)
                             .message("Lấy thông tin người dùng thành công")
                             .data(userDto)
@@ -122,22 +133,28 @@ public class UserController {
         } catch (Exception e) {
             log.error("Failed to get current user", e);
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.<UserDto>builder()
+                    .body(ApiResponse.<UserResponse>builder()
                             .code(1)
                             .message("Không thể lấy thông tin người dùng: " + e.getMessage())
                             .build());
         }
     }
 
+    /**
+     * Method to update user profile
+     *
+     * @param request: User profile update request containing fields to update
+     * @return JSON body contains updated user information
+     */
     @PutMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserDto>> updateProfile(
+    public ResponseEntity<ApiResponse<UserResponse>> updateProfile(
             @RequestBody @Valid UpdateUserProfileRequest request) {
         try {
-            UserDto currentUser = userService.getCurrentUser();
-            UserDto updatedUser = userService.updateProfile(currentUser.getId(), request);
+            UserResponse currentUser = userService.getCurrentUser();
+            UserResponse updatedUser = userService.updateProfile(currentUser.getId(), request);
             return ResponseEntity.ok(
-                    ApiResponse.<UserDto>builder()
+                    ApiResponse.<UserResponse>builder()
                             .code(0)
                             .message("Cập nhật thông tin thành công")
                             .data(updatedUser)
@@ -146,19 +163,25 @@ public class UserController {
         } catch (Exception e) {
             log.error("Failed to update profile", e);
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.<UserDto>builder()
+                    .body(ApiResponse.<UserResponse>builder()
                             .code(1)
                             .message("Không thể cập nhật thông tin: " + e.getMessage())
                             .build());
         }
     }
 
+    /**
+     * Method to change user's password
+     *
+     * @param request: Password change request containing old and new passwords
+     * @return No content if password changed successfully
+     */
     @PutMapping("/me/password")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> changePassword(
             @RequestBody @Valid ChangePasswordRequest request) {
         try {
-            UserDto currentUser = userService.getCurrentUser();
+            UserResponse currentUser = userService.getCurrentUser();
             ApiResponse<Void> response = userService.changePassword(currentUser.getId(), request);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -171,16 +194,22 @@ public class UserController {
         }
     }
 
+    /**
+     * Method to update user's avatar
+     *
+     * @param file: New avatar image file
+     * @return JSON body contains updated user information
+     */
     @PutMapping(value = "/me/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserDto>> updateAvatar(
+    public ResponseEntity<ApiResponse<UserResponse>> updateAvatar(
             @RequestParam("file") MultipartFile file) {
         try {
             // Kiểm tra định dạng file
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 return ResponseEntity.badRequest()
-                        .body(ApiResponse.<UserDto>builder()
+                        .body(ApiResponse.<UserResponse>builder()
                                 .code(1)
                                 .message("File không phải là hình ảnh")
                                 .build());
@@ -189,16 +218,16 @@ public class UserController {
             // Kiểm tra kích thước file (tối đa 5MB)
             if (file.getSize() > 5 * 1024 * 1024) {
                 return ResponseEntity.badRequest()
-                        .body(ApiResponse.<UserDto>builder()
+                        .body(ApiResponse.<UserResponse>builder()
                                 .code(1)
                                 .message("Kích thước file quá lớn (tối đa 5MB)")
                                 .build());
             }
 
-            UserDto currentUser = userService.getCurrentUser();
-            UserDto updatedUser = userService.updateAvatar(currentUser.getId(), file);
+            UserResponse currentUser = userService.getCurrentUser();
+            UserResponse updatedUser = userService.updateAvatar(currentUser.getId(), file);
             return ResponseEntity.ok(
-                    ApiResponse.<UserDto>builder()
+                    ApiResponse.<UserResponse>builder()
                             .code(0)
                             .message("Cập nhật ảnh đại diện thành công")
                             .data(updatedUser)
@@ -207,7 +236,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("Failed to update avatar", e);
             return ResponseEntity.badRequest()
-                    .body(ApiResponse.<UserDto>builder()
+                    .body(ApiResponse.<UserResponse>builder()
                             .code(1)
                             .message("Không thể cập nhật ảnh đại diện: " + e.getMessage())
                             .build());

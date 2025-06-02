@@ -1,14 +1,18 @@
-import { BrowserRouter as Router } from 'react-router-dom';
-import AppRoutes from './routes/Routers';
+import {BrowserRouter} from 'react-router-dom'
+import AppRoutes from './routes/AppRoutes'
+import MainLayout from './layouts/MainLayout'
+import {AuthProvider} from "./contexts/AuthContext.jsx";
 
 function App() {
-  return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        <AppRoutes />
-      </div>
-    </Router>
-  );
+    return (
+        <BrowserRouter>
+            <AuthProvider>
+                <MainLayout>
+                    <AppRoutes/>
+                </MainLayout>
+            </AuthProvider>
+        </BrowserRouter>
+    )
 }
 
-export default App; 
+export default App

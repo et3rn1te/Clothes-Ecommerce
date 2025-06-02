@@ -50,8 +50,6 @@ public interface ProductMapper {
     ProductSummary toSummary(Product product);
 
     // LIST MAPPINGS
-    List<ProductResponse> toResponseList(List<Product> products);
-
     List<ProductSummary> toSummaryList(List<Product> products);
 
     // CUSTOM MAPPING LOGIC

@@ -1,6 +1,6 @@
 package com.example.back_end.service.user;
 
-import com.example.back_end.dto.UserDto;
+import com.example.back_end.dto.response.user.UserResponse;
 import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.request.user.ChangePasswordRequest;
@@ -20,23 +20,23 @@ public interface IUserService {
 
     IntrospectResponse introspect(IntrospectRequest request) throws Exception;
 
-    PageResponse<UserDto> getUsers(Pageable pageable);
+    PageResponse<UserResponse> getUsers(Pageable pageable);
 
     User getUserById(Long id);
 
     AuthenticationResponse login(String email, String password);
 
-    List<UserDto> getConvertedUsers(List<User> users);
+    List<UserResponse> getConvertedUsers(List<User> users);
 
     // Lấy thông tin người dùng hiện tại
-    UserDto getCurrentUser();
+    UserResponse getCurrentUser();
 
     // Cập nhật thông tin cá nhân
-    UserDto updateProfile(Long userId, UpdateUserProfileRequest request);
+    UserResponse updateProfile(Long userId, UpdateUserProfileRequest request);
 
     // Đổi mật khẩu
     ApiResponse<Void> changePassword(Long userId, ChangePasswordRequest request);
 
     // Cập nhật avatar
-    UserDto updateAvatar(Long userId, MultipartFile file);
+    UserResponse updateAvatar(Long userId, MultipartFile file);
 }

@@ -5,10 +5,12 @@ import com.example.back_end.dto.request.category.UpdateCategoryRequest;
 import com.example.back_end.dto.response.category.CategoryResponse;
 import org.springframework.data.domain.Pageable;
 import com.example.back_end.dto.response.PageResponse;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
 public interface ICategoryService {
+    @PreAuthorize("")
     CategoryResponse createCategory(CategoryCreationRequest request);
     
     CategoryResponse updateCategory(Long id, UpdateCategoryRequest request);

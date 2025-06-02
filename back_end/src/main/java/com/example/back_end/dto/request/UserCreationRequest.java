@@ -33,13 +33,4 @@ public class UserCreationRequest {
     private String phone;
 
     private boolean active = true;
-
-    public UserCreationRequest(String username, String password, String fullname, String email, String phone) {
-        this.username = username;
-        this.password = password;
-        this.fullname = fullname;
-        this.email = email;
-        this.phone = phone;
-        this.active = true;
-    }
 }

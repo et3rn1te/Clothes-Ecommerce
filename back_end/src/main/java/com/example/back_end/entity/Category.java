@@ -38,4 +38,7 @@ public class Category extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "gender_id")
     private Gender gender;
+
+    @OneToOne(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private CategoryImage categoryImage;
 }

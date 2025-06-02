@@ -1,24 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import GenderService from '../API/GenderService';
-import CategoryService from '../API/CategoryService';
 import ProductService from '../API/ProductService';
-import ProductCard from '../components/ProductCard'; // Import ProductCard component
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Import Chevron icons
+import ProductCard from '../components/product/ProductCard';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 // URL hình ảnh placeholder tạm thời
 const PLACEHOLDER_IMAGE_URL = 'https://picsum.photos/1080/1920';
-const CATEGORY_ICON_PLACEHOLDER = 'https://via.placeholder.com/80x80?text=Icon'; // Placeholder cho icon danh mục
 
 function HomePage() {
-  const [genders, setGenders] = useState([]);
-  const [selectedGender, setSelectedGender] = useState(null);
-  const [categoriesByGender, setCategoriesByGender] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [loadingGenders, setLoadingGenders] = useState(true);
-  const [loadingCategories, setLoadingCategories] = useState(false);
   const [loadingFeaturedProducts, setLoadingFeaturedProducts] = useState(true);
-  const [error, setError] = useState(null);
   const [errorFeatured, setErrorFeatured] = useState(null);
 
   // Ref cho container sản phẩm để cuộn
@@ -26,54 +17,10 @@ function HomePage() {
 
   const navigate = useNavigate();
 
-  // Fetch genders on component mount
-  useEffect(() => {
-    const fetchGenders = async () => {
-      try {
-        const response = await GenderService.getAllGenders();
-        setGenders(response.data);
-        // Automatically select the first gender if available
-        if (response.data.length > 0) {
-          setSelectedGender(response.data[0]);
-        }
-      } catch (err) {
-        setError('Không thể tải dữ liệu giới tính.');
-        console.error('Error fetching genders:', err);
-      } finally {
-        setLoadingGenders(false);
-      }
-    };
-
-    fetchGenders();
-  }, []);
-
-  // Fetch categories when selectedGender changes
-  useEffect(() => {
-    if (selectedGender) {
-      const fetchCategories = async () => {
-        setLoadingCategories(true);
-        setError(null);
-        try {
-          const response = await CategoryService.getSubCategoriesByGenderSlug(selectedGender.slug);
-          console.log('Sub-categories data:', response.data);
-          setCategoriesByGender(response.data);
-        } catch (err) {
-          setError(`Không thể tải danh mục con cho ${selectedGender.name}.`);
-          console.error(`Error fetching sub-categories for ${selectedGender.name}:`, err);
-        } finally {
-          setLoadingCategories(false);
-        }
-      };
-
-      fetchCategories();
-    }
-  }, [selectedGender]);
-
   // Fetch featured products on component mount
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        // API returns PageResponse, access content array
         const response = await ProductService.getFeaturedProducts();
         setFeaturedProducts(response.data.content);
       } catch (err) {
@@ -87,11 +34,6 @@ function HomePage() {
     fetchFeaturedProducts();
   }, []); // Run only once on mount
 
-
-  const handleGenderSelect = (gender) => {
-    setSelectedGender(gender);
-  };
-
   // Hàm xử lý cuộn sang trái/phải
   const scrollProducts = (direction) => {
     if (productsContainerRef.current) {
@@ -104,31 +46,12 @@ function HomePage() {
     }
   };
 
-  // Sửa lại hàm xử lý click vào danh mục
-  const handleCategoryClick = (category) => {
-    console.log('Clicked category:', category);
-    if (selectedGender && category && category.slug) {
-      console.log('Navigating to:', `/${selectedGender.slug}/${category.slug}`);
-      navigate(`/${selectedGender.slug}/${category.slug}`);
-    } else {
-      console.error('Missing required data for navigation:', { selectedGender, category });
-    }
-  };
-
-  // Combine loading states for initial full page load check
-  const isLoadingInitial = loadingGenders || loadingFeaturedProducts;
-
-  if (isLoadingInitial) {
+  if (loadingFeaturedProducts) {
     return <div className="loading text-center py-8 text-xl font-semibold">Đang tải dữ liệu trang chủ...</div>;
-  }
-
-  if (error) {
-    return <div className="error text-center text-red-500 py-8 text-xl font-semibold">Lỗi: {error}</div>;
   }
 
   return (
     <div className="homepage container mx-auto px-4 py-8">
-
       {/* Banner quảng cáo WOWBOX */}
       <section
         className="wowbox-banner relative text-white text-center py-16 mb-8 rounded-lg overflow-hidden bg-gradient-to-r from-blue-700 via-blue-800 to-blue-700 shadow-lg"
@@ -140,67 +63,6 @@ function HomePage() {
           <p className="text-lg md:text-xl opacity-90 mb-6">Số lượng giới hạn 200 box / ngày</p>
           <button className="mt-4 px-8 py-3 bg-white text-blue-700 font-bold rounded-full shadow-xl hover:bg-gray-100 transition duration-300 text-lg uppercase tracking-wide">MUA NGAY &rarr;</button>
         </div>
-      </section>
-
-      {/* Gender and Category Navigation */}
-      <section className="gender-category-navigation mb-8">
-        {/* Gender Navigation */}
-        <div className="gender-navigation flex justify-center mb-6 space-x-4 md:space-x-8">
-          {genders.map(gender => (
-            <button
-              key={gender.id}
-              className={`px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition duration-200 ${selectedGender?.id === gender.id
-                  ? 'bg-gradient-to-r from-blue-800 to-blue-900 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
-                  : 'bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:from-gray-200 hover:to-gray-300 shadow-md'
-                }`}
-              onClick={() => handleGenderSelect(gender)}
-            >
-              {gender.name.toUpperCase()}
-            </button>
-          ))}
-        </div>
-
-        {/* Categories Section - Updated with click handler */}
-        {selectedGender && (
-          <div className="categories-section text-center mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Danh mục {selectedGender.name}:</h2>
-            {loadingCategories ? (
-              <div className="loading text-center">Đang tải danh mục...</div>
-            ) : (
-              <div className="flex flex-wrap justify-center gap-6">
-                {categoriesByGender.length > 0 ? (
-                  categoriesByGender.map(category => (
-                    <div 
-                      key={category.id} 
-                      className="flex flex-col items-center cursor-pointer hover:opacity-80 transition-opacity duration-200"
-                      onClick={() => handleCategoryClick(category)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          handleCategoryClick(category);
-                        }
-                      }}
-                    >
-                      {/* Category Icon/Image */}
-                      <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center mb-2 shadow-md hover:shadow-lg transition-shadow duration-200">
-                        <img
-                          src={category.imageUrl || CATEGORY_ICON_PLACEHOLDER}
-                          alt={category.name || 'Category Icon'}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      {/* Category Name */}
-                      <p className="text-sm font-medium text-gray-700 text-center line-clamp-1">{category.name}</p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center text-gray-600">Không có danh mục nào cho giới tính này.</div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
       </section>
 
       {/* Men Wear / Women Active Sections - Using Grid for 2 columns */}
@@ -243,8 +105,12 @@ function HomePage() {
       </section>
 
       {/* Featured Products Section - Carousel Layout */}
-      <section className="featured-products-section mb-8 relative">
-        <h2 className="text-3xl font-semibold text-center mb-6">Sản phẩm nổi bật:</h2>
+      <section className="featured-products-section mb-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Sản phẩm nổi bật</h2>
+          <p className="text-gray-600">Khám phá những sản phẩm được yêu thích nhất</p>
+        </div>
+
         {loadingFeaturedProducts ? (
           <div className="loading text-center">Đang tải sản phẩm nổi bật...</div>
         ) : errorFeatured ? (
@@ -254,7 +120,8 @@ function HomePage() {
             {/* Nút cuộn trái */}
             <button
               onClick={() => scrollProducts('left')}
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 text-blue-900 p-2 rounded-full shadow-md hover:bg-opacity-100 focus:outline-none z-10 ml-2"
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white text-gray-800 p-3 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none z-10 ml-4 transition-all duration-300 hover:scale-110"
+              aria-label="Cuộn sang trái"
             >
               <FaChevronLeft className="h-6 w-6" />
             </button>
@@ -262,10 +129,11 @@ function HomePage() {
             {/* Danh sách sản phẩm cuộn ngang */}
             <div
               ref={productsContainerRef}
-              className="flex overflow-x-auto space-x-6 pb-4 no-scrollbar"
+              className="flex overflow-x-auto space-x-8 pb-8 px-4 no-scrollbar"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {featuredProducts.map(product => (
-                <div key={product.id} className="flex-none w-64">
+                <div key={product.id} className="flex-none w-72 transform transition-all duration-300 hover:scale-105">
                   <ProductCard product={product} />
                 </div>
               ))}
@@ -274,18 +142,20 @@ function HomePage() {
             {/* Nút cuộn phải */}
             <button
               onClick={() => scrollProducts('right')}
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-75 text-blue-900 p-2 rounded-full shadow-md hover:bg-opacity-100 focus:outline-none z-10 mr-2"
+              className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white text-gray-800 p-3 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none z-10 mr-4 transition-all duration-300 hover:scale-110"
+              aria-label="Cuộn sang phải"
             >
               <FaChevronRight className="h-6 w-6" />
             </button>
+
+            {/* Gradient overlay cho hiệu ứng fade */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
           </div>
         ) : (
           <div className="text-center text-gray-600">Không có sản phẩm nổi bật nào.</div>
         )}
       </section>
-
-      {/* Các section khác nếu có */}
-
     </div>
   );
 }

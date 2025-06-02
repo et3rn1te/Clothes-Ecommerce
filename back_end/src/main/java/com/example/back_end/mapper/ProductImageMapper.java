@@ -11,6 +11,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ProductImageMapper {
+
+    // CREATE MAPPING
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "variant", ignore = true)
@@ -18,13 +20,7 @@ public interface ProductImageMapper {
     @Mapping(target = "publicId", ignore = true)
     ProductImage toEntity(ProductImageCreationRequest request);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "product", ignore = true)
-    @Mapping(target = "variant", ignore = true)
-    @Mapping(target = "imageUrl", ignore = true)
-    @Mapping(target = "publicId", ignore = true)
-    void updateImageFromRequest(ProductImageUpdateRequest request, @MappingTarget ProductImage image);
-
+    // RESPONSE MAPPING
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "variantId", source = "variant.id")
     @Mapping(target = "colorId", source = "variant.color.id")
@@ -32,6 +28,7 @@ public interface ProductImageMapper {
 
     List<ProductImageResponse> toResponseList(List<ProductImage> images);
 
+    // SUMMARY MAPPING
     ProductImageSummary toSummary(ProductImage image);
 
     List<ProductImageSummary> toSummaryList(List<ProductImage> images);

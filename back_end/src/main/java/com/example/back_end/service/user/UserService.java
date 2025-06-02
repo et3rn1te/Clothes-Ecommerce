@@ -1,7 +1,7 @@
 package com.example.back_end.service.user;
 
 import com.example.back_end.constant.PredefinedRole;
-import com.example.back_end.dto.UserDto;
+import com.example.back_end.dto.response.user.UserResponse;
 import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.request.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
@@ -98,12 +98,12 @@ public class UserService implements IUserService {
 
     @Override
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    public PageResponse<UserDto> getUsers(Pageable pageable) {
+    public PageResponse<UserResponse> getUsers(Pageable pageable) {
         log.info("Fetching users with pagination");
         Page<User> userPage = userRepository.findAll(pageable);
-        List<UserDto> userDtos = userMapper.toDtoList(userPage.getContent());
+        List<UserResponse> userDtos = userMapper.toResponseList(userPage.getContent());
         
-        return PageResponse.<UserDto>builder()
+        return PageResponse.<UserResponse>builder()
                 .content(userDtos)
                 .pageNo(userPage.getNumber())
                 .pageSize(userPage.getSize())
@@ -136,8 +136,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<UserDto> getConvertedUsers(List<User> users) {
-        return userMapper.toDtoList(users);
+    public List<UserResponse> getConvertedUsers(List<User> users) {
+        return userMapper.toResponseList(users);
     }
 
     private String generateToken(User user) {
@@ -172,16 +172,16 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDto getCurrentUser() {
+    public UserResponse getCurrentUser() {
         String email = SecurityContextHolder.getContext()
                 .getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        return userMapper.toDto(user);
+        return userMapper.toResponse(user);
     }
 
     @Override
-    public UserDto updateProfile(Long userId, UpdateUserProfileRequest request) {
+    public UserResponse updateProfile(Long userId, UpdateUserProfileRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
@@ -195,7 +195,7 @@ public class UserService implements IUserService {
         user.setPhone(request.getPhone());
 
         User updatedUser = userRepository.save(user);
-        return userMapper.toDto(updatedUser);
+        return userMapper.toResponse(updatedUser);
     }
 
     @Override
@@ -228,7 +228,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDto updateAvatar(Long userId, MultipartFile file) {
+    public UserResponse updateAvatar(Long userId, MultipartFile file) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
@@ -251,7 +251,7 @@ public class UserService implements IUserService {
             // Cập nhật URL ảnh mới
             user.setImageUrl((String) uploadResult.get("secure_url"));
             User updatedUser = userRepository.save(user);
-            return userMapper.toDto(updatedUser);
+            return userMapper.toResponse(updatedUser);
 
         } catch (IOException e) {
             log.error("Failed to upload avatar", e);
