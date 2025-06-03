@@ -4,7 +4,8 @@ import CategoryFormModal from '../../components/admin/category/CategoryFormModal
 import CategoryTable from '../../components/admin/category/CategoryTable';
 import Pagination from '../../components/common/Pagination';
 import CategorySearchBar from '../../components/admin/category/CategorySearchBar';
-import CustomMessageBox from '../../components/common/CustomMessageBox'; // Import CustomMessageBox
+import CustomMessageBox from '../../components/common/CustomMessageBox';
+import CategoryImageForm from '../../components/admin/category/CategoryImageForm'; // Import CategoryImageForm (đã biến thành modal)
 
 const CategoryManagementPage = () => {
     const [categories, setCategories] = useState([]);
@@ -19,6 +20,10 @@ const CategoryManagementPage = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('');
+
+    // New states for image management
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [selectedCategoryForImage, setSelectedCategoryForImage] = useState(null);
 
     const showCustomMessage = (msg, type = 'success') => {
         setMessage(msg);
@@ -121,6 +126,12 @@ const CategoryManagementPage = () => {
         }
     };
 
+    // Handler for image modal close and refresh
+    const handleImageModalClose = () => {
+        setShowImageModal(false);
+        setSelectedCategoryForImage(null);
+    };
+
     return (
         <div className="container mx-auto p-4 font-sans antialiased">
             <CustomMessageBox message={message} type={messageType} />
@@ -147,6 +158,8 @@ const CategoryManagementPage = () => {
                     setSelectedCategory={setSelectedCategory}
                     setShowUpdateModal={setShowUpdateCategoryModal}
                     handleDeleteCategory={handleDeleteCategory}
+                    setShowImageModal={setShowImageModal}
+                    setSelectedCategoryForImage={setSelectedCategoryForImage}
                 />
             )}
 
@@ -177,6 +190,16 @@ const CategoryManagementPage = () => {
                         setShowUpdateCategoryModal(false);
                         setSelectedCategory(null);
                     }}
+                    showCustomMessage={showCustomMessage}
+                />
+            )}
+
+            {/* Category Image Management Modal */}
+            {showImageModal && selectedCategoryForImage && (
+                <CategoryImageForm
+                    categoryId={selectedCategoryForImage.id}
+                    onClose={handleImageModalClose}
+                    onSubmit={() => { /* No need to fetch categories here, CategoryImageForm handles its own refresh */ }}
                     showCustomMessage={showCustomMessage}
                 />
             )}

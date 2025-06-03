@@ -1,5 +1,7 @@
+// src/components/admin/product/ProductImageFormModal.jsx
 import React, { useState, useEffect } from 'react';
 import ProductImageService from '../../../API/ProductImageService';
+import CustomMessageBox from '../../common/CustomMessageBox';
 
 const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
     const [images, setImages] = useState([]);
@@ -13,8 +15,8 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
             if (productId) {
                 try {
                     const res = await ProductImageService.getImagesByProduct(productId);
-                    console.log("Dữ liệu hình ảnh fetch được (res.data):", res.data); // Log res.data để thấy mảng hình ảnh
-                    setImages(res.data || []); // Cập nhật state với res.data
+                    console.log("Dữ liệu hình ảnh fetch được (res.data):", res.data);
+                    setImages(res.data || []);
                     if (res.data && res.data.length === 0) {
                         console.warn("Không tìm thấy hình ảnh nào cho sản phẩm này.");
                     }
@@ -39,7 +41,14 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
     const handleImageFormChange = (e) => {
         const { name, value, type, checked } = e.target;
         if (type === 'file') {
-            setImageFile(e.target.files[0]);
+            const file = e.target.files[0];
+            setImageFile(file);
+            if (file) {
+                setEditingImage(prev => ({ ...prev, imageUrl: URL.createObjectURL(file) })); // Hiển thị preview tạm thời
+            } else {
+                // Nếu người dùng bỏ chọn file, quay lại ảnh hiện có nếu đang chỉnh sửa
+                setEditingImage(prev => ({ ...prev, imageUrl: prev?.id ? prev.imageUrl : null }));
+            }
             setImageFormErrors((prev) => ({ ...prev, imageFile: '' }));
         } else {
             setEditingImage((prev) => ({
@@ -52,15 +61,19 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
 
     const validateImageForm = (imageData, file) => {
         let newErrors = {};
-        if (!imageData.id && !file) newErrors.imageFile = 'File hình ảnh là bắt buộc khi tạo mới.';
-        if (imageData.altText && imageData.altText.length > 100) newErrors.altText = 'Alt text không được vượt quá 100 ký tự.';
+        // File hình ảnh chỉ bắt buộc khi TẠO MỚI (imageData.id không tồn tại)
+        if (!imageData.id && !file) {
+            newErrors.imageFile = 'File hình ảnh là bắt buộc khi tạo mới.';
+        }
+        if (imageData.altText && imageData.altText.length > 100) {
+            newErrors.altText = 'Alt text không được vượt quá 100 ký tự.';
+        }
         setImageFormErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
     const handleSaveImage = async (e) => {
         e.preventDefault();
-        if (!editingImage && !imageFile) return;
 
         if (!productId) {
             showCustomMessage('Vui lòng tạo sản phẩm chính trước khi thêm hình ảnh.', 'error');
@@ -68,33 +81,62 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
         }
 
         const imageData = {
+            id: editingImage?.id, // ĐÃ THÊM: Truyền ID của ảnh đang chỉnh sửa
             altText: editingImage?.altText || '',
             primary: editingImage?.primary || false,
             productId: productId,
         };
 
-        if (!validateImageForm(imageData, imageFile)) return;
+        // Validate form based on whether it's a new image or an update
+        if (!validateImageForm(imageData, imageFile)) {
+            return;
+        }
+
+        // --- LOGIC KIỂM TRA THAY ĐỔI KHI CẬP NHẬT ---
+        if (imageData.id) { // Nếu đang ở chế độ chỉnh sửa (dựa vào imageData.id)
+            // Lấy thông tin gốc của ảnh từ danh sách images để so sánh
+            const originalImage = images.find(img => img.id === imageData.id);
+            const originalAltText = originalImage?.altText || '';
+            const originalPrimaryStatus = originalImage?.primary || false;
+
+            const altTextHasChanged = imageData.altText !== originalAltText;
+            const primaryStatusHasChanged = imageData.primary !== originalPrimaryStatus;
+
+            // Nếu không có file mới VÀ không có thay đổi altText VÀ không có thay đổi primary status
+            if (!imageFile && !altTextHasChanged && !primaryStatusHasChanged) {
+                showCustomMessage('Không có thay đổi nào để cập nhật.', 'info');
+                setShowImageForm(false); // Đóng form nếu không có thay đổi
+                setEditingImage(null);
+                setImageFile(null);
+                setImageFormErrors({});
+                return; // Thoát mà không gọi API
+            }
+        } else { // Nếu là chế độ tạo mới và không có file
+            if (!imageFile) { // Điều kiện này sẽ được validateForm xử lý, nhưng giữ lại để rõ ràng
+                showCustomMessage('Vui lòng chọn một hình ảnh để thêm mới.', 'error');
+                return;
+            }
+        }
+        // --- KẾT THÚC LOGIC KIỂM TRA THAY ĐỔI ---
 
         try {
             const formDataToSend = new FormData();
-            if (imageFile) {
+            if (imageFile) { // Chỉ thêm file vào FormData nếu có file mới được chọn
                 formDataToSend.append('imageFile', imageFile);
             }
             formDataToSend.append('altText', imageData.altText);
             formDataToSend.append('primary', imageData.primary);
-            formDataToSend.append('productId', imageData.productId);
 
-
-            if (editingImage?.id) {
-                await ProductImageService.updateImage(editingImage.id, formDataToSend);
+            if (imageData.id) { // Sử dụng imageData.id để xác định update
+                await ProductImageService.updateImage(productId, imageData.id, formDataToSend);
                 showCustomMessage('Hình ảnh đã được cập nhật thành công!', 'success');
-            } else {
+            } else { // Đây là trường hợp tạo mới
                 await ProductImageService.createImage(productId, formDataToSend);
                 showCustomMessage('Hình ảnh đã được tạo thành công!', 'success');
             }
             // Tải lại danh sách hình ảnh sau khi lưu
             const updatedImagesRes = await ProductImageService.getImagesByProduct(productId);
-            setImages(updatedImagesRes.data || []); // Đã sửa ở đây: Lấy từ updatedImagesRes.data
+            setImages(updatedImagesRes.data || []);
             setShowImageForm(false);
             setEditingImage(null);
             setImageFile(null);
@@ -108,10 +150,11 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
     const handleDeleteImage = (imageId) => {
         showConfirmation('Bạn có chắc chắn muốn xóa hình ảnh này không?', async () => {
             try {
-                await ProductImageService.deleteImage(imageId);
+                // Đã sửa: Truyền productId vào deleteImage
+                await ProductImageService.deleteImage(productId, imageId);
                 // Tải lại danh sách hình ảnh sau khi xóa
                 const updatedImagesRes = await ProductImageService.getImagesByProduct(productId);
-                setImages(updatedImagesRes.data || []); // Đã sửa ở đây: Lấy từ updatedImagesRes.data
+                setImages(updatedImagesRes.data || []);
                 showCustomMessage('Hình ảnh đã được xóa thành công!', 'success');
             } catch (err) {
                 console.error('Lỗi khi xóa hình ảnh:', err);
@@ -122,10 +165,11 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
 
     const handleSetPrimaryImage = async (imageId) => {
         try {
-            await ProductImageService.setPrimaryImage(imageId);
+            // Đã sửa: Truyền productId vào setPrimaryImage
+            await ProductImageService.setPrimaryImage(productId, imageId);
             // Tải lại danh sách hình ảnh sau khi đặt ảnh chính
             const updatedImagesRes = await ProductImageService.getImagesByProduct(productId);
-            setImages(updatedImagesRes.data || []); // Đã sửa ở đây: Lấy từ updatedImagesRes.data
+            setImages(updatedImagesRes.data || []);
             showCustomMessage('Ảnh chính đã được đặt thành công!', 'success');
         } catch (err) {
             console.error('Lỗi khi đặt ảnh chính:', err);
@@ -166,6 +210,13 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
                             />
                             {imageFormErrors.imageFile && <p className="text-red-500 text-xs mt-1">{imageFormErrors.imageFile}</p>}
                         </div>
+                        {/* Preview ảnh nếu có */}
+                        {editingImage?.imageUrl && (
+                            <div className="mb-4">
+                                <label className="block text-gray-700 text-sm font-semibold mb-2">Ảnh hiện tại:</label>
+                                <img src={editingImage.imageUrl} alt="Current Image Preview" className="w-32 h-32 object-cover rounded-md border" />
+                            </div>
+                        )}
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="altText">
                                 Alt Text:
@@ -221,13 +272,13 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
                                     src={image.imageUrl || `https://placehold.co/150x150/e0e0e0/000000?text=No+Image`}
                                     alt={image.altText || 'Product image'}
                                     className="w-full h-32 object-cover"
-                                    onError={(e) => { // Xử lý lỗi tải ảnh
-                                        e.target.onerror = null; // Ngăn chặn vòng lặp vô hạn nếu ảnh placeholder cũng lỗi
+                                    onError={(e) => {
+                                        e.target.onerror = null;
                                         e.target.src = `https://placehold.co/150x150/e0e0e0/000000?text=Error+Loading+Image`;
-                                        console.error("Lỗi tải ảnh từ URL:", image.imageUrl); // Log lỗi cụ thể
+                                        console.error("Lỗi tải ảnh từ URL:", image.imageUrl);
                                     }}
                                 />
-                                {image.primary && (
+                                {image.primary && ( // Hiển thị nhãn "Chính" nếu là ảnh chính
                                     <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
                     Chính
                   </span>
@@ -235,24 +286,26 @@ const ProductImageFormModal = ({ productId, onClose, showCustomMessage }) => {
                                 <div className="p-2 text-center text-sm">
                                     <p className="truncate">{image.altText || 'Không có mô tả'}</p>
                                     <div className="flex justify-center mt-2 space-x-2">
+                                        {/* Nút Sửa và Xóa */}
                                         <button
                                             onClick={() => { setEditingImage(image); setShowImageForm(true); }}
-                                            className="text-indigo-600 hover:text-indigo-800 text-xs"
+                                            className="text-indigo-600 hover:text-indigo-800 px-2 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 transition-colors duration-200"
                                             title="Chỉnh sửa hình ảnh"
                                         >
                                             Sửa
                                         </button>
                                         <button
                                             onClick={() => handleDeleteImage(image.id)}
-                                            className="text-red-600 hover:text-red-800"
+                                            className="text-red-600 hover:text-red-800 px-2 py-1 rounded-md bg-red-50 hover:bg-red-100 transition-colors duration-200"
                                             title="Xóa hình ảnh"
                                         >
                                             Xóa
                                         </button>
+                                        {/* Nút Đặt chính chỉ hiển thị NẾU ảnh KHÔNG PHẢI là ảnh chính */}
                                         {!image.primary && (
                                             <button
                                                 onClick={() => handleSetPrimaryImage(image.id)}
-                                                className="text-green-600 hover:text-green-800 text-xs"
+                                                className="text-green-600 hover:text-green-800 px-2 py-1 rounded-md bg-green-50 hover:bg-green-100 transition-colors duration-200"
                                                 title="Đặt làm ảnh chính"
                                             >
                                                 Đặt chính

@@ -7,10 +7,9 @@ const ProductTable = ({
                           handleToggleFeatured,
                           handleEditProductClick,
                           handleDeleteProduct,
-                          // Thêm các props mới cho quản lý ảnh và biến thể
                           setShowImageModal,
                           setShowVariantModal,
-                          setSelectedProduct, // Cần để cập nhật selectedProduct trước khi mở modal
+                          setSelectedProduct,
                       }) => {
     return (
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -24,7 +23,7 @@ const ProductTable = ({
                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Giới tính</th>
                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Nổi bật</th>
                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Hoạt động</th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Hành động</th>
+                    <th className="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Hành động</th> {/* Căn giữa tiêu đề */}
                 </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
@@ -61,39 +60,41 @@ const ProductTable = ({
                                 Chuyển đổi
                             </button>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            {/* Nút Sửa */}
-                            <button
-                                onClick={() => handleEditProductClick(product)}
-                                className="text-indigo-600 hover:text-indigo-800 mr-2 px-2 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 transition-colors duration-200"
-                                title="Sửa sản phẩm"
-                            >
-                                Sửa
-                            </button>
-                            {/* Nút Ảnh */}
-                            <button
-                                onClick={() => { setSelectedProduct(product); setShowImageModal(true); }}
-                                className="text-green-600 hover:text-green-800 mr-2 px-2 py-1 rounded-md bg-green-50 hover:bg-green-100 transition-colors duration-200"
-                                title="Quản lý ảnh sản phẩm"
-                            >
-                                Ảnh
-                            </button>
-                            {/* Nút Biến thể */}
-                            <button
-                                onClick={() => { setSelectedProduct(product); setShowVariantModal(true); }}
-                                className="text-purple-600 hover:text-purple-800 mr-2 px-2 py-1 rounded-md bg-purple-50 hover:bg-purple-100 transition-colors duration-200"
-                                title="Quản lý biến thể sản phẩm"
-                            >
-                                Biến thể
-                            </button>
-                            {/* Nút Xóa */}
-                            <button
-                                onClick={() => handleDeleteProduct(product.id)}
-                                className="text-red-600 hover:text-red-800 px-2 py-1 rounded-md bg-red-50 hover:bg-red-100 transition-colors duration-200"
-                                title="Xóa sản phẩm"
-                            >
-                                Xóa
-                            </button>
+                        <td className="px-6 py-4 whitespace-nowrap text-center"> {/* Căn giữa các nút */}
+                            <div className="inline-flex items-center justify-center space-x-2"> {/* Thêm container để căn giữa và tạo khoảng cách */}
+                                {/* Nút Sửa */}
+                                <button
+                                    onClick={() => handleEditProductClick(product)}
+                                    className="text-indigo-600 hover:text-indigo-800 px-2 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 transition-colors duration-200"
+                                    title="Sửa sản phẩm"
+                                >
+                                    Sửa
+                                </button>
+                                {/* Nút Ảnh */}
+                                <button
+                                    onClick={() => { setSelectedProduct(product); setShowImageModal(true); }}
+                                    className="text-green-600 hover:text-green-800 px-2 py-1 rounded-md bg-green-50 hover:bg-green-100 transition-colors duration-200"
+                                    title="Quản lý ảnh sản phẩm"
+                                >
+                                    Ảnh
+                                </button>
+                                {/* Nút Biến thể */}
+                                <button
+                                    onClick={() => { setSelectedProduct(product); setShowVariantModal(true); }}
+                                    className="text-purple-600 hover:text-purple-800 px-2 py-1 rounded-md bg-purple-50 hover:bg-purple-100 transition-colors duration-200"
+                                    title="Quản lý biến thể sản phẩm"
+                                >
+                                    Biến thể
+                                </button>
+                                {/* Nút Xóa */}
+                                <button
+                                    onClick={() => handleDeleteProduct(product.id)}
+                                    className="text-red-600 hover:text-red-800 px-2 py-1 rounded-md bg-red-50 hover:bg-red-100 transition-colors duration-200"
+                                    title="Xóa sản phẩm"
+                                >
+                                    Xóa
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 ))}

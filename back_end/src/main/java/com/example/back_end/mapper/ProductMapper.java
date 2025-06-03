@@ -43,6 +43,8 @@ public interface ProductMapper {
     @Mapping(target = "categories", source = "categories")
     @Mapping(target = "images", source = "images")
     @Mapping(target = "variants", source = "variants")
+    @Mapping(target = "slug", source = "slug")
+    @Mapping(target = "basePrice", source = "basePrice")
     ProductDetailResponse toDetailResponse(Product product);
 
     @Mapping(target = "brandName", source = "brand.name")

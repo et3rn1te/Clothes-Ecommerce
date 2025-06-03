@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import CategoryInfoForm from './CategoryInfoForm';
 import CategoryService from '../../../API/CategoryService';
-import CategoryImageForm from './CategoryImageForm';
 import GenderService from '../../../API/GenderService';
 
 // Schema validation
@@ -39,8 +38,9 @@ const CategoryFormModal = ({ title, category, onSubmit, onClose, showCustomMessa
         resolver: yupResolver(categoryFormSchema),
         defaultValues: category ? {
             ...category,
-            parentId: category.parentCategory?.id || '',
-            genderId: category.gender?.id || '',
+            // Đã sửa lỗi: Truy cập trực tiếp parentId và genderId từ đối tượng category
+            parentId: category.parentId || '', // Lấy trực tiếp category.parentId
+            genderId: category.genderId || '', // Lấy trực tiếp category.genderId
         } : {
             name: '',
             slug: '',
@@ -63,11 +63,18 @@ const CategoryFormModal = ({ title, category, onSubmit, onClose, showCustomMessa
                 setGenders(gendersRes.data);
 
                 if (category) {
+                    console.log("Category object received in CategoryFormModal:", category);
+                    // Đã sửa lỗi: Log trực tiếp category.parentId và category.genderId
+                    console.log("Category parentId from object (direct access):", category.parentId);
+                    console.log("Category genderId from object (direct access):", category.genderId);
+
                     reset({
                         ...category,
-                        parentId: category.parentCategory?.id || '',
-                        genderId: category.gender?.id || '',
+                        // Đã sửa lỗi: Truy cập trực tiếp parentId và genderId từ đối tượng category
+                        parentId: category.parentId || '',
+                        genderId: category.genderId || '',
                     });
+                    console.log("Form reset with category data.");
                 }
             } catch (error) {
                 console.error("Lỗi khi tải dữ liệu:", error);
@@ -110,14 +117,6 @@ const CategoryFormModal = ({ title, category, onSubmit, onClose, showCustomMessa
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(handleSubmitMainCategory)}>
                         <CategoryInfoForm allCategories={allCategories} genders={genders} />
-
-                        {category && (
-                            <CategoryImageForm
-                                categoryId={category.id}
-                                existingImage={category.imageUrl ? { id: category.id, url: category.imageUrl, altText: category.imageAltText } : null}
-                                showCustomMessage={showCustomMessage}
-                            />
-                        )}
 
                         <div className="flex justify-end gap-4 mt-6">
                             <button

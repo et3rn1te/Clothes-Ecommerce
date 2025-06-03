@@ -1,7 +1,7 @@
 // src/components/admin/category/CategoryTable.jsx
 import React from 'react';
 
-const CategoryTable = ({ categories, handleToggleStatus, setSelectedCategory, setShowUpdateModal, handleDeleteCategory }) => {
+const CategoryTable = ({ categories, handleToggleStatus, setSelectedCategory, setShowUpdateModal, handleDeleteCategory, setShowImageModal, setSelectedCategoryForImage }) => {
     return (
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
             <table className="min-w-full divide-y divide-gray-200">
@@ -13,7 +13,7 @@ const CategoryTable = ({ categories, handleToggleStatus, setSelectedCategory, se
                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Slug</th>
                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Danh mục cha</th>
                     <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Hoạt động</th>
-                    <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Hành động</th>
+                    <th className="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">Hành động</th> {/* Căn giữa tiêu đề */}
                 </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
@@ -36,19 +36,33 @@ const CategoryTable = ({ categories, handleToggleStatus, setSelectedCategory, se
                                 Chuyển đổi
                             </button>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button
-                                onClick={() => { setSelectedCategory(category); setShowUpdateModal(true); }}
-                                className="text-indigo-600 hover:text-indigo-800 mr-2"
-                            >
-                                Sửa
-                            </button>
-                            <button
-                                onClick={() => handleDeleteCategory(category.id)}
-                                className="text-red-600 hover:text-red-800"
-                            >
-                                Xóa
-                            </button>
+                        <td className="px-6 py-4 whitespace-nowrap text-center"> {/* Căn giữa các nút */}
+                            <div className="inline-flex items-center justify-center space-x-2"> {/* Thêm container để căn giữa và tạo khoảng cách */}
+                                {/* Nút Sửa */}
+                                <button
+                                    onClick={() => { setSelectedCategory(category); setShowUpdateModal(true); }}
+                                    className="text-indigo-600 hover:text-indigo-800 px-2 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 transition-colors duration-200"
+                                    title="Sửa danh mục"
+                                >
+                                    Sửa
+                                </button>
+                                {/* Nút Ảnh */}
+                                <button
+                                    onClick={() => { setSelectedCategoryForImage(category); setShowImageModal(true); }}
+                                    className="text-purple-600 hover:text-purple-800 px-2 py-1 rounded-md bg-purple-50 hover:bg-purple-100 transition-colors duration-200"
+                                    title="Quản lý hình ảnh"
+                                >
+                                    Ảnh
+                                </button>
+                                {/* Nút Xóa */}
+                                <button
+                                    onClick={() => handleDeleteCategory(category.id)}
+                                    className="text-red-600 hover:text-red-800 px-2 py-1 rounded-md bg-red-50 hover:bg-red-100 transition-colors duration-200"
+                                    title="Xóa danh mục"
+                                >
+                                    Xóa
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 ))}
