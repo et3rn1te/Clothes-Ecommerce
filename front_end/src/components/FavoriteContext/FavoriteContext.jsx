@@ -88,6 +88,9 @@ export const FavoriteProvider = ({ children }) => {
         console.error('Lỗi khi xóa sản phẩm khỏi yêu thích:', error);
       }
     };
+    const addToCart = async(productId)=> {
+
+    }
   
    
   return (
