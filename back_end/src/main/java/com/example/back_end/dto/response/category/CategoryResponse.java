@@ -16,8 +16,9 @@ public class CategoryResponse {
     private String name;
     private String description;
     private String slug;
-    private String imageUrl;
+    private String parentName;
+    private CategoryImageResponse categoryImage;
+    private boolean active;
     private Long parentId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Long genderId;
 }

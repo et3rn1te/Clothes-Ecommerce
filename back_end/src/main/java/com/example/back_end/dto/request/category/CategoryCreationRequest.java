@@ -23,4 +23,8 @@ public class CategoryCreationRequest {
     private String slug;
 
     private Long parentId;
+
+    private Long genderId;
+
+    private boolean active = true;
 }

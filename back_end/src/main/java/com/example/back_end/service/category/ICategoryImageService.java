@@ -7,7 +7,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ICategoryImageService {
     CategoryImageResponse createImage(Long categoryId, CategoryImageCreationRequest request);
+
     CategoryImageResponse updateImage(Long categoryId, CategoryImageUpdateRequest request);
+
     void deleteImage(Long categoryId);
+
     CategoryImageResponse getCategoryImage(Long categoryId);
 } 

@@ -11,9 +11,12 @@ public interface CategoryMapper {
 
     // ENTITY -> RESPONSE
     @Mapping(target = "parentId", source = "parent", qualifiedByName = "parentToId")
+    @Mapping(target = "genderId", source = "gender.id")
+    @Mapping(target = "parentName", source = "parent.name")
     CategoryResponse toResponse(Category category);
 
     @Mapping(target = "parentId", source = "parent", qualifiedByName = "parentToId")
+    @Mapping(target = "genderId", source = "gender.id")
     @Mapping(target = "parentName", source = "parent.name")
     CategorySummary toSummary(Category category);
 

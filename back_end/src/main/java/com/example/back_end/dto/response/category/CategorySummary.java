@@ -10,8 +10,10 @@ public class CategorySummary {
     private Long id;
     private String name;
     private String description;
-    private String parentName;
-    private String imageUrl;
     private String slug;
+    private String parentName;
+    private CategoryImageResponse categoryImage;
     private Long parentId;
+    private Long genderId;
+    private boolean active;
 }
