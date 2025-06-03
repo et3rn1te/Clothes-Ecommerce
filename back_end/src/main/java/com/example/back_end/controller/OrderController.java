@@ -1,9 +1,13 @@
 package com.example.back_end.controller;
 
+import com.example.back_end.dto.OrderDetailDto;
+import com.example.back_end.dto.OrderDto;
 import com.example.back_end.dto.request.CartRequest;
 import com.example.back_end.dto.request.OrderCreateRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.service.order.OrderService;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +31,18 @@ public class OrderController {
         orderService.addOrder(request);
         return ApiResponse.<Void>builder().build();
     }
+
+    @GetMapping("/individual/{userId}")
+    public ApiResponse<List<OrderDto>> getOrderByUser(@PathVariable Long userId){
+        List<OrderDto> orderDtos = orderService.getOrderByUserId(userId);
+        return ApiResponse.<List<OrderDto>>builder().result(orderDtos).build();
+    }
+    @GetMapping("/details/{orderId}")
+    public ApiResponse<List<OrderDetailDto>> getOrderDetail(@PathVariable Long orderId){
+        List<OrderDetailDto> orderDtos = orderService.getOrderDetailsByOrderId(orderId);
+        return ApiResponse.<List<OrderDetailDto>>builder().result(orderDtos).build();
+    }
+
 
     /**
      * Method to get all orders with pagination
@@ -78,4 +94,5 @@ public class OrderController {
     public ResponseEntity<?> getOrdersByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(orderService.getOrdersByUser(userId));
     }
+
 }

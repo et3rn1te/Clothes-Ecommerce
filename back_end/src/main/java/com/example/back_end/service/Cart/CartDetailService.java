@@ -6,9 +6,11 @@ import com.example.back_end.dto.response.product.ProductDetailResponse;
 import com.example.back_end.entity.Cart;
 import com.example.back_end.entity.CartDetail;
 import com.example.back_end.entity.Product;
+import com.example.back_end.entity.ProductVariant;
 import com.example.back_end.repository.CartDetailRepository;
 import com.example.back_end.repository.CartRepository;
 import com.example.back_end.service.product.IProductService;
+import com.example.back_end.service.product.IProductVariantService;
 import com.example.back_end.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +28,7 @@ public class CartDetailService implements ICartService{
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
     private final IUserService userService;
-    private final IProductService productService;
+    private final IProductVariantService productService;
     private final ModelMapper modelMapper;
     @Override
     public void updateCartItem(CartRequest request) {
@@ -38,14 +40,13 @@ public class CartDetailService implements ICartService{
                     cartRepository.save(newOne);
                     return newOne;
                 });
-        Product product = productService.getProductById(request.getIdProduct());
+        ProductVariant product = productService.getById(request.getIdProduct());
         CartDetail cartDetail = cartDetailRepository.findByIdCartAndIdProduct_Id(cart, product.getId())
                 .orElseGet(() -> {
                     System.out.println("Ko tìm thấy");
                     CartDetail newCartDetail = new CartDetail();
                     newCartDetail.setIdCart(cart);
                     newCartDetail.setIdProduct(product);
-                    System.out.println(request.getAmount());
                     newCartDetail.setQuantity(0);
                     cartDetailRepository.save(newCartDetail);
                     return newCartDetail;

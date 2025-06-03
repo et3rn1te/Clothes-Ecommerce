@@ -10,12 +10,14 @@ import { checkAndRefreshSession } from "../utils/tokenUtils";
 import { toast } from "react-toastify";
 
 const Header = () => {
-  const { wishlistItems, clearWishlist, setSession } = useContext(FavoriteContext);
+  const { wishlistItems, clearWishlist, setSession,cartItems,clearCart } = useContext(FavoriteContext);
   const wishlistCount = wishlistItems.length;
+
   console.log(wishlistItems.length);
   const [isOpen, setIsOpen] = useState(false); // State for user avatar dropdown
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State for mobile menu
   const [cartCount, setCartCount] = useState(0);
+
   const [userAvatar, setUserAvatar] = useState(null);
   const [isListening, setIsListening] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -52,12 +54,12 @@ const Header = () => {
         }
 
         try {
-          const response = await listCartItem({
-            userId: currentSession.currentUser.id,
-            token: currentSession.token
-          });
-          const { result } = response.data;
-          setCartCount(result.length);
+          // const response = await listCartItem({
+          //   userId: currentSession.currentUser.id,
+          //   token: currentSession.token
+          // });
+          // const { result } = response.data;
+          // setCartCount(cartItems.length);
         } catch (error) {
           if (error.response?.status === 401) {
             handleLogout();
@@ -95,7 +97,7 @@ const Header = () => {
       console.error("Error during logout:", error);
     } finally {
       setIsOpen(false);
-      setCartCount(0);
+      clearCart();
       localStorage.removeItem("session");
       setIsLogin(false);
       setIsAdmin(false); // Đảm bảo reset isAdmin khi đăng xuất
@@ -279,6 +281,26 @@ const Header = () => {
                       >
                         {item.name}
                       </Link>
+
+                      <Link
+                        to="/orderHistory"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        role="menuitem"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        Thông tin đơn hàng
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setIsOpen(false);
+                          handleLogout();
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        role="menuitem"
+                      >
+                        Đăng xuất
+                      </button>
+
                     </div>
                 ))}
               </div>

@@ -190,6 +190,7 @@ const ProductService = {
     }
   },
 
+
   // Lấy sản phẩm liên quan theo ID sản phẩm
   getRelatedProducts: async (productId, params = {}) => {
     try {

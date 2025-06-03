@@ -53,6 +53,7 @@ const ProductActions = ({
         },
         session.token
       );
+      console.log(currentVariant);
       window.dispatchEvent(new CustomEvent('cartUpdated'));
       alert('Đã thêm sản phẩm vào giỏ hàng!');
     } catch (err) {

@@ -46,6 +46,10 @@ const routes = [
         component: lazy(() => import('../pages/product/SearchResultPage')),
     },
     {
+      path: '/orderHistory',
+      component: lazy(() => import('../pages/OrderHistory')),
+    },
+    {
         path: '/403',
         component: lazy(() => import('../pages/error/ForbiddenPage')),
     },
