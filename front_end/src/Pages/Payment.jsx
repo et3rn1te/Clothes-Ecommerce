@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import { FaLock, FaCreditCard, FaMoneyBillWave, FaWallet } from "react-icons/fa";
 import ProvinceSelect from "../API/Location.jsx";
 import { listCartItem } from "../API/CartService.jsx";
-import { addOrder } from "../API/CheckoutService.jsx";
+import { addOrder, vnPay } from "../API/CheckoutService.jsx";
+import useQueryParam from "../utils/useQueryParam.jsx";
+import axiosClient from "../API/axiosClient.jsx";
 
 const CheckoutPage = () => {
+  const success = useQueryParam("success");
   const session = JSON.parse(localStorage.getItem("session"));
   const [formData, setFormData] = useState({
     fullName: session.currentUser.fullname,
@@ -53,6 +56,10 @@ const CheckoutPage = () => {
   };
   useEffect(() => {
     fetchCartItems();
+    if (success) {
+      setShowSuccess(success);
+      // xử lý logic khi có email ở đây
+    }
   }, []);
     
 
@@ -108,7 +115,6 @@ const CheckoutPage = () => {
       try {
         // Simulated API call
         await new Promise(resolve => setTimeout(resolve, 2000));
-        setShowSuccess(true);
       } catch (error) {
         console.error("Order submission failed:", error);
       } finally {
@@ -130,12 +136,27 @@ const CheckoutPage = () => {
       }
         ,session.token
       );
-      console.log("okee");
-
+      setShowSuccess(true);
+    } else{
+      if(formData.paymentMethod === "2"){
+        await addOrder({
+          idUser: session.currentUser.id,
+          receiver: formData.fullName,
+          phone: formData.phoneNumber,
+          idPaymentMethod: 2,
+          address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
+          idStatus: 1,
+          total:calculateTotal()
+        }
+          ,session.token
+        );
+        const response= await vnPay(Math.floor(calculateTotal()));
+        const {code,result,message} = response.data;
+        console.log(result);
+        window.location.href = result;
+      }
+      setShowSuccess(true);
     }
-
-    
-   
   };
 
 

@@ -8,4 +8,11 @@ const addOrder = async (body,token) => {
     });
 }
 
-export {addOrder};
+const vnPay = async (amount) => {
+    return await axiosClient.get('/payment/vnpay', {
+        params: { amount }
+    });
+};
+
+
+export {addOrder,vnPay};

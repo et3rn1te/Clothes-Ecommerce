@@ -1,9 +1,13 @@
 package com.example.back_end.controller;
 
 import com.example.back_end.config.VnpayConfig;
+import com.example.back_end.dto.request.OrderCreateRequest;
 import com.example.back_end.dto.response.ApiResponse;
+import com.example.back_end.service.order.OrderService;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.util.StandardCharset;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +16,11 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -24,6 +30,7 @@ import java.util.*;
 @RequestMapping("/payment")
 @RequiredArgsConstructor
 public class VnPayController {
+    private final OrderService orderService;
 
     @GetMapping("/vnpay")
     public ApiResponse<String> createPayment(@RequestParam long amount) {
@@ -100,12 +107,14 @@ public class VnPayController {
 
     // Hàm tạo chữ ký HMAC SHA512
 
-    // API nhận kết quả trả về từ VNPAY
+//     API nhận kết quả trả về từ VNPAY
     @GetMapping("/vnpay_return")
-    public ResponseEntity<String> vnpayReturn(@RequestParam Map<String, String> allParams) {
+    ApiResponse<Void> vnpayReturn(HttpServletResponse response,@RequestBody OrderCreateRequest request) throws ParseException, JOSEException, IOException {
         // Kiểm tra chữ ký trả về, xử lý trạng thái thanh toán, cập nhật đơn hàng...
         // allParams chứa các tham số trả về từ VNPAY
-        return ResponseEntity.ok("Kết quả thanh toán đã nhận");
+        orderService.addOrder(request);
+        response.sendRedirect("http://localhost:5173/payment?success=true");
+        return ApiResponse.<Void>builder().message("Kết quả thanh toán đã nhận được").build();
     }
 }
 
