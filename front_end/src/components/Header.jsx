@@ -282,7 +282,7 @@ const Header = () => {
                         {item.name}
                       </Link>
 
-                      <Link
+                      {/* <Link
                         to="/orderHistory"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         role="menuitem"
@@ -299,10 +299,20 @@ const Header = () => {
                         role="menuitem"
                       >
                         Đăng xuất
-                      </button>
+                      </button> */}
 
                     </div>
                 ))}
+                {isLogin && (
+                  <div className="relative group">
+                    <Link
+                        to="/orderHistory"
+                        className="text-gray-700 hover:text-blue-900 font-medium text-lg transition-colors duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-blue-900 hover:after:w-full after:transition-all after:duration-300"
+                    >
+                      Lịch sử đơn hàng
+                    </Link>
+                  </div>
+                )}
               </div>
 
               {/* Search and Cart */}
