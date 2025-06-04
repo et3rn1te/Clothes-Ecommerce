@@ -57,6 +57,16 @@ const OrderHistory = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+  const getPaymentColor = (status) => {
+    switch (status) {
+      case "VN PAY":
+        return "bg-green-100 text-green-800";
+      case "COD":
+        return "bg-yellow-100 text-yellow-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   const getStatusText = (status) => {
     switch (status) {
@@ -140,9 +150,14 @@ const OrderHistory = () => {
                         <FiChevronDown className="text-gray-500" />
                       )}
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.statusName)}`}>
-                      {getStatusText(order.statusName)}
-                    </span>
+                    <div className="flex gap-2">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPaymentColor(order.paymentMethodTypePayment)}`}>
+                        {order.paymentMethodTypePayment}
+                      </span>
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.statusName)}`}>
+                        {getStatusText(order.statusName)}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
