@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaLock, FaCreditCard, FaMoneyBillWave, FaWallet } from "react-icons/fa";
 import ProvinceSelect from "../API/Location.jsx";
 import { listCartItem } from "../API/CartService.jsx";
 import { addOrder, vnPay } from "../API/CheckoutService.jsx";
 import useQueryParam from "../utils/useQueryParam.jsx";
 import axiosClient from "../API/axiosClient.jsx";
+import { FavoriteContext } from "../components/FavoriteContext/FavoriteContext.jsx";
 
 const CheckoutPage = () => {
   const success = useQueryParam("success");
   const session = JSON.parse(localStorage.getItem("session"));
+  const {  clearCart } = useContext(FavoriteContext);
   const [formData, setFormData] = useState({
     fullName: session.currentUser.fullname,
     phoneNumber: session.currentUser.phone,
@@ -137,6 +139,8 @@ const CheckoutPage = () => {
         ,session.token
       );
       setShowSuccess(true);
+      clearCart();
+      
     } else{
       if(formData.paymentMethod === "2"){
         await addOrder({
@@ -156,6 +160,7 @@ const CheckoutPage = () => {
         window.location.href = result;
       }
       setShowSuccess(true);
+      clearCart();
     }
   };
 

@@ -49,7 +49,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public void addOrder(OrderCreateRequest request) {
-        Cart cart = cartRepository.findByUser_Id(request.getIdUser())
+        Cart cart = cartRepository.findByUser_IdAndIsOrdered(request.getIdUser(),false)
                 .orElseThrow(() -> new IllegalArgumentException("Cart không tồn tại cho User này."));
         List<CartDetail> cartDetails = cartDetailRepository.findAllByIdCart(cart);
         if (cartDetails.isEmpty()) {
@@ -83,6 +83,8 @@ public class OrderService implements IOrderService {
 
             orderDetailRepository.save(oderDetail);
         }
+        cart.setOrdered(true);
+        cartRepository.save(cart);
 
 //        cartDetailRepository.deleteAll(cartDetails);
 
