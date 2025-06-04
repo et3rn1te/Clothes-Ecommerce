@@ -108,13 +108,12 @@ public class VnPayController {
     // Hàm tạo chữ ký HMAC SHA512
 
 //     API nhận kết quả trả về từ VNPAY
-    @GetMapping("/vnpay_return")
-    ApiResponse<Void> vnpayReturn(HttpServletResponse response,@RequestBody OrderCreateRequest request) throws ParseException, JOSEException, IOException {
-        // Kiểm tra chữ ký trả về, xử lý trạng thái thanh toán, cập nhật đơn hàng...
-        // allParams chứa các tham số trả về từ VNPAY
-        orderService.addOrder(request);
-        response.sendRedirect("http://localhost:5173/payment?success=true");
-        return ApiResponse.<Void>builder().message("Kết quả thanh toán đã nhận được").build();
-    }
+//    @GetMapping("/vnpay_return")
+//    ApiResponse<Void> vnpayReturn(HttpServletResponse response) throws ParseException, JOSEException, IOException {
+//        // Kiểm tra chữ ký trả về, xử lý trạng thái thanh toán, cập nhật đơn hàng...
+//        // allParams chứa các tham số trả về từ VNPA
+//        response.sendRedirect("http://localhost:5173/payment?success=true");
+//        return ApiResponse.<Void>builder().message("Kết quả thanh toán đã nhận được").build();
+//    }
 }
 
