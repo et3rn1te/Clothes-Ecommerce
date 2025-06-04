@@ -23,7 +23,11 @@ public class Category extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String slug;
 
+    @Column(length = 2000)
     private String description;
+
+    @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active = true;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")

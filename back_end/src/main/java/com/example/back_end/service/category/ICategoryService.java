@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 public interface ICategoryService {
-    @PreAuthorize("")
     CategoryResponse createCategory(CategoryCreationRequest request);
     
     CategoryResponse updateCategory(Long id, UpdateCategoryRequest request);

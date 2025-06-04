@@ -1,7 +1,8 @@
+// src/API/ProductImageService.jsx
 import axiosClient from './axiosClient';
 
 const ProductImageService = {
-    // Tạo hình ảnh mới cho sản phẩm
+    // Tạo hình ảnh mới cho sản phẩm.
     createImage: async (productId, formData) => {
         try {
             const response = await axiosClient.post(
@@ -20,11 +21,11 @@ const ProductImageService = {
         }
     },
 
-    // Cập nhật thông tin hình ảnh
-    updateImage: async (imageId, formData) => {
+    // Cập nhật thông tin hình ảnh hoặc thay thế file ảnh.
+    updateImage: async (productId, imageId, formData) => {
         try {
             const response = await axiosClient.put(
-                `/products/images/${imageId}`,
+                `/products/${productId}/images/${imageId}`,
                 formData,
                 {
                     headers: {
@@ -34,67 +35,67 @@ const ProductImageService = {
             );
             return response;
         } catch (error) {
-            console.error(`Lỗi khi cập nhật hình ảnh ${imageId}:`, error);
+            console.error(`Lỗi khi cập nhật hình ảnh ${imageId} cho sản phẩm ${productId}:`, error);
             throw error;
         }
     },
 
-    // Xóa hình ảnh
-    deleteImage: async (imageId) => {
+    // Xóa hình ảnh theo ID.
+    deleteImage: async (productId, imageId) => {
         try {
-            const response = await axiosClient.delete(`/products/images/${imageId}`);
+            const response = await axiosClient.delete(`/products/${productId}/images/${imageId}`);
             return response;
         } catch (error) {
-            console.error(`Lỗi khi xóa hình ảnh ${imageId}:`, error);
+            console.error(`Lỗi khi xóa hình ảnh ${imageId} của sản phẩm ${productId}:`, error);
             throw error;
         }
     },
 
-    // Lấy thông tin chi tiết hình ảnh theo ID
-    getImageById: async (imageId) => {
+    // Lấy thông tin chi tiết hình ảnh theo ID.
+    getImageById: async (productId, imageId) => {
         try {
-            const response = await axiosClient.get(`/products/images/${imageId}`);
+            const response = await axiosClient.get(`/products/${productId}/images/${imageId}`);
             return response;
         } catch (error) {
-            console.error(`Lỗi khi lấy thông tin hình ảnh ${imageId}:`, error);
+            console.error(`Lỗi khi lấy thông tin hình ảnh ${imageId} của sản phẩm ${productId}:`, error);
             throw error;
         }
     },
 
-    // Lấy danh sách hình ảnh của sản phẩm
+    // Lấy danh sách hình ảnh của một sản phẩm cụ thể.
     getImagesByProduct: async (productId) => {
         try {
             const response = await axiosClient.get(`/products/${productId}/images`);
-            return response;
+            return response; // Trả về toàn bộ response Axios, component sẽ truy cập .data
         } catch (error) {
             console.error(`Lỗi khi lấy danh sách hình ảnh của sản phẩm ${productId}:`, error);
             throw error;
         }
     },
 
-    // Chuyển đổi trạng thái hình ảnh
-    toggleImageStatus: async (imageId) => {
+    // Chuyển đổi trạng thái hoạt động của hình ảnh.
+    toggleImageStatus: async (productId, imageId) => {
         try {
-            const response = await axiosClient.patch(`/products/images/${imageId}/toggle`);
+            const response = await axiosClient.patch(`/products/${productId}/images/${imageId}/toggle`);
             return response;
         } catch (error) {
-            console.error(`Lỗi khi chuyển đổi trạng thái hình ảnh ${imageId}:`, error);
+            console.error(`Lỗi khi chuyển đổi trạng thái hình ảnh ${imageId} của sản phẩm ${productId}:`, error);
             throw error;
         }
     },
 
-    // Đặt hình ảnh làm ảnh chính
-    setPrimaryImage: async (imageId) => {
+    // Đặt hình ảnh làm ảnh chính cho sản phẩm của nó.
+    setPrimaryImage: async (productId, imageId) => {
         try {
-            const response = await axiosClient.patch(`/products/images/${imageId}/set-primary`);
+            const response = await axiosClient.patch(`/products/${productId}/images/${imageId}/set-primary`);
             return response;
         } catch (error) {
-            console.error(`Lỗi khi đặt hình ảnh ${imageId} làm ảnh chính:`, error);
+            console.error(`Lỗi khi đặt hình ảnh ${imageId} làm ảnh chính cho sản phẩm ${productId}:`, error);
             throw error;
         }
     },
 
-    // Xóa tất cả hình ảnh của sản phẩm
+    // Xóa tất cả hình ảnh của sản phẩm.
     deleteImagesByProduct: async (productId) => {
         try {
             const response = await axiosClient.delete(`/products/${productId}/images`);
@@ -103,7 +104,18 @@ const ProductImageService = {
             console.error(`Lỗi khi xóa tất cả hình ảnh của sản phẩm ${productId}:`, error);
             throw error;
         }
+    },
+
+    // Lấy danh sách hình ảnh liên kết với một biến thể cụ thể.
+    getImagesByVariantId: async (productId, variantId) => {
+        try {
+            const response = await axiosClient.get(`/products/${productId}/images/variant/${variantId}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Lỗi khi lấy hình ảnh theo biến thể ${variantId} của sản phẩm ${productId}:`, error);
+            throw error;
+        }
     }
 };
 
-export default ProductImageService; 
+export default ProductImageService;

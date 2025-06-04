@@ -62,7 +62,7 @@ const routes = [
         ),
     },
     {
-        path: '/admin/product',
+        path: '/admin/products',
         component: () => (
             <AdminRoute>
               <ProductManagementPage/>
@@ -70,7 +70,7 @@ const routes = [
         ),
     },
     {
-        path: '/admin/category',
+        path: '/admin/categories',
         component: () => (
             <AdminRoute>
               <CategoryManagementPage/>

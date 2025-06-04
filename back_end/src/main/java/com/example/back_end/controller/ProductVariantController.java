@@ -27,7 +27,7 @@ public class ProductVariantController {
      * @return JSON body contains created product variant information
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductVariantResponse> createVariant(
             @PathVariable Long productId,
             @RequestBody ProductVariantCreationRequest request) {
@@ -42,7 +42,7 @@ public class ProductVariantController {
      * @return JSON body contains updated product variant information
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductVariantResponse> updateVariant(
             @PathVariable Long id,
             @RequestBody ProductVariantUpdateRequest request) {
@@ -56,7 +56,7 @@ public class ProductVariantController {
      * @return No content if variant deleted successfully
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> deleteVariant(@PathVariable Long id) {
         variantService.deleteVariant(id);
         return ResponseEntity.noContent().build();
@@ -91,7 +91,7 @@ public class ProductVariantController {
      * @return No content if status toggled successfully
      */
     @PatchMapping("/{id}/toggle")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> toggleVariantStatus(@PathVariable Long id) {
         variantService.toggleVariantStatus(id);
         return ResponseEntity.noContent().build();

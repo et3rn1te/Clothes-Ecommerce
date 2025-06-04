@@ -17,6 +17,7 @@ public class ProductVariantSummary {
     private String sku;
     private ProductImageSummary primaryImage;
     private BigDecimal price;
+    private BigDecimal weightInKg;
     private Integer stockQuantity;
     private boolean active;
 }

@@ -52,13 +52,16 @@ public class ProductService implements IProductService {
 
         List<Category> categories = categoryRepository.findByIdIn(request.getCategoryIds());
 
-        Product product = productMapper.toEntity(request);
-        product.setSlug(slug);
-        product.setBrand(brand);
-        product.setGender(gender);
-        product.setCategories(categories);
-        product.setActive(request.isActive());
-        product.setFeatured(request.isFeatured());
+        Product product = Product.builder()
+                .name(request.getName())
+                .slug(slug)
+                .description(request.getDescription())
+                .brand(brand)
+                .gender(gender)
+                .categories(categories)
+                .active(request.isActive())
+                .featured(request.isFeatured())
+                .build();
 
         return productMapper.toResponse(productRepository.save(product));
     }
@@ -144,9 +147,9 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public PageResponse<ProductSummary> getAllProducts(Pageable pageable) {
-        Page<Product> productPage = productRepository.findByActiveTrue(pageable);
-        return PageResponse.<ProductSummary>builder()
+        public PageResponse<ProductSummary> getAllProducts(Pageable pageable) {
+            Page<Product> productPage = productRepository.findAll(pageable);
+            return PageResponse.<ProductSummary>builder()
                 .content(productPage.getContent().stream()
                         .map(productMapper::toSummary)
                         .toList())

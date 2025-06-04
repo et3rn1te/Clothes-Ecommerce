@@ -6,7 +6,6 @@ import com.example.back_end.dto.response.product.ProductDetailResponse;
 import com.example.back_end.dto.response.product.ProductResponse;
 import com.example.back_end.dto.response.product.ProductSummary;
 import com.example.back_end.dto.response.PageResponse;
-import com.example.back_end.entity.Product;
 import com.example.back_end.service.product.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +29,7 @@ public class ProductController {
      * @return JSON body contains created product information
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody ProductCreationRequest request) {
         return ResponseEntity.ok(productService.createProduct(request));
     }
@@ -43,7 +42,7 @@ public class ProductController {
      * @return JSON body contains updated product information
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductResponse> updateProduct(
             @PathVariable Long id,
             @RequestBody ProductUpdateRequest request) {
@@ -159,7 +158,7 @@ public class ProductController {
      * @return No content if status toggled successfully
      */
     @PatchMapping("/{id}/toggle-status")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> toggleProductStatus(@PathVariable Long id) {
         productService.toggleProductStatus(id);
         return ResponseEntity.noContent().build();
@@ -172,7 +171,7 @@ public class ProductController {
      * @return No content if featured status toggled successfully
      */
     @PatchMapping("/{id}/toggle-featured")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MANAGER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> toggleFeaturedStatus(@PathVariable Long id) {
         productService.toggleFeaturedStatus(id);
         return ResponseEntity.noContent().build();
@@ -217,4 +216,18 @@ public class ProductController {
             Pageable pageable) {
         return ResponseEntity.ok(productService.getRelatedProducts(id, pageable));
     }
+
+    /**
+     * Method to delete Product by ID
+     *
+     * @param id: Product's id
+     * @return No content if deleted successfully
+     */
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')") // Tuỳ vào quyền
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
 } 

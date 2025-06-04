@@ -13,9 +13,9 @@ import java.util.List;
 public interface ProductImageMapper {
 
     // CREATE MAPPING
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "product", ignore = true)
-    @Mapping(target = "variant", ignore = true)
+    @Mapping(target = "id", source = "productId")
+    @Mapping(target = "variant.id", source = "variantId")
+    @Mapping(target = "color.id", source = "colorId")
     @Mapping(target = "imageUrl", ignore = true)
     @Mapping(target = "publicId", ignore = true)
     ProductImage toEntity(ProductImageCreationRequest request);

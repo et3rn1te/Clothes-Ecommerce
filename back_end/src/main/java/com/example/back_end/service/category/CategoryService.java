@@ -4,6 +4,7 @@ import com.example.back_end.dto.request.category.CategoryCreationRequest;
 import com.example.back_end.dto.request.category.UpdateCategoryRequest;
 import com.example.back_end.dto.response.category.CategoryResponse;
 import com.example.back_end.entity.Category;
+import com.example.back_end.entity.Product;
 import com.example.back_end.exception.AppException;
 import com.example.back_end.exception.ErrorCode;
 import com.example.back_end.mapper.CategoryMapper;
@@ -42,6 +43,7 @@ public class CategoryService implements ICategoryService {
                 .name(request.getName())
                 .slug(slug)
                 .description(request.getDescription())
+                .active(request.isActive())
                 .build();
 
         if (request.getParentId() != null) {
@@ -88,11 +90,12 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new AppException(ErrorCode.CATEGORY_NOT_FOUND);
-        }
-        categoryRepository.deleteById(id);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        category.setActive(false);
+        categoryRepository.save(category);
     }
 
     @Override
@@ -118,8 +121,12 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public void toggleCategoryStatus(Long id) {
-        throw new AppException(ErrorCode.OPERATION_NOT_SUPPORTED);
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.CATEGORY_NOT_FOUND));
+        category.setActive(!category.isActive());
+        categoryRepository.save(category);
     }
 
     @Override

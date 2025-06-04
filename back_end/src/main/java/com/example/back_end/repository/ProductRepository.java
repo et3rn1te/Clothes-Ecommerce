@@ -96,6 +96,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     AND (:sizeIds IS NULL OR v.size.id IN :sizeIds)
     AND (:minPrice IS NULL OR p.basePrice >= :minPrice)
     AND (:maxPrice IS NULL OR p.basePrice <= :maxPrice)
+    AND p.active = true
 """)
     Page<Product> findByCategorySlugWithFilters(
             @Param("categorySlug") String categorySlug,

@@ -9,6 +9,7 @@ import com.example.back_end.service.product.ProductImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class ProductImageController {
      * @return ResponseEntity with the created ProductImageResponse.
      */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductImageResponse> createImage(
             @PathVariable Long productId,
             @RequestParam(required = false) Long variantId,
@@ -53,6 +55,7 @@ public class ProductImageController {
      * @return ResponseEntity with the updated ProductImageResponse.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<ProductImageResponse> updateImage(
             @PathVariable Long id,
             @RequestParam(required = false) Boolean isActive,
@@ -118,6 +121,7 @@ public class ProductImageController {
      * @return ResponseEntity with no content.
      */
     @PatchMapping("/{id}/set-primary")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> setPrimaryImage(@PathVariable Long id) {
         imageService.setPrimaryImage(id);
         return ResponseEntity.noContent().build();
@@ -130,6 +134,7 @@ public class ProductImageController {
      * @return ResponseEntity with no content.
      */
     @DeleteMapping
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<Void> deleteImagesByProduct(@PathVariable Long productId) {
         imageService.deleteImagesByProduct(productId);
         return ResponseEntity.noContent().build();
