@@ -3,6 +3,7 @@ import AdminRoute from "./AdminRoute";
 import TestPage from "../pages/admin/TestPage.jsx";
 import ProductManagementPage from "../pages/admin/ProductManagementPage.jsx";
 import CategoryManagementPage from "../pages/admin/CategoryManagementPage.jsx";
+import Dashboard from '../Pages/admin/Dashboard.jsx';
 
 const routes = [
     {
@@ -54,26 +55,10 @@ const routes = [
         component: lazy(() => import('../pages/error/ForbiddenPage')),
     },
     {
-        path: '/admin/test',
+        path: '/admin/*',
         component: () => (
             <AdminRoute>
-              <TestPage/>
-            </AdminRoute>
-        ),
-    },
-    {
-        path: '/admin/products',
-        component: () => (
-            <AdminRoute>
-              <ProductManagementPage/>
-            </AdminRoute>
-        ),
-    },
-    {
-        path: '/admin/categories',
-        component: () => (
-            <AdminRoute>
-              <CategoryManagementPage/>
+              <Dashboard/>
             </AdminRoute>
         ),
     },

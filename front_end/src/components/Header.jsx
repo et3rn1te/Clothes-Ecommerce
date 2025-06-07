@@ -70,7 +70,7 @@ const Header = () => {
       } else {
         setIsLogin(false);
         setIsAdmin(false); // Đảm bảo isAdmin là false khi không đăng nhập
-        setCartCount(0);
+        // setCartCount(0);
         setUserAvatar(null);
       }
     };
@@ -153,11 +153,7 @@ const Header = () => {
 
   // Admin dashboard links
   const adminLinks = [
-    { name: "Quản lý sản phẩm", link: "/admin/products" },
-    { name: "Quản lý danh mục", link: "/admin/categories" },
-    { name: "Quản lý người dùng", link: "/admin/users" },
-    { name: "Quản lý đơn hàng", link: "/admin/orders" },
-    // Thêm các đường dẫn quản lý khác
+    { name: "Tới trang admin", link: "/admin/statisticalPage" },
   ];
 
   return (

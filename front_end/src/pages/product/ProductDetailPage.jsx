@@ -7,6 +7,7 @@ import ProductInfo from '../../components/product/ProductInfo';
 import ProductVariantSelector from '../../components/product/ProductVariantSelector';
 import ProductActions from '../../components/product/ProductActions';
 import RelatedProducts from '../../components/product/RelatedProducts';
+import FacebookComment from '../../components/commentFB/FacebookComment';
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -170,7 +171,9 @@ const ProductDetailPage = () => {
                 dangerouslySetInnerHTML={{ __html: product.description }}
               />
             </div>
+            <FacebookComment url={'https://your-public-url.com/product/'+product.id} />
           </div>
+          
         )}
 
         {/* Product Specifications */}

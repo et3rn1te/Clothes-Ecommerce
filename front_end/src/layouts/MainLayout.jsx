@@ -7,7 +7,7 @@ import { FavoriteProvider } from '../components/FavoriteContext/FavoriteContext'
 
 function MainLayout() {
   const location = useLocation();
-  const hideHeaderFooter = location.pathname.startsWith("/auth");
+  const hideHeaderFooter = location.pathname.startsWith("/auth") ||  location.pathname.startsWith("/admin");
 
   return (
     <>
