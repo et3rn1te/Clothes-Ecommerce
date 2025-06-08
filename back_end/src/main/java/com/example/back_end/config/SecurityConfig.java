@@ -31,11 +31,11 @@ public class SecurityConfig {
             "/categories/**", "/users/**",};
     private final String[] PUBLIC_ENDPOINTS_GET = {"cart/listCartItem/**", "favorite/idUser/**","/order/**"};
     private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = {"/users/**", "/categories/**", "/products/**",
-            "/auth/verifyAccount", "/discount/getDiscount", "/genders/**", "/colors/**", "/sizes/**", "brands/**","/payment/vnpay/**"};
+            "/auth/verifyAccount", "/discount/getDiscount", "/genders/**", "/colors/**", "/sizes/**", "brands/**","/payment/vnpay/**","/review/comments/**"};
     private final String[] PUBLIC_ENDPOINTS_PUT = {"/users/**", "/categories/**", "/products/**","/order/update"};
     private final String[] PUBLIC_ENDPOINTS_PATCH = {"/users/**", "/categories/**", "/products/**"};
     private final String[] PUBLIC_ENDPOINTS_DELETE = {"/users/**", "/categories/**", "/products/**", "/favorite/delete"};
-    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout", "/cart/updateItem", "/order/add", "/favorite/add"};
+    private final String[] PUBLIC_ENDPOINTS_LOGIN = {"/logout", "/cart/updateItem", "/order/add", "/favorite/add","/review/**"};
 
     @Value("${jwt.signer-key}")
     protected String SIGNER_KEY;
