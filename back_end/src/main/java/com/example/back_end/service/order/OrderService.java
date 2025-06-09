@@ -151,4 +151,14 @@ public class OrderService implements IOrderService {
                 .map(order -> modelMapper.map(order, OrderResponse.class))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void updateOrder(Long orderId,int statusId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+        Status status = statusRepository.findById(statusId)
+                .orElseThrow(() -> new AppException(ErrorCode.STATUS_NOT_FOUND));
+        order.setIdStatus(status);
+        orderRepository.save(order);
+    }
 }

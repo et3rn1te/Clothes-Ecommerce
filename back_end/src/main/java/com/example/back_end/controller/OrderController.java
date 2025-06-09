@@ -4,6 +4,7 @@ import com.example.back_end.dto.OrderDetailDto;
 import com.example.back_end.dto.OrderDto;
 import com.example.back_end.dto.request.CartRequest;
 import com.example.back_end.dto.request.OrderCreateRequest;
+import com.example.back_end.dto.request.order.OrderRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.service.order.OrderService;
 import org.springframework.web.bind.annotation.*;
@@ -93,6 +94,11 @@ public class OrderController {
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ResponseEntity<?> getOrdersByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(orderService.getOrdersByUser(userId));
+    }
+    @PutMapping("/update")
+    public ApiResponse<Void> updateOrder(@RequestBody OrderRequest request) {
+        orderService.updateOrder(request.getOrderId(), request.getStatusId());
+        return ApiResponse.<Void>builder().build();
     }
 
 }

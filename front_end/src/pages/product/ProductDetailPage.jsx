@@ -7,6 +7,7 @@ import ProductInfo from '../../components/product/ProductInfo';
 import ProductVariantSelector from '../../components/product/ProductVariantSelector';
 import ProductActions from '../../components/product/ProductActions';
 import RelatedProducts from '../../components/product/RelatedProducts';
+import FacebookComment from '../../components/commentFB/FacebookComment';
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -61,6 +62,27 @@ const ProductDetailPage = () => {
   const handleGoBack = () => {
     navigate(-1);
   };
+  const reviews = [
+    {
+      userResponse: {
+        name: "Nguyễn Văn A",
+        avatarUrl: "https://i.pravatar.cc/150?img=1"
+      },
+      rating: 4,
+      comment: "Sản phẩm tốt, sẽ ủng hộ tiếp!",
+      createdAt: "2025-06-06T12:34:56"
+    },
+    {
+      userResponse: {
+        name: "Trần Thị B",
+        avatarUrl: "https://i.pravatar.cc/150?img=2"
+      },
+      rating: 5,
+      comment: "Tuyệt vời, giao hàng nhanh!",
+      createdAt: "2025-06-05T09:21:00"
+    }
+  ];
+  
 
   if (loading) {
     return (
@@ -170,7 +192,56 @@ const ProductDetailPage = () => {
                 dangerouslySetInnerHTML={{ __html: product.description }}
               />
             </div>
+            <FacebookComment url={'https://your-public-url.com/product/'+product.id} />
+            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Xem đánh giá</h2>
+              <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6">
+                {reviews.length === 0 ? (
+                  <p className="text-gray-500">Chưa có đánh giá nào.</p>
+                ) : (
+                  <div className="space-y-6">
+                    {reviews.map((review, index) => (
+                      <div key={index} className="flex items-start space-x-4">
+                        {/* Avatar */}
+                        <img
+                          src={review.userResponse.avatarUrl}
+                          alt={review.userResponse.name}
+                          className="w-12 h-12 rounded-full border object-cover"
+                        />
+
+                        {/* Nội dung đánh giá */}
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-semibold text-gray-800">{review.userResponse.name}</h3>
+                            <span className="text-sm text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
+                          </div>
+
+                          {/* Số sao */}
+                          <div className="flex items-center mt-1 mb-2">
+                            {[...Array(5)].map((_, i) => (
+                              <svg
+                                key={i}
+                                className={`w-5 h-5 ${i < review.rating ? "text-yellow-400" : "text-gray-300"}`}
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.175c.969 0 1.371 1.24.588 1.81l-3.382 2.455a1 1 0 00-.364 1.118l1.287 3.966c.3.921-.755 1.688-1.538 1.118l-3.382-2.455a1 1 0 00-1.175 0l-3.382 2.455c-.783.57-1.838-.197-1.538-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.05 9.394c-.783-.57-.38-1.81.588-1.81h4.175a1 1 0 00.95-.69l1.286-3.967z" />
+                              </svg>
+                            ))}
+                          </div>
+
+                          {/* Comment */}
+                          <p className="text-gray-700">{review.comment}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                </div>
+
+            </div>
           </div>
+          
         )}
 
         {/* Product Specifications */}

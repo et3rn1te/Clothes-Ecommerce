@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo ,FiChevronUp} from "react-icons/fi";
+import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo ,FiChevronUp,FiX} from "react-icons/fi";
 import axiosClient from "../API/axiosClient";
 import { introspect } from "../API/AuthService";
+import { handler } from "@tailwindcss/aspect-ratio";
 
+const cancelReasons = [
+  "Thay đổi địa chỉ giao hàng",
+  "Thay đổi phương thức thanh toán",
+  "Tìm thấy sản phẩm giá tốt hơn",
+  "Đổi ý không muốn mua nữa",
+  "Lý do khác"
+];
 const OrderHistory = () => {
   const [expandedOrders, setExpandedOrders] = useState({});
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [orderList,setOrderList] =useState([]);
+  
   const checkToken = async (token) => {
     try {
       const response = await introspect({token});
@@ -67,6 +76,7 @@ const OrderHistory = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+  
 
   const getStatusText = (status) => {
     switch (status) {
@@ -95,6 +105,47 @@ const OrderHistory = () => {
       ...prev,
       [orderId]: !prev[orderId]
     }));
+  };
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState("");
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+
+  // Added: Handle cancel order click
+  const handleCancelClick = (order) => {
+    setSelectedOrder(order);
+    setShowCancelModal(true);
+  };
+
+  // Added: Handle order cancellation confirmation
+  const handleConfirmCancel = () => {
+    // Here you would typically make an API call to cancel the order
+    console.log("Order cancelled", selectedOrder.id, "Reason:", cancelReason);
+    setShowCancelModal(false);
+    setSelectedOrder(null);
+    setCancelReason("");
+  };
+  const handleReviewClick = (product) => {
+    setSelectedProduct(product);
+    setShowReviewModal(true);
+    setReviewRating(0);
+    setReviewComment("");
+  };
+
+  // Added: Handle review submission
+  const handleSubmitReview = () => {
+    console.log("Review submitted", {
+      productId: selectedProduct.id,
+      rating: reviewRating,
+      comment: reviewComment
+    });
+    setShowReviewModal(false);
+    setSelectedProduct(null);
+    setReviewRating(0);
+    setReviewComment("");
   };
 
   return (
@@ -143,7 +194,7 @@ const OrderHistory = () => {
                 <div className="p-4 border-b border-gray-100 cursor-pointer" onClick={() => toggleOrderExpand(order.idOrder)}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">Ngày đặt hàng:{order.dateOrder}</span>
+                      <span className="font-medium text-gray-900">Ngày đặt hàng : {order.dateOrder}</span>
                       {expandedOrders[order.idOrder] ? (
                         <FiChevronUp className="text-gray-500" />
                       ) : (
@@ -175,7 +226,17 @@ const OrderHistory = () => {
                         <p className="text-sm text-gray-500">Kích thước:{product.idProduct.size.name},Màu:{product.idProduct.color.name}</p>
                         <div className="mt-1 flex items-center justify-between">
                           <span className="text-sm text-gray-500">x{product.quantity}</span>
-                          <span className="text-sm font-medium text-gray-900">${product.totalPrice.toFixed(2)}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-gray-900">${product.totalPrice.toFixed(2)}</span>
+                            {order.statusName === "completed" && (
+                              <button 
+                                onClick={() => handleReviewClick(product)}
+                                className="px-3 py-1 text-sm bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
+                              >
+                                Đánh giá
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -204,7 +265,7 @@ const OrderHistory = () => {
                         </button>
                       </div>
                       {order.statusName === "processing" && (
-                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ml-auto">
+                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ml-auto" onClick={() => handleCancelClick(order)}>
                           Hủy đơn hàng
                         </button>
                       )}
@@ -213,15 +274,112 @@ const OrderHistory = () => {
                 
                   </>
                 )}
-
-                
-
-                
               </div>
             ))}
           </div>
         )}
       </div>
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">Xác nhận hủy đơn hàng</h3>
+              <button 
+                onClick={() => setShowCancelModal(false)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Vui lòng chọn lý do hủy đơn:
+              </label>
+              <select
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Chọn lý do</option>
+                {cancelReasons.map((reason, index) => (
+                  <option key={index} value={reason}>{reason}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              >
+                Đóng
+              </button>
+              <button
+                onClick={handleConfirmCancel}
+                disabled={!cancelReason}
+                className={`px-4 py-2 rounded-lg text-white ${cancelReason ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}`}
+              >
+                Xác nhận hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showReviewModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium">Đánh giá sản phẩm</h3>
+              <button 
+                onClick={() => setShowReviewModal(false)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-gray-700 mb-2">{selectedProduct?.name}</p>
+              <div className="flex items-center gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => setReviewRating(star)}
+                    className={`text-2xl ${star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'}`}
+                  >
+                    <FiStar className="w-6 h-6 fill-current" />
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                placeholder="Nhập đánh giá của bạn..."
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows="4"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowReviewModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleSubmitReview}
+                disabled={!reviewRating}
+                className={`px-4 py-2 rounded-lg text-white ${reviewRating ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-400 cursor-not-allowed'}`}
+              >
+                Gửi đánh giá
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

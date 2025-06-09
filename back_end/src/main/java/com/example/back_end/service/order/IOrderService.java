@@ -22,5 +22,6 @@ public interface IOrderService {
     OrderResponse updateOrderStatus(Long id, int statusId);
     
     List<OrderResponse> getOrdersByUser(Long userId);
+    void updateOrder(Long orderId,int statusId);
 
 }
