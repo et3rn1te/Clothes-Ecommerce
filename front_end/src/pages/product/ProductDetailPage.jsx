@@ -8,6 +8,7 @@ import ProductVariantSelector from '../../components/product/ProductVariantSelec
 import ProductActions from '../../components/product/ProductActions';
 import RelatedProducts from '../../components/product/RelatedProducts';
 import FacebookComment from '../../components/commentFB/FacebookComment';
+import ReviewService from '../../API/ReviewService';
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
@@ -19,6 +20,7 @@ const ProductDetailPage = () => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reviews,setReview]= useState([]);
 
   useEffect(() => {
     if (slug) {
@@ -44,6 +46,9 @@ const ProductDetailPage = () => {
           setSelectedColor(firstVariant.name);
           setSelectedSize(firstVariant.size.name);
         }
+        const result = await ReviewService.getReviews(response.id);
+        console.log(result);
+        setReview(result);
       }
     } catch (err) {
       console.error('Lỗi khi lấy chi tiết sản phẩm:', err);
@@ -62,26 +67,26 @@ const ProductDetailPage = () => {
   const handleGoBack = () => {
     navigate(-1);
   };
-  const reviews = [
-    {
-      userResponse: {
-        name: "Nguyễn Văn A",
-        avatarUrl: "https://i.pravatar.cc/150?img=1"
-      },
-      rating: 4,
-      comment: "Sản phẩm tốt, sẽ ủng hộ tiếp!",
-      createdAt: "2025-06-06T12:34:56"
-    },
-    {
-      userResponse: {
-        name: "Trần Thị B",
-        avatarUrl: "https://i.pravatar.cc/150?img=2"
-      },
-      rating: 5,
-      comment: "Tuyệt vời, giao hàng nhanh!",
-      createdAt: "2025-06-05T09:21:00"
-    }
-  ];
+  // const reviews = [
+  //   {
+  //     userResponse: {
+  //       name: "Nguyễn Văn A",
+  //       avatarUrl: "https://i.pravatar.cc/150?img=1"
+  //     },
+  //     rating: 4,
+  //     comment: "Sản phẩm tốt, sẽ ủng hộ tiếp!",
+  //     createdAt: "2025-06-06T12:34:56"
+  //   },
+  //   {
+  //     userResponse: {
+  //       name: "Trần Thị B",
+  //       avatarUrl: "https://i.pravatar.cc/150?img=2"
+  //     },
+  //     rating: 5,
+  //     comment: "Tuyệt vời, giao hàng nhanh!",
+  //     createdAt: "2025-06-05T09:21:00"
+  //   }
+  // ];
   
 
   if (loading) {
@@ -204,15 +209,15 @@ const ProductDetailPage = () => {
                       <div key={index} className="flex items-start space-x-4">
                         {/* Avatar */}
                         <img
-                          src={review.userResponse.avatarUrl}
-                          alt={review.userResponse.name}
+                          src={review.userResponse.imageUrl}
+                          alt={review.userResponse.username}
                           className="w-12 h-12 rounded-full border object-cover"
                         />
 
                         {/* Nội dung đánh giá */}
                         <div className="flex-1">
                           <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-semibold text-gray-800">{review.userResponse.name}</h3>
+                            <h3 className="text-sm font-semibold text-gray-800">{review.userResponse.username}</h3>
                             <span className="text-sm text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
                           </div>
 

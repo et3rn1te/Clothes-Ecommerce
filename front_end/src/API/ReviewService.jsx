@@ -13,7 +13,7 @@ const ReviewService = {
     getReviews: async (productId) => {
         try {
             const response = await axiosClient.get('/review/comments/'+productId);
-            return response;
+            return response.data.result;
         } catch (error) {
             throw error;
         }
