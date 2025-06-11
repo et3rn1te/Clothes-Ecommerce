@@ -1,8 +1,10 @@
 import axiosClient from "./axiosClient";
 const ReviewService = {
-    addReview: async(body)=> {
+    addReview: async(idProduct,idUser,rating,comment,token)=> {
         try {
-            const response = await axiosClient.post('/review/add',body);
+            const response = await axiosClient.post('/review/add',{idProduct,idUser,rating,comment},
+                {headers:{Authorization: `Bearer ${token}`}}
+            );
             return response;
         } catch (error) {
             throw error;
@@ -17,4 +19,5 @@ const ReviewService = {
         }
     },
 }
+export default ReviewService;
 
