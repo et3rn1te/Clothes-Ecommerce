@@ -3,7 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import ReCAPTCHA from "react-google-recaptcha";
-import { checkEmailExists, signIn, verifyRegister} from "../../API/AuthService";
+import { checkEmailExists, forgot, signIn, verifyRegister} from "../../API/AuthService";
 import { useNavigate } from "react-router-dom";
 
 const VerificationPage = ({ email, onResend }) => {
@@ -168,6 +168,17 @@ const Login = () => {
     } else {
       if(authState==="forgot"){
         console.log("forgot :", formData);
+        await forgot(formData.email)
+        .then((res) => {
+          const { code, message, result } = res.data;
+          if(code !== 0){
+            console.log(message);
+          }
+          navigate('/auth/resend');
+        })
+        .catch((err) => {
+          console.error("Đã xảy ra lỗi khi gọi API:", err);
+        });
       }else{
         console.log("register :", formData);
         await verifyRegister(formData.email)
@@ -331,6 +342,7 @@ const Login = () => {
                   <button
                     type="button"
                     className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    onClick={()=> {window.location.href='https://accounts.google.com/o/oauth2/auth?scope=profile%20email&redirect_uri=http://localhost:8081/loginByGoogle&response_type=code&client_id=383862284423-7n769c739crto335iam2jg9hk2hqiiu0.apps.googleusercontent.com&prompt=select_account'}}
                   >
                     <FcGoogle className="h-5 w-5" />
                     <span className="ml-2">Google</span>

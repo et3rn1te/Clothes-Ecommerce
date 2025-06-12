@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo ,FiChevronUp,FiX} from "react-icons/fi";
 import axiosClient from "../API/axiosClient";
 import { introspect } from "../API/AuthService";
 import { handler } from "@tailwindcss/aspect-ratio";
+import OrderService from "../API/OrderService";
+import { FavoriteContext } from "../components/FavoriteContext/FavoriteContext";
+import ReviewService from "../API/ReviewService";
 
 const cancelReasons = [
   "Thay đổi địa chỉ giao hàng",
@@ -12,6 +15,7 @@ const cancelReasons = [
   "Lý do khác"
 ];
 const OrderHistory = () => {
+  const { session } = useContext(FavoriteContext);
   const [expandedOrders, setExpandedOrders] = useState({});
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -41,7 +45,6 @@ const OrderHistory = () => {
           })
             .then((res)=>{
               const { code, message, result } = res.data;
-              console.log(res.data);
               setOrderList(result);
             })
         } else {
@@ -50,7 +53,7 @@ const OrderHistory = () => {
       }
     };
     check();
-  },[]);
+  },[selectedStatus]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -116,14 +119,14 @@ const OrderHistory = () => {
 
   // Added: Handle cancel order click
   const handleCancelClick = (order) => {
+    // console.log(order);
     setSelectedOrder(order);
     setShowCancelModal(true);
   };
 
   // Added: Handle order cancellation confirmation
   const handleConfirmCancel = () => {
-    // Here you would typically make an API call to cancel the order
-    console.log("Order cancelled", selectedOrder.id, "Reason:", cancelReason);
+    OrderService.updateOrder(selectedOrder.order.idOrder,5,session.token);
     setShowCancelModal(false);
     setSelectedOrder(null);
     setCancelReason("");
@@ -142,6 +145,7 @@ const OrderHistory = () => {
       rating: reviewRating,
       comment: reviewComment
     });
+    ReviewService.addReview(selectedProduct.id,session.currentUser.id,reviewRating,reviewComment,session.token);
     setShowReviewModal(false);
     setSelectedProduct(null);
     setReviewRating(0);
@@ -163,7 +167,6 @@ const OrderHistory = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            {console.log(orderList)}
           </div>
 
           <div className="relative w-full md:w-48">
@@ -265,7 +268,7 @@ const OrderHistory = () => {
                         </button>
                       </div>
                       {order.statusName === "processing" && (
-                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ml-auto" onClick={() => handleCancelClick(order)}>
+                        <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors ml-auto" onClick={() => handleCancelClick({order})}>
                           Hủy đơn hàng
                         </button>
                       )}

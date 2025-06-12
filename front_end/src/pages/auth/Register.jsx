@@ -146,13 +146,13 @@ const Register = () => {
       }));
     }
 
-    if (name === "email") {
-      // Debounce email check
-      const timeoutId = setTimeout(() => {
-        checkEmailAvailability(value);
-      }, 500);
-      return () => clearTimeout(timeoutId);
-    }
+    // if (name === "email") {
+    //   // Debounce email check
+    //   const timeoutId = setTimeout(() => {
+    //     checkEmailAvailability(value);
+    //   }, 500);
+    //   return () => clearTimeout(timeoutId);
+    // }
 
     if (name === "password" && formData.confirmPassword) {
       const confirmError = formData.confirmPassword !== value ? "Passwords do not match" : "";
@@ -163,23 +163,23 @@ const Register = () => {
     }
   };
 
-  const checkEmailAvailability = async (email) => {
-    if (!email || !validateEmail(email)) return;
+  // const checkEmailAvailability = async (email) => {
+  //   if (!email || !validateEmail(email)) return;
     
-    setIsCheckingEmail(true);
-    try {
-      // Simulate API call - replace with actual API endpoint
-      const response = await checkEmailExists(email);
-      console.log(response.data.result);
-      setIsEmailAvailable(!response.data.result);
+  //   setIsCheckingEmail(true);
+  //   try {
+  //     // Simulate API call - replace with actual API endpoint
+  //     const response = await checkEmailExists(email);
+  //     console.log(response.data.result);
+  //     setIsEmailAvailable(!response.data.result);
       
-    } catch (error) {
-      console.error('Error checking email:', error);
-      setIsEmailAvailable(false);
-    } finally {
-      setIsCheckingEmail(false);
-    }
-  };
+  //   } catch (error) {
+  //     console.error('Error checking email:', error);
+  //     setIsEmailAvailable(false);
+  //   } finally {
+  //     setIsCheckingEmail(false);
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -209,8 +209,7 @@ const Register = () => {
   };
 
   const isFormValid = () => {    
-      return validateEmail(formData.email) && 
-             validatePassword(formData.password) && 
+    return   validatePassword(formData.password) && 
              formData.password === formData.confirmPassword && 
              formData.fullName && 
              formData.username && 
@@ -267,7 +266,7 @@ const Register = () => {
           {errors.phone && <p className="mt-1 text-sm text-red-500">{errors.phone}</p>}
         </div>
         
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700">Email address</label>
           <div className="relative">
             <input
@@ -288,7 +287,7 @@ const Register = () => {
           {!isEmailAvailable && !errors.email && (
             <p className="mt-1 text-sm text-red-500">This email is already registered</p>
           )}
-        </div>
+        </div> */}
         <div className="relative">
           <label className="block text-sm font-medium text-gray-700">Password</label>
           <div className="mt-1 relative rounded-md shadow-sm">
