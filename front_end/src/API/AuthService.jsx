@@ -38,4 +38,14 @@ const introspect = async (body) => {
     return await axiosClient.post('/auth/introspect', body);
 }
 
-export { signIn ,register,checkEmailExists,logOutApi,verifyRegister,introspect };
+const forgot = async (email) => {
+    return await axiosClient.post('/forgotPassword',null, {
+        params: {
+            email: email
+        },
+        timeout: 30000
+    });
+};
+
+
+export { signIn ,register,checkEmailExists,logOutApi,verifyRegister,introspect,forgot };

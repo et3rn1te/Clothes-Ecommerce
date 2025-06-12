@@ -14,7 +14,8 @@ public interface UserMapper {
     // CREATE
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "active", constant = "false")
+//    @Mapping(target = "active", constant = "false")
+    @Mapping(target = "active", source = "active")// cái này t sửa để kích hoạt tài khoản cho dễ
     @Mapping(target = "imageUrl", ignore = true)
     @Mapping(target = "roles", ignore = true)
     User toEntity(UserCreationRequest request);

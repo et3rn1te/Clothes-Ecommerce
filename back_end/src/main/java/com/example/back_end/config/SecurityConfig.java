@@ -28,7 +28,7 @@ public class SecurityConfig {
     // Xác thực yêu cầu
     private final String[] PUBLIC_ENDPOINTS_POST = {"users/createUser",
             "auth/login", "auth/introspect", "/verifyRegister", "auth/register", "users/existUser", "/products/**",
-            "/categories/**", "/users/**",};
+            "/categories/**", "/users/**","/forgotPassword"};
     private final String[] PUBLIC_ENDPOINTS_GET = {"cart/listCartItem/**", "favorite/idUser/**","/order/**"};
     private final String[] PUBLIC_ENDPOINTS_GET_PERMITALL = {"/users/**", "/categories/**", "/products/**",
             "/auth/verifyAccount", "/discount/getDiscount", "/genders/**", "/colors/**", "/sizes/**", "brands/**","/payment/vnpay/**","/review/comments/**"};
