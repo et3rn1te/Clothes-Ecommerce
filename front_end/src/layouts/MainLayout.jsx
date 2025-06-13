@@ -3,7 +3,7 @@ import AppRoutes from '../routes/AppRoutes';
 import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { FavoriteProvider } from '../components/FavoriteContext/FavoriteContext';
+import { FavoriteProvider } from '../contexts/FavoriteContext.jsx';
 
 function MainLayout() {
   const location = useLocation();

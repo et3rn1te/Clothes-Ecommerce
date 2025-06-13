@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
-import axiosClient from '../../API/axiosClient';
-import { listCartItem } from '../../API/CartService';
+import axiosClient from '../API/axiosClient.jsx';
+import { listCartItem } from '../API/CartService.jsx';
 
 export const FavoriteContext = createContext();
 

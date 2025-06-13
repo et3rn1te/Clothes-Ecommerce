@@ -4,7 +4,7 @@ import axiosClient from "../API/axiosClient";
 import { introspect } from "../API/AuthService";
 import { handler } from "@tailwindcss/aspect-ratio";
 import OrderService from "../API/OrderService";
-import { FavoriteContext } from "../components/FavoriteContext/FavoriteContext";
+import { FavoriteContext } from "../contexts/FavoriteContext.jsx";
 import ReviewService from "../API/ReviewService";
 
 const cancelReasons = [
