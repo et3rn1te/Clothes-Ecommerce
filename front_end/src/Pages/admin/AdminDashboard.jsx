@@ -17,6 +17,7 @@ import {
     MdCategory
 } from "react-icons/md";
 import { FiChevronRight } from "react-icons/fi";
+import UserManagementPage from "./UserManagementPage.jsx";
 
 const AdminDashboard = () => {
     const location = useLocation(); // Get current location object
@@ -90,8 +91,8 @@ const AdminDashboard = () => {
             case 'categories':
                 return <CategoryManagementPage/>;
             case 'users':
-                // return <UserManagementPage/>; // Uncomment and replace with your actual UserManagementPage
-                return <h2 className="text-xl font-semibold text-gray-800">Trang Quản lý Người dùng (Đang phát triển)</h2>;
+                return <UserManagementPage/>;
+                // return <h2 className="text-xl font-semibold text-gray-800">Trang Quản lý Người dùng (Đang phát triển)</h2>;
             case 'orders':
                 // return <OrderManagementPage/>; // Uncomment and replace with your actual OrderManagementPage
                 return <h2 className="text-xl font-semibold text-gray-800">Trang Quản lý Đơn hàng (Đang phát triển)</h2>;

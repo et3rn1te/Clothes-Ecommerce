@@ -403,4 +403,14 @@ public class UserController {
                             .build());
         }
     }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PatchMapping("/{userId}/toggle-active")
+    ApiResponse<Void> toggleUserActiveStatus(@PathVariable Long userId) {
+        userService.toggleUserActiveStatus(userId);
+        return ApiResponse.<Void>builder()
+                .code(0)
+                .message("Cập nhật trạng thái người dùng thành công")
+                .build();
+    }
 }

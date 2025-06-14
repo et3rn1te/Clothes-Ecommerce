@@ -30,6 +30,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;
@@ -306,7 +307,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')") // Chỉ admin mới được phép cập nhật người dùng khác
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public UserResponse adminUpdateUser(Long userId, AdminUpdateUserRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -403,5 +404,16 @@ public class UserService implements IUserService {
                 .totalPages(userPage.getTotalPages())
                 .last(userPage.isLast())
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void toggleUserActiveStatus(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Đảo ngược trạng thái active
+        user.setActive(!user.getActive());
+        userRepository.save(user); // Lưu lại thay đổi
     }
 }

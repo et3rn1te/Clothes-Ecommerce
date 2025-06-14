@@ -56,4 +56,7 @@ public interface IUserService {
 
     // Tìm kiếm user (ADMIN)
     PageResponse<UserResponse> searchUsers(String keyword, Pageable pageable);
+
+    // Bật/Tắt trạng thái user (ADMIN)
+    void toggleUserActiveStatus(Long userId);
 }

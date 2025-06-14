@@ -4,7 +4,7 @@ const RoleService = {
     getAllRoles: async () => {
         try {
             const response = await axiosClient.get('/roles');
-            return response;
+            return response.data;
         } catch (error) {
             throw error;
         }
