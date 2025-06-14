@@ -207,4 +207,21 @@ public class CategoryService implements ICategoryService {
 
         return slug;
     }
+
+    @Override
+    public PageResponse<CategoryResponse> searchCategories(String keyword, Pageable pageable) {
+        Page<Category> categoryPage = categoryRepository.searchCategories(keyword, pageable);
+        List<CategoryResponse> categoryResponses = categoryPage.getContent().stream()
+                .map(categoryMapper::toResponse)
+                .collect(Collectors.toList());
+
+        return PageResponse.<CategoryResponse>builder()
+                .content(categoryResponses)
+                .pageNo(categoryPage.getNumber())
+                .pageSize(categoryPage.getSize())
+                .totalElements(categoryPage.getTotalElements())
+                .totalPages(categoryPage.getTotalPages())
+                .last(categoryPage.isLast())
+                .build();
+    }
 } 

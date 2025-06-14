@@ -135,6 +135,22 @@ const CategoryService = {
         }
     },
 
+    // Tìm kiếm sản phẩm theo từ khóa
+    searchCategories: async (keyword, params) => {
+        try {
+            const response = await axiosClient.get('/categories/search', {
+                params: {
+                    keyword,
+                    ...params
+                }
+            });
+            return response;
+        } catch (error) {
+            console.error(`Lỗi khi tìm kiếm sản phẩm với từ khóa ${keyword}:`, error);
+            throw error;
+        }
+    },
+
     // Chuyển đổi trạng thái danh mục
     toggleCategoryStatus: async (id) => {
         try {

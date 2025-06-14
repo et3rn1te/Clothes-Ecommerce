@@ -37,4 +37,6 @@ public interface ICategoryService {
     List<CategoryResponse> getCategoriesByGenderSlug(String genderSlug);
 
     List<CategoryResponse> getSubCategoriesByGenderSlug(String genderSlug);
+
+    PageResponse<CategoryResponse> searchCategories(String keyword, Pageable pageable);
 } 

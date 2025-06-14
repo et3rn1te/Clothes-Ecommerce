@@ -2,6 +2,7 @@ package com.example.back_end.controller;
 
 import com.example.back_end.dto.request.category.CategoryCreationRequest;
 import com.example.back_end.dto.request.category.UpdateCategoryRequest;
+import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.category.CategoryResponse;
 import com.example.back_end.service.category.ICategoryService;
 import lombok.RequiredArgsConstructor;
@@ -159,5 +160,19 @@ public class CategoryController {
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Method to search categories by keyword
+     *
+     * @param keyword:  Search keyword to match against category name and description
+     * @param pageable: Pagination parameters (page, size, sort)
+     * @return JSON body contains paginated list of matching category responses
+     */
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<CategoryResponse>> searchCategories(
+            @RequestParam String keyword,
+            Pageable pageable) {
+        return ResponseEntity.ok(categoryService.searchCategories(keyword, pageable));
     }
 }
