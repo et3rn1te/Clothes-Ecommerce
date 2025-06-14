@@ -1,7 +1,9 @@
 package com.example.back_end.controller;
 
+import com.example.back_end.dto.request.admin.AdminUpdateUserRequest;
+import com.example.back_end.dto.request.admin.AdminUserCreationRequest;
 import com.example.back_end.dto.response.user.UserResponse;
-import com.example.back_end.dto.request.UserCreationRequest;
+import com.example.back_end.dto.request.user.UserCreationRequest;
 import com.example.back_end.dto.request.user.ChangePasswordRequest;
 import com.example.back_end.dto.request.user.UpdateUserProfileRequest;
 import com.example.back_end.dto.response.ApiResponse;
@@ -11,6 +13,7 @@ import com.example.back_end.service.user.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,7 +45,7 @@ public class UserController {
             User user = userService.createRequest(request);
             List<UserResponse> dtos = userService.getConvertedUsers(List.of(user));
             UserResponse dto = dtos.get(0);
-            
+
             return ResponseEntity.ok(
                     ApiResponse.<UserResponse>builder()
                             .code(0)
@@ -67,10 +70,11 @@ public class UserController {
      * @return JSON body contains paginated list of User DTOs
      */
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAllUsers(Pageable pageable) {
         try {
-            PageResponse<UserResponse> userPage = userService.getUsers(pageable);
-            
+            PageResponse<UserResponse> userPage = userService.getAllUsers(pageable);
+
             return ResponseEntity.ok(
                     ApiResponse.<PageResponse<UserResponse>>builder()
                             .code(0)
@@ -100,7 +104,7 @@ public class UserController {
             User user = userService.getUserById(userId);
             List<UserResponse> dtos = userService.getConvertedUsers(List.of(user));
             UserResponse dto = dtos.get(0);
-            
+
             return ResponseEntity.ok(
                     ApiResponse.<UserResponse>builder()
                             .code(0)
@@ -244,11 +248,169 @@ public class UserController {
     }
 
     @PostMapping("/existUser")
-    ApiResponse<Boolean> existUser(@RequestParam ("email") String email) {
+    ApiResponse<Boolean> existUser(@RequestParam("email") String email) {
         boolean rs = true;
         if (userRepository.findByEmail(email).isEmpty()) {
             rs = false;
         }
         return ApiResponse.<Boolean>builder().result(rs).build();
+    }
+
+    /**
+     * Method to soft-delete a user by ID
+     *
+     * @param userId: ID of the user to be soft-deleted
+     * @return JSON body indicates success or failure
+     */
+    @DeleteMapping("/{userId}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(0)
+                            .message("Người dùng đã được xóa mềm thành công")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to soft delete user with id: " + userId, e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<Void>builder()
+                            .code(1)
+                            .message("Không thể xóa người dùng: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /**
+     * Method for Admin to create a new user with specific roles and active status
+     *
+     * @param request: AdminUserCreationRequest containing user details and roles
+     * @return JSON body indicates success or failure with UserResponse
+     */
+    @PostMapping("/admin/create")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ApiResponse<UserResponse>> adminCreateUser(@RequestBody @Valid AdminUserCreationRequest request) {
+        try {
+            UserResponse createdUser = userService.adminCreateUser(request);
+            return ResponseEntity.ok(
+                    ApiResponse.<UserResponse>builder()
+                            .code(0)
+                            .message("Tạo người dùng thành công")
+                            .data(createdUser)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to create user by admin", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserResponse>builder()
+                            .code(1)
+                            .message("Không thể tạo người dùng: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /**
+     * Method for Admin to update an existing user's information
+     *
+     * @param userId: ID of the user to be updated
+     * @param request: AdminUpdateUserRequest containing updated user details
+     * @return JSON body indicates success or failure with UserResponse
+     */
+    @PutMapping("/admin/{userId}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ApiResponse<UserResponse>> adminUpdateUser(
+            @PathVariable Long userId,
+            @RequestBody @Valid AdminUpdateUserRequest request) {
+        try {
+            UserResponse updatedUser = userService.adminUpdateUser(userId, request);
+            return ResponseEntity.ok(
+                    ApiResponse.<UserResponse>builder()
+                            .code(0)
+                            .message("Cập nhật thông tin người dùng thành công")
+                            .data(updatedUser)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to update user by admin with id: " + userId, e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserResponse>builder()
+                            .code(1)
+                            .message("Không thể cập nhật thông tin người dùng: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /**
+     * Method for Admin to reset a user's password
+     *
+     * @param userId: ID of the user whose password needs to be reset
+     * @param newPassword: The new password to set for the user
+     * @return JSON body indicates success or failure
+     */
+    @PutMapping("/admin/{userId}/reset-password")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> adminResetPassword(
+            @PathVariable Long userId,
+            @RequestParam String newPassword) {
+        try {
+            userService.adminResetPassword(userId, newPassword);
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(0)
+                            .message("Đặt lại mật khẩu thành công cho người dùng " + userId)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to reset password for user id: " + userId, e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<Void>builder()
+                            .code(1)
+                            .message("Không thể đặt lại mật khẩu: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /**
+     * Method for Admin to search users by keyword across multiple fields (username, fullname, email, phone).
+     * This includes inactive accounts.
+     *
+     * @param keyword: The search term
+     * @param pageable: Pagination information (page, size, sort)
+     * @return A PageResponse containing matching UserResponse objects
+     */
+    @GetMapping("/admin/search") // Endpoint cho chức năng tìm kiếm của admin
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')") // Chỉ admin mới được phép
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> searchUsers(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
+        try {
+            PageResponse<UserResponse> result = userService.searchUsers(keyword, pageable);
+            return ResponseEntity.ok(
+                    ApiResponse.<PageResponse<UserResponse>>builder()
+                            .code(0)
+                            .message("Tìm kiếm người dùng thành công")
+                            .data(result)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to search users", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<PageResponse<UserResponse>>builder()
+                            .code(1)
+                            .message("Không thể tìm kiếm người dùng: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    @PatchMapping("/{userId}/toggle-active")
+    ApiResponse<Void> toggleUserActiveStatus(@PathVariable Long userId) {
+        userService.toggleUserActiveStatus(userId);
+        return ApiResponse.<Void>builder()
+                .code(0)
+                .message("Cập nhật trạng thái người dùng thành công")
+                .build();
     }
 }

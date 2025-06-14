@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaShoppingCart } from 'react-icons/fa';
 import { updateCartItem } from '../../API/CartService';
-import { FavoriteContext } from '../FavoriteContext/FavoriteContext';
+import { FavoriteContext } from '../../contexts/FavoriteContext.jsx';
 import WishlistService from '../../API/WishlistService';
 
 // URL hình ảnh placeholder tạm thời

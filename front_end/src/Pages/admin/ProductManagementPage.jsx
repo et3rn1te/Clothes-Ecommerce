@@ -1,4 +1,3 @@
-// src/pages/admin/ProductManagementPage.jsx
 import React, { useState, useEffect } from 'react';
 import ProductService from './../../API/ProductService';
 import ProductFormModal from '../../components/admin/product/ProductFormModal';

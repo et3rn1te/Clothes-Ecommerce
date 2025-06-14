@@ -1,4 +1,4 @@
-package com.example.back_end.service.Discount;
+package com.example.back_end.service.discount;
 
 import com.example.back_end.dto.request.discount.DiscountCreationRequest;
 import com.example.back_end.dto.request.discount.DiscountUpdateRequest;

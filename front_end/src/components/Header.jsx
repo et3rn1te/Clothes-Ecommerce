@@ -5,7 +5,7 @@ import { MdEmail, MdPhone } from "react-icons/md";
 import { useNavigate, Link } from "react-router-dom";
 import { introspect, logOutApi } from "../API/AuthService";
 import { listCartItem } from "../API/CartService";
-import { FavoriteContext } from "./FavoriteContext/FavoriteContext";
+import { FavoriteContext } from "../contexts/FavoriteContext.jsx";
 import { checkAndRefreshSession } from "../utils/tokenUtils";
 import { toast } from "react-toastify";
 
@@ -153,7 +153,7 @@ const Header = () => {
 
   // Admin dashboard links
   const adminLinks = [
-    { name: "Tới trang admin", link: "/admin/statisticalPage" },
+    { name: "Tới trang admin", link: "/admin/dashboard" },
   ];
 
   return (

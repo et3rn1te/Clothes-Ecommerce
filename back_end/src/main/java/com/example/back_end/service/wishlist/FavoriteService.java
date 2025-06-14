@@ -1,4 +1,4 @@
-package com.example.back_end.service.WishList;
+package com.example.back_end.service.wishlist;
 
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.product.ProductResponse;
@@ -12,8 +12,6 @@ import com.example.back_end.repository.FavoriteRepository;
 import com.example.back_end.repository.ProductRepository;
 import com.example.back_end.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.control.MappingControl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

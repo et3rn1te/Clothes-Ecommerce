@@ -136,7 +136,7 @@ const ProductListPage = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar Filters */}
+        {/* DashboardSidebar Filters */}
         <div className="w-full lg:w-1/4">
           <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
             <ColorFilter

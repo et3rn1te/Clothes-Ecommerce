@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateCartItem } from '../../API/CartService';
 import WishlistService from '../../API/WishlistService';
-import { FavoriteContext } from '../FavoriteContext/FavoriteContext';
+import { FavoriteContext } from '../../contexts/FavoriteContext.jsx';
 
 const ProductActions = ({
   product,

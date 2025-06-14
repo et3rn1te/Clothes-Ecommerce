@@ -1,10 +1,9 @@
 package com.example.back_end.controller;
 
 import com.example.back_end.dto.request.FavoriteRequest;
-import com.example.back_end.dto.request.IntrospectRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.product.ProductResponse;
-import com.example.back_end.service.WishList.FavoriteService;
+import com.example.back_end.service.wishlist.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

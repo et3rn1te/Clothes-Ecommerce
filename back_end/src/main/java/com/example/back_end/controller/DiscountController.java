@@ -5,7 +5,7 @@ import com.example.back_end.dto.request.discount.DiscountUpdateRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.discount.DiscountResponse;
 import com.example.back_end.entity.Discount;
-import com.example.back_end.service.Discount.DiscountService;
+import com.example.back_end.service.discount.DiscountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

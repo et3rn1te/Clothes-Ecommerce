@@ -5,7 +5,7 @@ import { listCartItem } from "../API/CartService.jsx";
 import { addOrder, vnPay } from "../API/CheckoutService.jsx";
 import useQueryParam from "../utils/useQueryParam.jsx";
 import axiosClient from "../API/axiosClient.jsx";
-import { FavoriteContext } from "../components/FavoriteContext/FavoriteContext.jsx";
+import { FavoriteContext } from "../contexts/FavoriteContext.jsx";
 
 const CheckoutPage = () => {
   const success = useQueryParam("success");

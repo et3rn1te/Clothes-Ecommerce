@@ -1,8 +1,10 @@
 package com.example.back_end.service.user;
 
+import com.example.back_end.dto.request.admin.AdminUpdateUserRequest;
+import com.example.back_end.dto.request.admin.AdminUserCreationRequest;
 import com.example.back_end.dto.response.user.UserResponse;
 import com.example.back_end.dto.request.IntrospectRequest;
-import com.example.back_end.dto.request.UserCreationRequest;
+import com.example.back_end.dto.request.user.UserCreationRequest;
 import com.example.back_end.dto.request.user.ChangePasswordRequest;
 import com.example.back_end.dto.request.user.UpdateUserProfileRequest;
 import com.example.back_end.dto.response.ApiResponse;
@@ -20,7 +22,7 @@ public interface IUserService {
 
     IntrospectResponse introspect(IntrospectRequest request) throws Exception;
 
-    PageResponse<UserResponse> getUsers(Pageable pageable);
+    PageResponse<UserResponse> getAllUsers(Pageable pageable);
 
     User getUserById(Long id);
 
@@ -39,4 +41,22 @@ public interface IUserService {
 
     // Cập nhật avatar
     UserResponse updateAvatar(Long userId, MultipartFile file);
+
+    // Vô hiệu hóa user
+    void deleteUser(Long userId);
+
+    // Tạo user (ADMIN)
+    UserResponse adminCreateUser(AdminUserCreationRequest request);
+
+    // Cập nhật user (ADMIN)
+    UserResponse adminUpdateUser(Long userId, AdminUpdateUserRequest request);
+
+    // Cập nhật mật khẩu (ADMIN)
+    void adminResetPassword(Long userId, String newPassword);
+
+    // Tìm kiếm user (ADMIN)
+    PageResponse<UserResponse> searchUsers(String keyword, Pageable pageable);
+
+    // Bật/Tắt trạng thái user (ADMIN)
+    void toggleUserActiveStatus(Long userId);
 }
