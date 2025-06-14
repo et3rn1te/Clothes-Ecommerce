@@ -8,7 +8,9 @@ import com.example.back_end.dto.request.order.OrderRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.service.order.OrderService;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +36,13 @@ public class OrderController {
     }
 
     @GetMapping("/individual/{userId}")
-    public ApiResponse<List<OrderDto>> getOrderByUser(@PathVariable Long userId){
+    public ApiResponse<List<OrderDto>> getOrderByUser(@PathVariable Long userId) {
         List<OrderDto> orderDtos = orderService.getOrderByUserId(userId);
         return ApiResponse.<List<OrderDto>>builder().result(orderDtos).build();
     }
+
     @GetMapping("/details/{orderId}")
-    public ApiResponse<List<OrderDetailDto>> getOrderDetail(@PathVariable Long orderId){
+    public ApiResponse<List<OrderDetailDto>> getOrderDetail(@PathVariable Long orderId) {
         List<OrderDetailDto> orderDtos = orderService.getOrderDetailsByOrderId(orderId);
         return ApiResponse.<List<OrderDetailDto>>builder().result(orderDtos).build();
     }
@@ -72,7 +75,7 @@ public class OrderController {
     /**
      * Method to update order status
      *
-     * @param id: Order's id
+     * @param id:       Order's id
      * @param statusId: New status id to update
      * @return JSON body contains updated order information
      */
@@ -95,6 +98,7 @@ public class OrderController {
     public ResponseEntity<?> getOrdersByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(orderService.getOrdersByUser(userId));
     }
+
     @PutMapping("/update")
     public ApiResponse<Void> updateOrder(@RequestBody OrderRequest request) {
         orderService.updateOrder(request.getOrderId(), request.getStatusId());

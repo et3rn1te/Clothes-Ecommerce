@@ -1,4 +1,4 @@
-package com.example.back_end.service.WishList;
+package com.example.back_end.service.wishlist;
 
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.product.ProductResponse;

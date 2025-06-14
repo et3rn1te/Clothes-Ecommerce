@@ -1,15 +1,12 @@
-package com.example.back_end.service.Cart;
+package com.example.back_end.service.cart;
 
 import com.example.back_end.dto.CartDetailDto;
 import com.example.back_end.dto.request.CartRequest;
-import com.example.back_end.dto.response.product.ProductDetailResponse;
 import com.example.back_end.entity.Cart;
 import com.example.back_end.entity.CartDetail;
-import com.example.back_end.entity.Product;
 import com.example.back_end.entity.ProductVariant;
 import com.example.back_end.repository.CartDetailRepository;
 import com.example.back_end.repository.CartRepository;
-import com.example.back_end.service.product.IProductService;
 import com.example.back_end.service.product.IProductVariantService;
 import com.example.back_end.service.user.IUserService;
 import lombok.RequiredArgsConstructor;

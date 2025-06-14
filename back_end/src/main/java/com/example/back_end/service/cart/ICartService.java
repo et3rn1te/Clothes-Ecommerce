@@ -1,8 +1,7 @@
-package com.example.back_end.service.Cart;
+package com.example.back_end.service.cart;
 
 import com.example.back_end.dto.CartDetailDto;
 import com.example.back_end.dto.request.CartRequest;
-import com.example.back_end.entity.CartDetail;
 
 import java.util.List;
 
