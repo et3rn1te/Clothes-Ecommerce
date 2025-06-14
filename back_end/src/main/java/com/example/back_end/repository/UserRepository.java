@@ -1,6 +1,8 @@
 package com.example.back_end.repository;
 
 import com.example.back_end.entity.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -19,5 +21,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Override
     <S extends User> List<S> findAll(Example<S> example);
     Optional<User> findUserById(Long id);
+
+    boolean existsByEmail(String email);
 }
 

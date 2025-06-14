@@ -1,9 +1,11 @@
 package com.example.back_end.service.user;
 
 import com.example.back_end.constant.PredefinedRole;
+import com.example.back_end.dto.request.admin.AdminUpdateUserRequest;
+import com.example.back_end.dto.request.admin.AdminUserCreationRequest;
 import com.example.back_end.dto.response.user.UserResponse;
 import com.example.back_end.dto.request.IntrospectRequest;
-import com.example.back_end.dto.request.UserCreationRequest;
+import com.example.back_end.dto.request.user.UserCreationRequest;
 import com.example.back_end.dto.response.ApiResponse;
 import com.example.back_end.dto.response.AuthenticationResponse;
 import com.example.back_end.dto.response.IntrospectResponse;
@@ -97,8 +99,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    public PageResponse<UserResponse> getUsers(Pageable pageable) {
+    public PageResponse<UserResponse> getAllUsers(Pageable pageable) {
         log.info("Fetching users with pagination");
         Page<User> userPage = userRepository.findAll(pageable);
         List<UserResponse> userDtos = userMapper.toResponseList(userPage.getContent());
@@ -257,5 +258,130 @@ public class UserService implements IUserService {
             log.error("Failed to upload avatar", e);
             throw new AppException(ErrorCode.CLOUDINARY_ERROR);
         }
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setActive(false); // Đặt trạng thái active là false
+        userRepository.save(user);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')") // Chỉ admin mới được tạo người dùng với quyền này
+    public UserResponse adminCreateUser(AdminUserCreationRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new AppException(ErrorCode.USER_EXISTED, "Tên đăng nhập đã tồn tại.");
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new AppException(ErrorCode.USER_EXISTED, "Email đã tồn tại.");
+        }
+        if (userRepository.existsByPhone(request.getPhone())) {
+            throw new AppException(ErrorCode.USER_EXISTED, "Số điện thoại đã tồn tại.");
+        }
+
+        User user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setActive(request.getActive() != null ? request.getActive() : true); // Đặt trạng thái active
+
+        Set<Role> roles = new HashSet<>();
+        if (request.getRoleNames() != null && !request.getRoleNames().isEmpty()) {
+            request.getRoleNames().forEach(roleName -> {
+                Role role = roleRepository.findByName(roleName)
+                        .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED)); // Cần tạo ErrorCode.ROLE_NOT_EXISTED nếu chưa có
+                roles.add(role);
+            });
+        } else {
+            // Nếu admin không chỉ định vai trò, mặc định gán USER_ROLE
+            Role userRole = roleRepository.findByName(PredefinedRole.USER_ROLE)
+                    .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+            roles.add(userRole);
+        }
+        user.setRoles(roles);
+
+        return userMapper.toResponse(userRepository.save(user));
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')") // Chỉ admin mới được phép cập nhật người dùng khác
+    public UserResponse adminUpdateUser(Long userId, AdminUpdateUserRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Cập nhật username (nếu có và khác)
+        if (request.getUsername() != null && !request.getUsername().isEmpty() && !user.getUsername().equals(request.getUsername())) {
+            if (userRepository.existsByUsername(request.getUsername())) {
+                throw new AppException(ErrorCode.USER_EXISTED, "Tên đăng nhập đã tồn tại.");
+            }
+            user.setUsername(request.getUsername());
+        }
+
+        // Cập nhật fullname
+        if (request.getFullname() != null && !request.getFullname().isEmpty()) {
+            user.setFullname(request.getFullname());
+        }
+
+        // Cập nhật email (nếu có và khác)
+        if (request.getEmail() != null && !request.getEmail().isEmpty() && !user.getEmail().equals(request.getEmail())) {
+            if (userRepository.existsByEmail(request.getEmail())) {
+                throw new AppException(ErrorCode.USER_EXISTED, "Email đã tồn tại.");
+            }
+            user.setEmail(request.getEmail());
+        }
+
+        // Cập nhật phone (nếu có và khác)
+        if (request.getPhone() != null && !request.getPhone().isEmpty() && !user.getPhone().equals(request.getPhone())) {
+            if (userRepository.existsByPhone(request.getPhone())) {
+                throw new AppException(ErrorCode.USER_EXISTED, "Số điện thoại đã tồn tại.");
+            }
+            user.setPhone(request.getPhone());
+        }
+
+        // Cập nhật trạng thái active
+        if (request.getActive() != null) {
+            user.setActive(request.getActive());
+        }
+
+        // Cập nhật vai trò (quan trọng cho admin)
+        if (request.getRoleNames() != null) { // Kiểm tra null để admin có thể gửi request mà không thay đổi roles
+            Set<Role> newRoles = new HashSet<>();
+            if (!request.getRoleNames().isEmpty()) {
+                request.getRoleNames().forEach(roleName -> {
+                    Role role = roleRepository.findByName(roleName)
+                            .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+                    newRoles.add(role);
+                });
+            } else {
+                // Nếu admin gửi một danh sách rỗng, có thể hiểu là gỡ bỏ tất cả roles,
+                // hoặc bạn có thể mặc định gán USER_ROLE nếu không có vai trò nào được chỉ định.
+                // Tùy thuộc vào business logic của bạn. Ví dụ:
+                Role userRole = roleRepository.findByName(PredefinedRole.USER_ROLE)
+                        .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+                newRoles.add(userRole);
+                log.warn("Admin attempted to set empty roles for user {}. Defaulting to USER_ROLE.", userId);
+            }
+            user.setRoles(newRoles);
+        }
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ApiResponse<Void> adminResetPassword(Long userId, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Cần kiểm tra độ phức tạp của newPassword nếu cần
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        return ApiResponse.<Void>builder()
+                .code(0)
+                .message("Đặt lại mật khẩu thành công")
+                .build();
     }
 }

@@ -50,7 +50,8 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(1030, "Không tìm thấy đơn hàng", HttpStatus.NOT_FOUND),
     STATUS_NOT_FOUND(1031, "Không tìm thấy trạng thái đơn hàng", HttpStatus.NOT_FOUND),
     DISCOUNT_NOT_FOUND(1032, "Không tìm thấy khuyến mãi", HttpStatus.NOT_FOUND),
-    DISCOUNT_CODE_EXISTS(1033, "Mã khuyến mãi đã tồn tại", HttpStatus.BAD_REQUEST);
+    DISCOUNT_CODE_EXISTS(1033, "Mã khuyến mãi đã tồn tại", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_EXISTED(1034, "Role not existed", HttpStatus.NOT_FOUND);
 
     private final int code;
     private final String message;

@@ -50,6 +50,16 @@ const UserService = {
         } catch (error) {
             throw error;
         }
+    },
+
+    // Xóa người dùng (chỉ dành cho admin)
+    deleteUser: async (userId) => {
+        try {
+            const response = await axiosClient.delete(`/users/${userId}`);
+            return response;
+        } catch (error) {
+            throw error;
+        }
     }
 };
 

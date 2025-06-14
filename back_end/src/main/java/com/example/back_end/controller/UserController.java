@@ -1,7 +1,9 @@
 package com.example.back_end.controller;
 
+import com.example.back_end.dto.request.admin.AdminUpdateUserRequest;
+import com.example.back_end.dto.request.admin.AdminUserCreationRequest;
 import com.example.back_end.dto.response.user.UserResponse;
-import com.example.back_end.dto.request.UserCreationRequest;
+import com.example.back_end.dto.request.user.UserCreationRequest;
 import com.example.back_end.dto.request.user.ChangePasswordRequest;
 import com.example.back_end.dto.request.user.UpdateUserProfileRequest;
 import com.example.back_end.dto.response.ApiResponse;
@@ -42,7 +44,7 @@ public class UserController {
             User user = userService.createRequest(request);
             List<UserResponse> dtos = userService.getConvertedUsers(List.of(user));
             UserResponse dto = dtos.get(0);
-            
+
             return ResponseEntity.ok(
                     ApiResponse.<UserResponse>builder()
                             .code(0)
@@ -67,10 +69,11 @@ public class UserController {
      * @return JSON body contains paginated list of User DTOs
      */
     @GetMapping("/all")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAllUsers(Pageable pageable) {
         try {
-            PageResponse<UserResponse> userPage = userService.getUsers(pageable);
-            
+            PageResponse<UserResponse> userPage = userService.getAllUsers(pageable);
+
             return ResponseEntity.ok(
                     ApiResponse.<PageResponse<UserResponse>>builder()
                             .code(0)
@@ -100,7 +103,7 @@ public class UserController {
             User user = userService.getUserById(userId);
             List<UserResponse> dtos = userService.getConvertedUsers(List.of(user));
             UserResponse dto = dtos.get(0);
-            
+
             return ResponseEntity.ok(
                     ApiResponse.<UserResponse>builder()
                             .code(0)
@@ -244,11 +247,115 @@ public class UserController {
     }
 
     @PostMapping("/existUser")
-    ApiResponse<Boolean> existUser(@RequestParam ("email") String email) {
+    ApiResponse<Boolean> existUser(@RequestParam("email") String email) {
         boolean rs = true;
         if (userRepository.findByEmail(email).isEmpty()) {
             rs = false;
         }
         return ApiResponse.<Boolean>builder().result(rs).build();
+    }
+
+    /**
+     * Method to soft-delete a user by ID
+     *
+     * @param userId: ID of the user to be soft-deleted
+     * @return JSON body indicates success or failure
+     */
+    @DeleteMapping("/{userId}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(0)
+                            .message("Người dùng đã được xóa mềm thành công")
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to soft delete user with id: " + userId, e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<Void>builder()
+                            .code(1)
+                            .message("Không thể xóa người dùng: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /**
+     * Method for Admin to create a new user with specific roles and active status
+     *
+     * @param request: AdminUserCreationRequest containing user details and roles
+     * @return JSON body indicates success or failure with UserResponse
+     */
+    @PostMapping("/admin/create")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ApiResponse<UserResponse>> adminCreateUser(@RequestBody @Valid AdminUserCreationRequest request) {
+        try {
+            UserResponse createdUser = userService.adminCreateUser(request);
+            return ResponseEntity.ok(
+                    ApiResponse.<UserResponse>builder()
+                            .code(0)
+                            .message("Tạo người dùng thành công")
+                            .data(createdUser)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to create user by admin", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserResponse>builder()
+                            .code(1)
+                            .message("Không thể tạo người dùng: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /**
+     * Method for Admin to update an existing user's information
+     *
+     * @param userId: ID of the user to be updated
+     * @param request: AdminUpdateUserRequest containing updated user details
+     * @return JSON body indicates success or failure with UserResponse
+     */
+    @PutMapping("/admin/{userId}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ApiResponse<UserResponse>> adminUpdateUser(
+            @PathVariable Long userId,
+            @RequestBody @Valid AdminUpdateUserRequest request) {
+        try {
+            UserResponse updatedUser = userService.adminUpdateUser(userId, request);
+            return ResponseEntity.ok(
+                    ApiResponse.<UserResponse>builder()
+                            .code(0)
+                            .message("Cập nhật thông tin người dùng thành công")
+                            .data(updatedUser)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to update user by admin with id: " + userId, e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<UserResponse>builder()
+                            .code(1)
+                            .message("Không thể cập nhật thông tin người dùng: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    @PutMapping("/{userId}/reset-password")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> adminResetPassword(
+            @PathVariable Long userId,
+            @RequestParam String newPassword) { // Hoặc dùng DTO nếu có nhiều trường
+        try {
+            ApiResponse<Void> response = userService.adminResetPassword(userId, newPassword);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Failed to reset password for user id: " + userId, e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<Void>builder()
+                            .code(1)
+                            .message("Không thể đặt lại mật khẩu: " + e.getMessage())
+                            .build());
+        }
     }
 }
