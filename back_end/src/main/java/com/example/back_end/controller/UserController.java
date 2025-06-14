@@ -341,14 +341,26 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userId}/reset-password")
+    /**
+     * Method for Admin to reset a user's password
+     *
+     * @param userId: ID of the user whose password needs to be reset
+     * @param newPassword: The new password to set for the user
+     * @return JSON body indicates success or failure
+     */
+    @PutMapping("/admin/{userId}/reset-password")
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> adminResetPassword(
             @PathVariable Long userId,
-            @RequestParam String newPassword) { // Hoặc dùng DTO nếu có nhiều trường
+            @RequestParam String newPassword) {
         try {
-            ApiResponse<Void> response = userService.adminResetPassword(userId, newPassword);
-            return ResponseEntity.ok(response);
+            userService.adminResetPassword(userId, newPassword);
+            return ResponseEntity.ok(
+                    ApiResponse.<Void>builder()
+                            .code(0)
+                            .message("Đặt lại mật khẩu thành công cho người dùng " + userId)
+                            .build()
+            );
         } catch (Exception e) {
             log.error("Failed to reset password for user id: " + userId, e);
             return ResponseEntity.badRequest()

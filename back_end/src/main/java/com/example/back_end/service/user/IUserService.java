@@ -52,5 +52,5 @@ public interface IUserService {
     UserResponse adminUpdateUser(Long userId, AdminUpdateUserRequest request);
 
     // Cập nhật mật khẩu (ADMIN)
-    ApiResponse<Void> adminResetPassword(Long userId, String newPassword);
+    void adminResetPassword(Long userId, String newPassword);
 }

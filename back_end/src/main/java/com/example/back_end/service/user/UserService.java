@@ -370,18 +370,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    public ApiResponse<Void> adminResetPassword(Long userId, String newPassword) {
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')") // Chỉ admin mới được phép đặt lại mật khẩu
+    public void adminResetPassword(Long userId, String newPassword) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        // Cần kiểm tra độ phức tạp của newPassword nếu cần
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-
-        return ApiResponse.<Void>builder()
-                .code(0)
-                .message("Đặt lại mật khẩu thành công")
-                .build();
     }
 }
