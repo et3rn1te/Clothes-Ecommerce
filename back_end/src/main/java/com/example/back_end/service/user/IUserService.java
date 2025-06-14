@@ -53,4 +53,7 @@ public interface IUserService {
 
     // Cập nhật mật khẩu (ADMIN)
     void adminResetPassword(Long userId, String newPassword);
+
+    // Tìm kiếm user (ADMIN)
+    PageResponse<UserResponse> searchUsers(String keyword, Pageable pageable);
 }

@@ -47,6 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -377,5 +378,30 @@ public class UserService implements IUserService {
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+    }
+
+    @Override
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public PageResponse<UserResponse> searchUsers(String keyword, Pageable pageable) {
+        // Kiểm tra keyword rỗng để tránh truy vấn không cần thiết
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // Nếu keyword rỗng, có thể trả về tất cả người dùng
+            return getAllUsers(pageable);
+        }
+
+        Page<User> userPage = userRepository.findByKeyword(keyword, pageable);
+
+        List<UserResponse> userResponses = userPage.getContent().stream()
+                .map(userMapper::toResponse)
+                .collect(Collectors.toList());
+
+        return PageResponse.<UserResponse>builder()
+                .content(userResponses)
+                .pageNo(userPage.getNumber())
+                .pageSize(userPage.getSize())
+                .totalElements(userPage.getTotalElements())
+                .totalPages(userPage.getTotalPages())
+                .last(userPage.isLast())
+                .build();
     }
 }

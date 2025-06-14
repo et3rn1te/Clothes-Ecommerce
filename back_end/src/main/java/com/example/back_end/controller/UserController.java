@@ -13,6 +13,7 @@ import com.example.back_end.service.user.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -367,6 +368,38 @@ public class UserController {
                     .body(ApiResponse.<Void>builder()
                             .code(1)
                             .message("Không thể đặt lại mật khẩu: " + e.getMessage())
+                            .build());
+        }
+    }
+
+    /**
+     * Method for Admin to search users by keyword across multiple fields (username, fullname, email, phone).
+     * This includes inactive accounts.
+     *
+     * @param keyword: The search term
+     * @param pageable: Pagination information (page, size, sort)
+     * @return A PageResponse containing matching UserResponse objects
+     */
+    @GetMapping("/admin/search") // Endpoint cho chức năng tìm kiếm của admin
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')") // Chỉ admin mới được phép
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> searchUsers(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
+        try {
+            PageResponse<UserResponse> result = userService.searchUsers(keyword, pageable);
+            return ResponseEntity.ok(
+                    ApiResponse.<PageResponse<UserResponse>>builder()
+                            .code(0)
+                            .message("Tìm kiếm người dùng thành công")
+                            .data(result)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.error("Failed to search users", e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.<PageResponse<UserResponse>>builder()
+                            .code(1)
+                            .message("Không thể tìm kiếm người dùng: " + e.getMessage())
                             .build());
         }
     }
