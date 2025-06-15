@@ -65,8 +65,6 @@ const CheckoutPage = () => {
   }, []);
     
 
-
-
   const shippingMethods = {
     standard: { price: 0, time: "3-5 business days" },
     express: { price: 15, time: "1-2 business days" },
@@ -117,6 +115,44 @@ const CheckoutPage = () => {
       try {
         // Simulated API call
         await new Promise(resolve => setTimeout(resolve, 2000));
+        const session = JSON.parse(localStorage.getItem("session"));
+        console.log(formData.fullName,formData.phoneNumber,formData.province + ","+ formData.ward+","+formData.district+","+formData.address);
+        if(formData.paymentMethod === "1"){
+          await addOrder({
+            idUser: session.currentUser.id,
+            receiver: formData.fullName,
+            phone: formData.phoneNumber,
+            idPaymentMethod: 1,
+            address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
+            idStatus: 1,
+            total:calculateTotal()
+          }
+            ,session.token
+          );
+          setShowSuccess(true);
+          clearCart();
+          
+        } else{
+          if(formData.paymentMethod === "2"){
+            await addOrder({
+              idUser: session.currentUser.id,
+              receiver: formData.fullName,
+              phone: formData.phoneNumber,
+              idPaymentMethod: 2,
+              address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
+              idStatus: 1,
+              total:calculateTotal()
+            }
+              ,session.token
+            );
+            const response= await vnPay(Math.floor(calculateTotal()));
+            const {code,result,message} = response.data;
+            console.log(result);
+            window.location.href = result;
+          }
+          setShowSuccess(true);
+          clearCart();
+        }
       } catch (error) {
         console.error("Order submission failed:", error);
       } finally {
@@ -124,44 +160,7 @@ const CheckoutPage = () => {
       }
        console.log(formData);
     }
-    const session = JSON.parse(localStorage.getItem("session"));
-    console.log(formData.fullName,formData.phoneNumber,formData.province + ","+ formData.ward+","+formData.district+","+formData.address);
-    if(formData.paymentMethod === "1"){
-      await addOrder({
-        idUser: session.currentUser.id,
-        receiver: formData.fullName,
-        phone: formData.phoneNumber,
-        idPaymentMethod: 1,
-        address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
-        idStatus: 1,
-        total:calculateTotal()
-      }
-        ,session.token
-      );
-      setShowSuccess(true);
-      clearCart();
-      
-    } else{
-      if(formData.paymentMethod === "2"){
-        await addOrder({
-          idUser: session.currentUser.id,
-          receiver: formData.fullName,
-          phone: formData.phoneNumber,
-          idPaymentMethod: 2,
-          address: formData.province + ","+ formData.ward+","+formData.district+","+formData.address,
-          idStatus: 1,
-          total:calculateTotal()
-        }
-          ,session.token
-        );
-        const response= await vnPay(Math.floor(calculateTotal()));
-        const {code,result,message} = response.data;
-        console.log(result);
-        window.location.href = result;
-      }
-      setShowSuccess(true);
-      clearCart();
-    }
+    
   };
 
 
