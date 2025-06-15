@@ -1,24 +1,14 @@
 import React from "react";
 import {
-    MdDashboard,
     MdInventory,
     MdCategory,
     MdPeople,
     MdShoppingCart,
-    MdAnalytics,
-    MdSettings,
-    MdNotifications
 } from "react-icons/md";
 import { FiChevronRight } from "react-icons/fi";
 
 const AdminSidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) => {
     const sidebarItems = [
-        {
-            id: 'dashboard',
-            name: 'Dashboard',
-            icon: <MdDashboard className="w-5 h-5" />,
-            badge: null
-        },
         {
             id: 'products',
             name: 'Quản lý sản phẩm',
@@ -41,26 +31,8 @@ const AdminSidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) 
             id: 'orders',
             name: 'Quản lý đơn hàng',
             icon: <MdShoppingCart className="w-5 h-5" />,
-            badge: '12'
+            badge: null
         },
-        // {
-        //     id: 'analytics',
-        //     name: 'Thống kê',
-        //     icon: <MdAnalytics className="w-5 h-5" />,
-        //     badge: null
-        // },
-        // {
-        //     id: 'notifications',
-        //     name: 'Thông báo',
-        //     icon: <MdNotifications className="w-5 h-5" />,
-        //     badge: '3'
-        // },
-        // {
-        //     id: 'settings',
-        //     name: 'Cài đặt',
-        //     icon: <MdSettings className="w-5 h-5" />,
-        //     badge: null
-        // }
     ];
 
     const handleTabClick = (tabId) => {
@@ -110,8 +82,8 @@ const AdminSidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) 
                                     </div>
                                     {!isCollapsed && (
                                         <span className="font-medium text-sm truncate">
-                      {item.name}
-                    </span>
+                                            {item.name}
+                                        </span>
                                     )}
                                 </div>
 
@@ -122,16 +94,16 @@ const AdminSidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed }) 
                                             ? 'bg-white/20 text-white'
                                             : 'bg-red-100 text-red-600'
                                     }`}>
-                    {item.badge}
-                  </span>
+                                        {item.badge}
+                                    </span>
                                 )}
 
                                 {/* Collapsed badge */}
                                 {isCollapsed && item.badge && (
                                     <div className="absolute top-2 right-2">
-                    <span className="px-1.5 py-0.5 text-xs rounded-full bg-red-500 text-white font-medium">
-                      {item.badge}
-                    </span>
+                                        <span className="px-1.5 py-0.5 text-xs rounded-full bg-red-500 text-white font-medium">
+                                            {item.badge}
+                                        </span>
                                     </div>
                                 )}
                             </button>

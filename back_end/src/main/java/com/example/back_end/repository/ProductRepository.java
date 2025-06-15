@@ -20,9 +20,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findByFeaturedTrueAndActiveTrue(Pageable pageable);
 
-    @Query("SELECT p FROM Product p WHERE p.active = true AND " +
+    @Query("SELECT p FROM Product p WHERE " +
             "LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+            "LOWER(p.slug) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Product> searchProducts(String keyword, Pageable pageable);
 
     List<Product> findByBrandIdAndActiveTrue(Long brandId);
