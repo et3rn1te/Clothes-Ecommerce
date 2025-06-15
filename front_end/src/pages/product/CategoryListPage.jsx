@@ -1,133 +1,178 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { FiRefreshCw, FiGrid, FiFilter } from 'react-icons/fi';
 import CategoryService from '../../API/CategoryService';
+import CategoryCard from "../../components/category/CategoryCard.jsx";
 
 const CategoryListPage = () => {
-  const { genderSlug } = useParams(); // Lấy genderSlug từ URL params
-  const navigate = useNavigate(); // Hook để navigation
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+    const { genderSlug } = useParams();
+    const navigate = useNavigate();
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  // Tải danh mục theo giới tính
-  const loadCategories = async (gender) => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await CategoryService.getCategoriesByGenderSlug(gender);
-      setCategories(response.data || []);
-    } catch (err) {
-      setError('Không thể tải danh mục. Vui lòng thử lại sau.');
-      console.error('Lỗi khi tải danh mục:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Gender display names
+    const genderNames = {
+        'nam': 'Nam',
+        'nu': 'Nữ',
+        'unisex': 'Unisex',
+        'tre-em': 'Trẻ em'
+    };
 
-  // Effect để tải danh mục khi thay đổi giới tính từ URL
-  useEffect(() => {
-    if (genderSlug) {
-      loadCategories(genderSlug);
-    }
-  }, [genderSlug]);
+    const loadCategories = async (gender) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await CategoryService.getCategoriesByGenderSlug(gender);
+            setCategories(response.data || []);
+        } catch (err) {
+            setError('Không thể tải danh mục. Vui lòng thử lại sau.');
+            console.error('Lỗi khi tải danh mục:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  // Xử lý click vào danh mục
-  const handleCategoryClick = (categorySlug) => {
-    navigate(`/collections/${categorySlug}`);
-  };
+    useEffect(() => {
+        if (genderSlug) {
+            loadCategories(genderSlug);
+        }
+    }, [genderSlug]);
 
-  // Component CategoryCard
-  const CategoryCard = ({ category, index }) => {
-    // Tạo gradient màu khác nhau cho mỗi card
-    const gradients = [
-      'from-blue-400 to-blue-600',
-      'from-gray-700 to-gray-900',
-      'from-amber-400 to-orange-500',
-      'from-purple-500 to-purple-700',
-      'from-teal-400 to-cyan-600',
-      'from-gray-600 to-gray-800'
-    ];
-
-    const gradient = gradients[index % gradients.length];
+    const handleCategoryClick = (categorySlug) => {
+        navigate(`/collections/${categorySlug}`);
+    };
 
     return (
-      <div
-        className="group cursor-pointer"
-        onClick={() => handleCategoryClick(category.slug)}
-      >
-        <div className={`aspect-square bg-gradient-to-br ${gradient} rounded-lg overflow-hidden relative transition-transform duration-300 group-hover:scale-105 group-hover:shadow-lg`}>
-          {/* Placeholder cho hình ảnh sản phẩm */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <div className="w-12 h-12 bg-white bg-opacity-30 rounded"></div>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+            {/* Hero Section */}
+            <div className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="text-center">
+                        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                            Thời Trang {genderNames[genderSlug] || genderSlug}
+                        </h1>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            Khám phá bộ sưu tập thời trang hiện đại với những thiết kế tinh tế và chất lượng vượt trội
+                        </p>
+                    </div>
+                </div>
             </div>
-          </div>
 
-          {/* Overlay với hiệu ứng hover */}
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                {loading ? (
+                    /* Loading State */
+                    <div className="flex flex-col items-center justify-center py-24">
+                        <div className="relative">
+                            <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-gray-900"></div>
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-gray-900 to-transparent opacity-20"></div>
+                        </div>
+                        <p className="mt-6 text-gray-600 font-medium">Đang tải danh mục...</p>
+                    </div>
+                ) : error ? (
+                    /* Error State */
+                    <div className="max-w-md mx-auto">
+                        <div className="bg-white rounded-2xl shadow-xl border border-red-100 p-8 text-center">
+                            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <FiRefreshCw className="w-8 h-8 text-red-500" />
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                                Đã xảy ra lỗi
+                            </h3>
+                            <p className="text-gray-600 mb-6">{error}</p>
+                            <button
+                                onClick={() => loadCategories(genderSlug)}
+                                className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
+                            >
+                                <FiRefreshCw className="w-4 h-4" />
+                                Thử lại
+                            </button>
+                        </div>
+                    </div>
+                ) : categories.length === 0 ? (
+                    /* Empty State */
+                    <div className="max-w-md mx-auto">
+                        <div className="bg-white rounded-2xl shadow-xl border p-12 text-center">
+                            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <FiGrid className="w-10 h-10 text-gray-400" />
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                                Chưa có danh mục
+                            </h3>
+                            <p className="text-gray-600">
+                                Hiện tại chưa có danh mục nào cho thời trang {genderNames[genderSlug] || genderSlug}
+                            </p>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        {/* Categories Header */}
+                        <div className="flex items-center justify-between mb-8">
+                            <div className="flex items-center gap-3">
+                                <div className="w-1 h-8 bg-gradient-to-b from-gray-900 to-gray-600 rounded-full"></div>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-gray-900">
+                                        Danh Mục Sản Phẩm
+                                    </h2>
+                                    <p className="text-gray-600 mt-1">
+                                        {categories.length} danh mục có sẵn
+                                    </p>
+                                </div>
+                            </div>
 
-          {/* Indicator khi hover */}
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="bg-white bg-opacity-90 text-gray-800 px-4 py-2 rounded-full text-sm font-medium">
-              Xem sản phẩm
+                            <div className="hidden sm:flex items-center gap-3">
+                                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                    <FiFilter className="w-4 h-4" />
+                                    Lọc
+                                </button>
+                                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                    <FiGrid className="w-4 h-4" />
+                                    Xem
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Categories Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                            {categories.map((category, index) => (
+                                <div
+                                    key={category.id}
+                                    className="animate-fadeInUp"
+                                    style={{
+                                        animationDelay: `${index * 100}ms`,
+                                        animationFillMode: 'both'
+                                    }}
+                                >
+                                    <CategoryCard
+                                        category={category}
+                                        genderSlug={genderSlug}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
-          </div>
-        </div>
 
-        {/* Tên danh mục */}
-        <div className="mt-4 text-center">
-          <h3 className="text-sm font-bold text-gray-900 tracking-wide group-hover:text-blue-600 transition-colors duration-200">
-            {category.name}
-          </h3>
+            <style jsx>{`
+                @keyframes fadeInUp {
+                    from {
+                        opacity: 0;
+                        transform: translateY(30px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                .animate-fadeInUp {
+                    animation: fadeInUp 0.6s ease-out;
+                }
+            `}</style>
         </div>
-      </div>
     );
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
-            <p className="text-red-600 mb-4">{error}</p>
-            <button
-              onClick={() => loadCategories(genderSlug)}
-              className="bg-red-600 hover:bg-red-700 text-white py-2 px-6 rounded-lg transition-colors duration-200"
-            >
-              Thử lại
-            </button>
-          </div>
-        ) : categories.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm border p-12 text-center">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Không tìm thấy danh mục
-            </h3>
-            <p className="text-gray-600">
-              Chưa có danh mục nào cho giới tính "{genderSlug}"
-            </p>
-          </div>
-        ) : (
-          <>
-            {/* Grid danh mục - responsive 2-3-6 columns */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-              {categories.map((category, index) => (
-                <CategoryCard
-                  key={category.id}
-                  category={category}
-                  index={index}
-                />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
 };
 
 export default CategoryListPage;
