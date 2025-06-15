@@ -36,7 +36,7 @@ function HomePage() {
         setFeaturedProducts(response.data.content);
       } catch (err) {
         console.error('Error fetching sản phẩm nổi bật:', err); // Giữ lại log gốc để debug
-        setErrorFeatured(t('featured_products.error_message.description')); // Sử dụng chuỗi dịch
+        setErrorFeatured(t('homepage.featured_products.error_message.description')); // Sử dụng chuỗi dịch
       } finally {
         setLoadingFeaturedProducts(false);
       }
@@ -56,24 +56,24 @@ function HomePage() {
   // Cập nhật nội dung heroSlides để sử dụng t()
   const heroSlides = [
     {
-      title: t('hero_banner.slide1_title'),
-      subtitle: t('hero_banner.slide1_subtitle'),
-      description: t('hero_banner.slide1_description'),
-      cta: t('hero_banner.slide1_cta'),
+      title: t('homepage.hero_banner.slide1_title'),
+      subtitle: t('homepage.hero_banner.slide1_subtitle'),
+      description: t('homepage.hero_banner.slide1_description'),
+      cta: t('homepage.hero_banner.slide1_cta'),
       gradient: "from-blue-600 via-purple-600 to-blue-800"
     },
     {
-      title: t('hero_banner.slide2_title'),
-      subtitle: t('hero_banner.slide2_subtitle'),
-      description: t('hero_banner.slide2_description'),
-      cta: t('hero_banner.slide2_cta'),
+      title: t('homepage.hero_banner.slide2_title'),
+      subtitle: t('homepage.hero_banner.slide2_subtitle'),
+      description: t('homepage.hero_banner.slide2_description'),
+      cta: t('homepage.hero_banner.slide2_cta'),
       gradient: "from-pink-500 via-red-500 to-yellow-500"
     },
     {
-      title: t('hero_banner.slide3_title'),
-      subtitle: t('hero_banner.slide3_subtitle'),
-      description: t('hero_banner.slide3_description'),
-      cta: t('hero_banner.slide3_cta'),
+      title: t('homepage.hero_banner.slide3_title'),
+      subtitle: t('homepage.hero_banner.slide3_subtitle'),
+      description: t('homepage.hero_banner.slide3_description'),
+      cta: t('homepage.hero_banner.slide3_cta'),
       gradient: "from-green-400 via-blue-500 to-purple-600"
     }
   ];
@@ -159,11 +159,11 @@ function HomePage() {
 
               <div className="relative z-10 h-full flex items-end p-8">
                 <div className="text-white">
-                  <h2 className="text-4xl font-bold mb-4">{t('categories.men_wear_title')}</h2>
-                  <p className="text-lg opacity-90 mb-6">{t('categories.men_wear_description')}</p>
+                  <h2 className="text-4xl font-bold mb-4">{t('homepage.categories.men_wear_title')}</h2>
+                  <p className="text-lg opacity-90 mb-6">{t('homepage.categories.men_wear_description')}</p>
                   <button className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105">
                     <FiShoppingBag className="w-4 h-4" />
-                    {t('categories.men_wear_cta')}
+                    {t('homepage.categories.men_wear_cta')}
                     <FiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
                   </button>
                 </div>
@@ -180,11 +180,11 @@ function HomePage() {
 
               <div className="relative z-10 h-full flex items-end p-8">
                 <div className="text-white">
-                  <h2 className="text-4xl font-bold mb-4">{t('categories.women_active_title')}</h2>
-                  <p className="text-lg opacity-90 mb-6">{t('categories.women_active_description')}</p>
+                  <h2 className="text-4xl font-bold mb-4">{t('homepage.categories.women_active_title')}</h2>
+                  <p className="text-lg opacity-90 mb-6">{t('homepage.categories.women_active_description')}</p>
                   <button className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105">
                     <FiShoppingBag className="w-4 h-4" />
-                    {t('categories.women_active_cta')}
+                    {t('homepage.categories.women_active_cta')}
                     <FiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
                   </button>
                 </div>
@@ -203,16 +203,16 @@ function HomePage() {
 
           <div className="relative z-10 text-white text-center px-4 max-w-4xl mx-auto">
             <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-              {t('casualwear_banner.title')}
+              {t('homepage.casualwear_banner.title')}
             </h2>
             <p className="text-xl md:text-2xl font-light mb-4 opacity-90">
-              {t('casualwear_banner.subtitle')}
+              {t('homepage.casualwear_banner.subtitle')}
             </p>
             <p className="text-lg mb-8 opacity-80">
-              {t('casualwear_banner.description')}
+              {t('homepage.casualwear_banner.description')}
             </p>
             <button className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-purple-700 font-bold rounded-full shadow-2xl hover:shadow-white/25 hover:scale-105 transition-all duration-300 text-lg">
-              {t('casualwear_banner.cta')}
+              {t('homepage.casualwear_banner.cta')}
               <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </button>
           </div>
@@ -223,13 +223,13 @@ function HomePage() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
               <FiTrendingUp className="w-4 h-4" />
-              {t('featured_products.section_tag')}
+              {t('homepage.featured_products.section_tag')}
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              {t('featured_products.section_title')}
+              {t('homepage.featured_products.section_title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              {t('featured_products.section_description')}
+              {t('homepage.featured_products.section_description')}
             </p>
           </div>
 
@@ -240,14 +240,14 @@ function HomePage() {
                     <FiArrowRight className="w-8 h-8 text-red-500" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    {t('featured_products.error_message.title')}
+                    {t('homepage.featured_products.error_message.title')}
                   </h3>
                   <p className="text-gray-600 mb-6">{errorFeatured}</p>
                   <button
                       onClick={() => window.location.reload()}
                       className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
                   >
-                    {t('featured_products.error_message.retry_button')}
+                    {t('homepage.featured_products.error_message.retry_button')}
                   </button>
                 </div>
               </div>
@@ -257,7 +257,7 @@ function HomePage() {
                 <button
                     onClick={() => scrollProducts('left')}
                     className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white shadow-xl rounded-full flex items-center justify-center text-gray-700 hover:text-gray-900 hover:scale-110 transition-all duration-300 -ml-6"
-                    aria-label={t('featured_products.scroll_left_aria')}
+                    aria-label={t('homepage.featured_products.scroll_left_aria')}
                 >
                   <FiChevronLeft className="w-6 h-6" />
                 </button>
@@ -265,7 +265,7 @@ function HomePage() {
                 <button
                     onClick={() => scrollProducts('right')}
                     className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white shadow-xl rounded-full flex items-center justify-center text-gray-700 hover:text-gray-900 hover:scale-110 transition-all duration-300 -mr-6"
-                    aria-label={t('featured_products.scroll_right_aria')}
+                    aria-label={t('homepage.featured_products.scroll_right_aria')}
                 >
                   <FiChevronRight className="w-6 h-6" />
                 </button>
@@ -300,10 +300,10 @@ function HomePage() {
                   <FiStar className="w-10 h-10 text-gray-400" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  {t('featured_products.no_products_message.title')}
+                  {t('homepage.featured_products.no_products_message.title')}
                 </h3>
                 <p className="text-gray-600">
-                  {t('featured_products.no_products_message.description')}
+                  {t('homepage.featured_products.no_products_message.description')}
                 </p>
               </div>
           )}

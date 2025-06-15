@@ -1,51 +1,53 @@
 {
-  "loading_page": {
-    "title": "Đang tải trang chủ...",
-    "subtitle": "Vui lòng chờ trong giây lát"
-  },
-  "hero_banner": {
-    "slide1_title": "CỬA HÀNG MOGGO XIN CHÀO!",
-    "slide1_subtitle": "Số lượng giới hạn 200",
-    "slide1_description": "Khám phá những món đồ thời trang tuyệt vời với giá không thể tin được",
-    "slide1_cta": "MUA NGAY",
-    "slide2_title": "BỘ SƯU TẬP MỚI",
-    "slide2_subtitle": "Thời trang xu hướng 2025",
-    "slide2_description": "Những thiết kế độc đáo, chất lượng cao từ các nhà thiết kế hàng đầu",
-    "slide2_cta": "KHÁM PHÁ",
-    "slide3_title": "SALE UP TO 50%",
-    "slide3_subtitle": "Giảm giá cực khủng",
-    "slide3_description": "Cơ hội vàng sở hữu những item yêu thích với giá không thể tốt hơn",
-    "slide3_cta": "MUA SẮM"
-  },
-  "categories": {
-    "men_wear_title": "MEN WEAR",
-    "men_wear_description": "Phong cách lịch lãm, hiện đại",
-    "men_wear_cta": "MUA NGAY",
-    "women_active_title": "WOMEN WEAR",
-    "women_active_description": "Năng động, tự tin, quyến rũ",
-    "women_active_cta": "MUA NGAY"
-  },
-  "casualwear_banner": {
-    "title": "CASUALWEAR COLLECTION",
-    "subtitle": "Nhập COOLNEW giảm 30k cho đơn từ 299k",
-    "description": "Bộ sưu tập thời trang casual với phong cách trẻ trung, năng động",
-    "cta": "MUA NGAY"
-  },
-  "featured_products": {
-    "section_tag": "Xu hướng",
-    "section_title": "Sản phẩm nổi bật",
-    "section_description": "Khám phá những sản phẩm được yêu thích nhất từ cộng đồng thời trang",
-    "error_message": {
-      "title": "Đã xảy ra lỗi",
-      "description": "Không thể tải sản phẩm nổi bật.",
-      "retry_button": "Thử lại"
+  "homepage": {
+    "loading_page": {
+      "title": "Đang tải trang chủ...",
+      "subtitle": "Vui lòng chờ trong giây lát"
     },
-    "no_products_message": {
-      "title": "Chưa có sản phẩm nổi bật",
-      "description": "Hãy quay lại sau để khám phá những sản phẩm tuyệt vời"
+    "hero_banner": {
+      "slide1_title": "CỬA HÀNG MOGGO XIN CHÀO!",
+      "slide1_subtitle": "Số lượng giới hạn 200",
+      "slide1_description": "Khám phá những món đồ thời trang tuyệt vời với giá không thể tin được",
+      "slide1_cta": "MUA NGAY",
+      "slide2_title": "BỘ SƯU TẬP MỚI",
+      "slide2_subtitle": "Thời trang xu hướng 2025",
+      "slide2_description": "Những thiết kế độc đáo, chất lượng cao từ các nhà thiết kế hàng đầu",
+      "slide2_cta": "KHÁM PHÁ",
+      "slide3_title": "SALE UP TO 50%",
+      "slide3_subtitle": "Giảm giá cực khủng",
+      "slide3_description": "Cơ hội vàng sở hữu những item yêu thích với giá không thể tốt hơn",
+      "slide3_cta": "MUA SẮM"
     },
-    "scroll_left_aria": "Cuộn sang trái",
-    "scroll_right_aria": "Cuộn sang phải"
+    "categories": {
+      "men_wear_title": "MEN WEAR",
+      "men_wear_description": "Phong cách lịch lãm, hiện đại",
+      "men_wear_cta": "MUA NGAY",
+      "women_active_title": "WOMEN WEAR",
+      "women_active_description": "Năng động, tự tin, quyến rũ",
+      "women_active_cta": "MUA NGAY"
+    },
+    "casualwear_banner": {
+      "title": "CASUALWEAR COLLECTION",
+      "subtitle": "Nhập COOLNEW giảm 30k cho đơn từ 299k",
+      "description": "Bộ sưu tập thời trang casual với phong cách trẻ trung, năng động",
+      "cta": "MUA NGAY"
+    },
+    "featured_products": {
+      "section_tag": "Xu hướng",
+      "section_title": "Sản phẩm nổi bật",
+      "section_description": "Khám phá những sản phẩm được yêu thích nhất từ cộng đồng thời trang",
+      "error_message": {
+        "title": "Đã xảy ra lỗi",
+        "description": "Không thể tải sản phẩm nổi bật.",
+        "retry_button": "Thử lại"
+      },
+      "no_products_message": {
+        "title": "Chưa có sản phẩm nổi bật",
+        "description": "Hãy quay lại sau để khám phá những sản phẩm tuyệt vời"
+      },
+      "scroll_left_aria": "Cuộn sang trái",
+      "scroll_right_aria": "Cuộn sang phải"
+    }
   },
   "header": {
     "top_bar": {
@@ -72,6 +74,102 @@
       "men_wear": "Đồ Nam",
       "women_wear": "Đồ Nữ"
     }
+  },
+  "category_list": {
+    "hero": {
+      "title_prefix": "Thời Trang",
+      "description": "Khám phá bộ sưu tập thời trang hiện đại với những thiết kế tinh tế và chất lượng vượt trội"
+    },
+    "loading": {
+      "message": "Đang tải danh mục..."
+    },
+    "error_state": {
+      "heading": "Đã xảy ra lỗi",
+      "message": "Không thể tải danh mục. Vui lòng thử lại sau.",
+      "retry_button": "Thử lại"
+    },
+    "empty_state": {
+      "heading": "Chưa có danh mục",
+      "message_prefix": "Hiện tại chưa có danh mục nào cho thời trang",
+      "message_suffix": ""
+    },
+    "categories_section": {
+      "title": "Danh Mục Sản Phẩm",
+      "count_suffix": "danh mục có sẵn",
+      "filter_button": "Lọc",
+      "view_button": "Xem"
+    },
+    "gender_names": {
+      "nam": "Nam",
+      "nu": "Nữ",
+      "unisex": "Unisex",
+      "tre-em": "Trẻ em"
+    },
+    "errors": {
+      "loading_categories_log": "Lỗi khi tải danh mục:"
+    }
+  },
+  "product_info": {
+    "contact_for_price": "Liên hệ",
+    "reviews_count": "{{count}} đánh giá",
+    "stock_status": {
+      "in_stock": "Còn hàng",
+      "out_of_stock": "Hết hàng"
+    },
+    "shipping_return_guarantees": {
+      "free_shipping_title": "Miễn phí vận chuyển",
+      "free_shipping_description": "Đơn hàng từ 500k",
+      "easy_returns_title": "Đổi trả dễ dàng",
+      "easy_returns_description": "Trong vòng 30 ngày",
+      "genuine_warranty_title": "Bảo hành chính hãng",
+      "genuine_warranty_description": "12 tháng",
+      "secure_payment_title": "Thanh toán an toàn",
+      "secure_payment_description": "Bảo mật 100%"
+    }
+  },
+  "product_variant_selector": {
+    "contact_for_price": "Liên hệ",
+    "color_selection_title": "Màu sắc",
+    "color_selected": "Đã chọn:",
+    "out_of_stock_parentheses": "(Hết hàng)",
+    "size_selection_title": "Kích thước",
+    "out_of_stock_no_stock": "Hết hàng",
+    "out_of_stock_short": "(Hết)",
+    "price_label": "Giá:",
+    "stock_label": "Tồn kho:",
+    "product_unit": "sản phẩm",
+    "weight_label": "Trọng lượng:",
+    "weight_unit": "kg",
+    "sku_label": "SKU:",
+    "size_guide_button": "📏 Hướng dẫn chọn size"
+  },
+  "product_actions": {
+    "quantity_label": "Số lượng",
+    "quantity_remaining": "(Còn lại: {{stockQuantity}} sản phẩm)",
+    "add_to_cart_button": "Thêm vào giỏ hàng",
+    "add_to_cart_loading": "Đang thêm...",
+    "buy_now_button": "Mua ngay",
+    "buy_now_loading": "Đang xử lý...",
+    "favorite_button_liked": "Đã thích",
+    "favorite_button_unliked": "Yêu thích",
+    "share_button": "Chia sẻ",
+    "messages": {
+      "add_to_cart_success": "Đã thêm sản phẩm vào giỏ hàng!",
+      "add_to_cart_fail": "Thêm giỏ hàng thất bại",
+      "check_favorite_error": "Lỗi kiểm tra yêu thích:",
+      "update_favorite_error": "Lỗi cập nhật yêu thích:",
+      "add_to_cart_error": "Lỗi thêm vào giỏ:",
+      "buy_now_error": "Lỗi mua ngay:"
+    },
+    "login_required": "Vui lòng đăng nhập"
+  },
+  "facebook_comment": {
+    "title": "Bình luận Facebook"
+  },
+  "product_detail": {
+    "description": "Mô tả sản phẩm",
+    "review": "Đánh giá",
+    "review_comment": "Chưa có đánh giá nào"
   },
   "footer": {
     "benefits": {

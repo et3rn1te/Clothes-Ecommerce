@@ -1,51 +1,53 @@
 {
-  "loading_page": {
-    "title": "Loading homepage...",
-    "subtitle": "Please wait a moment"
-  },
-  "hero_banner": {
-    "slide1_title": "WELCOME TO MOGGO STORE!",
-    "slide1_subtitle": "Limited quantity: 200",
-    "slide1_description": "Discover amazing fashion items at incredible prices",
-    "slide1_cta": "SHOP NOW",
-    "slide2_title": "NEW COLLECTION",
-    "slide2_subtitle": "2025 Fashion Trends",
-    "slide2_description": "Unique designs, high quality from leading designers",
-    "slide2_cta": "EXPLORE",
-    "slide3_title": "SALE UP TO 50%",
-    "slide3_subtitle": "Massive Discounts",
-    "slide3_description": "A golden opportunity to own your favorite items at unbeatable prices",
-    "slide3_cta": "SHOP"
-  },
-  "categories": {
-    "men_wear_title": "MEN WEAR",
-    "men_wear_description": "Elegant, modern style",
-    "men_wear_cta": "SHOP NOW",
-    "women_active_title": "WOMEN WEAR",
-    "women_active_description": "Dynamic, confident, charming",
-    "women_active_cta": "SHOP NOW"
-  },
-  "casualwear_banner": {
-    "title": "CASUALWEAR COLLECTION",
-    "subtitle": "Use code COOLNEW to get 30k off orders from 299k",
-    "description": "Casual fashion collection with youthful, dynamic style",
-    "cta": "SHOP NOW"
-  },
-  "featured_products": {
-    "section_tag": "Trending",
-    "section_title": "Featured products",
-    "section_description": "Discover the most loved products from the fashion community",
-    "error_message": {
-      "title": "An error occurred",
-      "description": "Could not load featured products.",
-      "retry_button": "Retry"
+  "homepage": {
+    "loading_page": {
+      "title": "Loading homepage...",
+      "subtitle": "Please wait a moment"
     },
-    "no_products_message": {
-      "title": "No featured products yet",
-      "description": "Check back later to discover amazing products"
+    "hero_banner": {
+      "slide1_title": "WELCOME TO MOGGO STORE!",
+      "slide1_subtitle": "Limited quantity: 200",
+      "slide1_description": "Discover amazing fashion items at incredible prices",
+      "slide1_cta": "SHOP NOW",
+      "slide2_title": "NEW COLLECTION",
+      "slide2_subtitle": "2025 Fashion Trends",
+      "slide2_description": "Unique designs, high quality from leading designers",
+      "slide2_cta": "EXPLORE",
+      "slide3_title": "SALE UP TO 50%",
+      "slide3_subtitle": "Massive Discounts",
+      "slide3_description": "A golden opportunity to own your favorite items at unbeatable prices",
+      "slide3_cta": "SHOP"
     },
-    "scroll_left_aria": "Scroll left",
-    "scroll_right_aria": "Scroll right"
+    "categories": {
+      "men_wear_title": "MEN WEAR",
+      "men_wear_description": "Elegant, modern style",
+      "men_wear_cta": "SHOP NOW",
+      "women_active_title": "WOMEN WEAR",
+      "women_active_description": "Dynamic, confident, charming",
+      "women_active_cta": "SHOP NOW"
+    },
+    "casualwear_banner": {
+      "title": "CASUALWEAR COLLECTION",
+      "subtitle": "Use code COOLNEW to get 30k off orders from 299k",
+      "description": "Casual fashion collection with youthful, dynamic style",
+      "cta": "SHOP NOW"
+    },
+    "featured_products": {
+      "section_tag": "Trending",
+      "section_title": "Featured products",
+      "section_description": "Discover the most loved products from the fashion community",
+      "error_message": {
+        "title": "An error occurred",
+        "description": "Could not load featured products.",
+        "retry_button": "Retry"
+      },
+      "no_products_message": {
+        "title": "No featured products yet",
+        "description": "Check back later to discover amazing products"
+      },
+      "scroll_left_aria": "Scroll left",
+      "scroll_right_aria": "Scroll right"
+    }
   },
   "header": {
     "top_bar": {
@@ -72,6 +74,102 @@
       "men_wear": "Men's Wear",
       "women_wear": "Women's Wear"
     }
+  },
+  "category_list": {
+    "hero": {
+      "title_prefix": "Fashion",
+      "description": "Explore a modern fashion collection with exquisite designs and superior quality"
+    },
+    "loading": {
+      "message": "Loading categories..."
+    },
+    "error_state": {
+      "heading": "An error occurred",
+      "message": "Could not load categories. Please try again later.",
+      "retry_button": "Retry"
+    },
+    "empty_state": {
+      "heading": "No categories yet",
+      "message_prefix": "Currently, there are no categories for",
+      "message_suffix": "fashion"
+    },
+    "categories_section": {
+      "title": "Product Categories",
+      "count_suffix": "categories available",
+      "filter_button": "Filter",
+      "view_button": "View"
+    },
+    "gender_names": {
+      "nam": "Men's",
+      "nu": "Women's",
+      "unisex": "Unisex",
+      "tre-em": "Kids'"
+    },
+    "errors": {
+      "loading_categories_log": "Error loading categories:"
+    }
+  },
+  "product_info": {
+    "contact_for_price": "Contact for price",
+    "reviews_count": "{{count}} review(s)",
+    "stock_status": {
+      "in_stock": "In Stock",
+      "out_of_stock": "Out of Stock"
+    },
+    "shipping_return_guarantees": {
+      "free_shipping_title": "Free Shipping",
+      "free_shipping_description": "Orders over 500k",
+      "easy_returns_title": "Easy Returns",
+      "easy_returns_description": "Within 30 days",
+      "genuine_warranty_title": "Genuine Warranty",
+      "genuine_warranty_description": "12 months",
+      "secure_payment_title": "Secure Payment",
+      "secure_payment_description": "100% Secure"
+    }
+  },
+  "product_variant_selector": {
+    "contact_for_price": "Contact for price",
+    "color_selection_title": "Color",
+    "color_selected": "Selected:",
+    "out_of_stock_parentheses": "(Out of stock)",
+    "size_selection_title": "Size",
+    "out_of_stock_no_stock": "Out of stock",
+    "out_of_stock_short": "(Out)",
+    "price_label": "Price:",
+    "stock_label": "Stock:",
+    "product_unit": "product(s)",
+    "weight_label": "Weight:",
+    "weight_unit": "kg",
+    "sku_label": "SKU:",
+    "size_guide_button": "📏 Size guide"
+  },
+  "product_actions": {
+    "quantity_label": "Quantity",
+    "quantity_remaining": "(Remaining: {{stockQuantity}} product(s))",
+    "add_to_cart_button": "Add to Cart",
+    "add_to_cart_loading": "Adding...",
+    "buy_now_button": "Buy Now",
+    "buy_now_loading": "Processing...",
+    "favorite_button_liked": "Liked",
+    "favorite_button_unliked": "Favorite",
+    "share_button": "Share",
+    "messages": {
+      "add_to_cart_success": "Product added to cart!",
+      "add_to_cart_fail": "Failed to add to cart",
+      "check_favorite_error": "Error checking favorite status:",
+      "update_favorite_error": "Error updating favorite:",
+      "add_to_cart_error": "Error adding to cart:",
+      "buy_now_error": "Error buying now:"
+    },
+    "login_required": "Please log in"
+  },
+  "facebook_comment": {
+    "title": "Facebook comments"
+  },
+  "product_detail": {
+    "description": "Product description",
+    "review": "Reviews",
+    "review_comment": "There is no review yet."
   },
   "footer": {
     "benefits": {
