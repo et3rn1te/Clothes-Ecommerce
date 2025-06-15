@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import ProductService from '../API/ProductService';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Search, Filter, Grid, List, Star, Heart, ShoppingBag } from 'lucide-react';
+import ProductService from '../../API/ProductService';
+import ColorFilter from '../../components/filters/ColorFilter';
+import SizeFilter from '../../components/filters/SizeFilter';
+import PriceFilter from '../../components/filters/PriceFilter';
+import ProductCard from '../../components/product/ProductCard';
+import Pagination from '../../components/common/Pagination';
 
 // Currency formatter
 const formatCurrency = (price) => {
@@ -11,11 +17,10 @@ const formatCurrency = (price) => {
 };
 
 const ProductListPage = () => {
-  
   const navigate = useNavigate();
-  
-  // States
   const { categorySlug } = useParams();
+
+  // States
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [colors, setColors] = useState([]);
@@ -34,6 +39,9 @@ const ProductListPage = () => {
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [sortBy, setSortBy] = useState('createdAt,desc');
   const [currentPage, setCurrentPage] = useState(0);
+  const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState('grid');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Load initial data
   useEffect(() => {
@@ -44,7 +52,7 @@ const ProductListPage = () => {
   // Load products when filters change
   useEffect(() => {
     loadProducts();
-  }, [categorySlug, selectedColors, selectedSizes, priceRange, sortBy, currentPage]);
+  }, [categorySlug, selectedColors, selectedSizes, priceRange, sortBy, currentPage, searchQuery]);
 
   const loadColors = async () => {
     try {
@@ -76,12 +84,12 @@ const ProductListPage = () => {
         colorIds: selectedColors,
         sizeIds: selectedSizes,
         minPrice: priceRange.min,
-        maxPrice: priceRange.max
+        maxPrice: priceRange.max,
+        search: searchQuery
       };
 
       const response = await ProductService.getProductsByCategory(categorySlug, filters);
       const data = response.data;
-      console.log(data);
 
       setProducts(data.content);
       setPagination({
@@ -100,18 +108,18 @@ const ProductListPage = () => {
 
   const handleColorFilter = (colorId) => {
     setSelectedColors(prev =>
-      prev.includes(colorId)
-        ? prev.filter(id => id !== colorId)
-        : [...prev, colorId]
+        prev.includes(colorId)
+            ? prev.filter(id => id !== colorId)
+            : [...prev, colorId]
     );
     setCurrentPage(0);
   };
 
   const handleSizeFilter = (sizeId) => {
     setSelectedSizes(prev =>
-      prev.includes(sizeId)
-        ? prev.filter(id => id !== sizeId)
-        : [...prev, sizeId]
+        prev.includes(sizeId)
+            ? prev.filter(id => id !== sizeId)
+            : [...prev, sizeId]
     );
     setCurrentPage(0);
   };
@@ -130,232 +138,235 @@ const ProductListPage = () => {
     navigate(`/product/${slug}`);
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setCurrentPage(0);
+    loadProducts();
+  };
+
+  const clearAllFilters = () => {
+    setSelectedColors([]);
+    setSelectedSizes([]);
+    setPriceRange({ min: '', max: '' });
+    setSearchQuery('');
+    setCurrentPage(0);
+  };
+
+  const getActiveFiltersCount = () => {
+    return selectedColors.length + selectedSizes.length +
+        (priceRange.min || priceRange.max ? 1 : 0) +
+        (searchQuery ? 1 : 0);
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* DashboardSidebar Filters */}
-        <div className="w-full lg:w-1/4">
-          <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-            {/* Color Filter */}
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-3 uppercase tracking-wide">
-                Màu sắc
-              </h3>
-              <div className="grid grid-cols-4 gap-2">
-                {colors.map((color) => (
-                  <button
-                    key={color.id}
-                    onClick={() => handleColorFilter(color.id)}
-                    className={`w-8 h-8 rounded-full border-2 ${selectedColors.includes(color.id)
-                      ? 'border-gray-800 scale-110'
-                      : 'border-gray-300'
-                      } transition-all duration-200`}
-                    style={{ backgroundColor: color.hexCode }}
-                    title={color.name}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Size Filter */}
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-3 uppercase tracking-wide">
-                Size
-              </h3>
-              <div className="grid grid-cols-4 gap-2">
-                {sizes.map((size) => (
-                  <button
-                    key={size.id}
-                    onClick={() => handleSizeFilter(size.id)}
-                    className={`px-3 py-2 text-sm border rounded ${selectedSizes.includes(size.id)
-                      ? 'border-gray-800 bg-gray-800 text-white'
-                      : 'border-gray-300 text-gray-700 hover:border-gray-400'
-                      } transition-colors duration-200`}
-                  >
-                    {size.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Price Filter */}
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-3 uppercase tracking-wide">
-                Giá
-              </h3>
-              <div className="space-y-3">
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    placeholder="Từ"
-                    value={priceRange.min}
-                    onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-500"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Đến"
-                    value={priceRange.max}
-                    onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-500"
-                  />
-                </div>
-                <button
-                  onClick={() => handlePriceFilter(priceRange.min, priceRange.max)}
-                  className="w-full px-4 py-2 bg-gray-800 text-white text-sm rounded hover:bg-gray-700 transition-colors duration-200"
-                >
-                  Áp dụng
-                </button>
-              </div>
-            </div>
-
-            {/* Quick Price Filters */}
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-3 uppercase tracking-wide">
-                Khoảng giá
-              </h3>
-              <div className="space-y-2">
-                {[
-                  { label: 'Dưới 300k', min: '', max: '300000' },
-                  { label: '300k - 500k', min: '300000', max: '500000' },
-                  { label: 'Trên 500k', min: '500000', max: '' }
-                ].map((range, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handlePriceFilter(range.min, range.max)}
-                    className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors duration-200"
-                  >
-                    {range.label}
-                  </button>
-                ))}
-              </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50">
+        {/* Hero Section */}
+        <div className="bg-gradient-to-r from-slate-900 via-gray-800 to-slate-900 text-white py-16">
+          <div className="container mx-auto px-4">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                Bộ Sưu Tập Thời Trang
+              </h1>
+              <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+                Khám phá những xu hướng thời trang mới nhất với phong cách hiện đại và chất lượng cao
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Sản phẩm</h1>
-              <p className="text-gray-600">{pagination.totalElements} sản phẩm</p>
-            </div>
-
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Sắp xếp theo:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => handleSortChange(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-500"
-              >
-                <option value="createdAt,desc">Mới nhất</option>
-                <option value="basePrice,asc">Giá tăng dần</option>
-                <option value="basePrice,desc">Giá giảm dần</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Loading */}
-          {loading && (
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-800"></div>
-            </div>
-          )}
-
-          {/* Product Grid */}
-          {!loading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <div
-                  key={product.id}
-                  onClick={() => handleProductClick(product.slug)}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 cursor-pointer group"
-                >
-                  <div className="relative aspect-square overflow-hidden">
-                    <img
-                      src={product.primaryImage?.imageUrl || 'https://via.placeholder.com/300x300?text=No+Image'}
-                      alt={product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    {product.featured && (
-                      <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 text-xs rounded">
-                        New Arrival
-                      </div>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Sidebar Filters */}
+            <div className="w-full lg:w-80">
+              <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 p-6 sticky top-6">
+                {/* Filter Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-5 h-5 text-amber-500" />
+                    <h3 className="text-lg font-semibold text-gray-900">Bộ Lọc</h3>
+                    {getActiveFiltersCount() > 0 && (
+                        <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                      {getActiveFiltersCount()}
+                    </span>
                     )}
                   </div>
-
-                  <div className="p-4">
-                    <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-2">{product.brandName}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-gray-900">
-                        {formatCurrency(product.basePrice)}
-                      </span>
-                    </div>
-                  </div>
+                  {getActiveFiltersCount() > 0 && (
+                      <button
+                          onClick={clearAllFilters}
+                          className="text-sm text-amber-600 hover:text-amber-700 font-medium"
+                      >
+                        Xóa tất cả
+                      </button>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
 
-          {/* Empty State */}
-          {!loading && products.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">Không tìm thấy sản phẩm nào</p>
-            </div>
-          )}
+                {/* Search Filter */}
+                <div className="mb-6">
+                  <form onSubmit={handleSearch} className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Tìm kiếm sản phẩm..."
+                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 transition-all duration-200"
+                    />
+                  </form>
+                </div>
 
-          {/* Pagination */}
-          {!loading && pagination.totalPages > 1 && (
-            <div className="flex justify-center mt-8">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 0}
-                  className="px-3 py-2 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                >
-                  Trước
-                </button>
+                {/* Color Filter */}
+                <div className="mb-6">
+                  <ColorFilter
+                      colors={colors}
+                      selectedColors={selectedColors}
+                      onColorSelect={handleColorFilter}
+                  />
+                </div>
 
-                {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-                  const page = currentPage <= 2 ? i : currentPage - 2 + i;
-                  if (page >= pagination.totalPages) return null;
+                {/* Size Filter */}
+                <div className="mb-6">
+                  <SizeFilter
+                      sizes={sizes}
+                      selectedSizes={selectedSizes}
+                      onSizeSelect={handleSizeFilter}
+                  />
+                </div>
 
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => handlePageChange(page)}
-                      className={`px-3 py-2 border text-sm rounded ${currentPage === page
-                        ? 'border-gray-800 bg-gray-800 text-white'
-                        : 'border-gray-300 hover:bg-gray-50'
-                        }`}
-                    >
-                      {page + 1}
-                    </button>
-                  );
-                })}
-
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={pagination.last}
-                  className="px-3 py-2 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-                >
-                  Sau
-                </button>
+                {/* Price Filter */}
+                <div className="mb-6">
+                  <PriceFilter
+                      priceRange={priceRange}
+                      onPriceRangeChange={setPriceRange}
+                      onPriceFilter={handlePriceFilter}
+                  />
+                </div>
               </div>
             </div>
-          )}
+
+            {/* Main Content */}
+            <div className="flex-1">
+              {/* Header Controls */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <p className="text-gray-600 text-sm">
+                      Hiển thị <span className="font-semibold text-gray-900">{pagination.totalElements}</span> sản phẩm
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  {/* View Mode Toggle */}
+                  <div className="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button
+                        onClick={() => setViewMode('grid')}
+                        className={`p-2 rounded-md transition-all ${
+                            viewMode === 'grid'
+                                ? 'bg-amber-500 text-white shadow-sm'
+                                : 'text-gray-600 hover:text-amber-600'
+                        }`}
+                    >
+                      <Grid className="w-4 h-4" />
+                    </button>
+                    <button
+                        onClick={() => setViewMode('list')}
+                        className={`p-2 rounded-md transition-all ${
+                            viewMode === 'list'
+                                ? 'bg-amber-500 text-white shadow-sm'
+                                : 'text-gray-600 hover:text-amber-600'
+                        }`}
+                    >
+                      <List className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Sort Dropdown */}
+                  <select
+                      value={sortBy}
+                      onChange={(e) => handleSortChange(e.target.value)}
+                      className="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 bg-white"
+                  >
+                    <option value="createdAt,desc">Mới nhất</option>
+                    <option value="basePrice,asc">Giá tăng dần</option>
+                    <option value="basePrice,desc">Giá giảm dần</option>
+                    <option value="name,asc">Tên A-Z</option>
+                    <option value="name,desc">Tên Z-A</option>
+                  </select>
+
+                  {/* Mobile Filter Toggle */}
+                  <button
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="lg:hidden flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all"
+                  >
+                    <Filter className="w-4 h-4" />
+                    Lọc
+                  </button>
+                </div>
+              </div>
+
+              {/* Loading State */}
+              {loading && (
+                  <div className="flex justify-center items-center py-20">
+                    <div className="relative">
+                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200"></div>
+                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-amber-500 border-t-transparent absolute top-0"></div>
+                    </div>
+                  </div>
+              )}
+
+              {/* Products Grid */}
+              {!loading && (
+                  <div className={`grid gap-6 ${
+                      viewMode === 'grid'
+                          ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                          : 'grid-cols-1'
+                  }`}>
+                    {products.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            onClick={handleProductClick}
+                            viewMode={viewMode}
+                        />
+                    ))}
+                  </div>
+              )}
+
+              {/* Empty State */}
+              {!loading && products.length === 0 && (
+                  <div className="text-center py-20">
+                    <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                      <ShoppingBag className="w-12 h-12 text-amber-500" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Không tìm thấy sản phẩm</h3>
+                    <p className="text-gray-600 max-w-md mx-auto">
+                      Thử điều chỉnh bộ lọc hoặc tìm kiếm với từ khóa khác để tìm thấy sản phẩm bạn mong muốn.
+                    </p>
+                    {getActiveFiltersCount() > 0 && (
+                        <button
+                            onClick={clearAllFilters}
+                            className="mt-4 px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-all"
+                        >
+                          Xóa tất cả bộ lọc
+                        </button>
+                    )}
+                  </div>
+              )}
+
+              {/* Pagination */}
+              {!loading && products.length > 0 && (
+                  <div className="mt-12">
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={pagination.totalPages}
+                        onPageChange={setCurrentPage}
+                    />
+                  </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

@@ -1,0 +1,119 @@
+{
+  "loading_page": {
+    "title": "Loading homepage...",
+    "subtitle": "Please wait a moment"
+  },
+  "hero_banner": {
+    "slide1_title": "WELCOME TO MOGGO STORE!",
+    "slide1_subtitle": "Limited quantity: 200",
+    "slide1_description": "Discover amazing fashion items at incredible prices",
+    "slide1_cta": "SHOP NOW",
+    "slide2_title": "NEW COLLECTION",
+    "slide2_subtitle": "2025 Fashion Trends",
+    "slide2_description": "Unique designs, high quality from leading designers",
+    "slide2_cta": "EXPLORE",
+    "slide3_title": "SALE UP TO 50%",
+    "slide3_subtitle": "Massive Discounts",
+    "slide3_description": "A golden opportunity to own your favorite items at unbeatable prices",
+    "slide3_cta": "SHOP"
+  },
+  "categories": {
+    "men_wear_title": "MEN WEAR",
+    "men_wear_description": "Elegant, modern style",
+    "men_wear_cta": "SHOP NOW",
+    "women_active_title": "WOMEN WEAR",
+    "women_active_description": "Dynamic, confident, charming",
+    "women_active_cta": "SHOP NOW"
+  },
+  "casualwear_banner": {
+    "title": "CASUALWEAR COLLECTION",
+    "subtitle": "Use code COOLNEW to get 30k off orders from 299k",
+    "description": "Casual fashion collection with youthful, dynamic style",
+    "cta": "SHOP NOW"
+  },
+  "featured_products": {
+    "section_tag": "Trending",
+    "section_title": "Featured products",
+    "section_description": "Discover the most loved products from the fashion community",
+    "error_message": {
+      "title": "An error occurred",
+      "description": "Could not load featured products.",
+      "retry_button": "Retry"
+    },
+    "no_products_message": {
+      "title": "No featured products yet",
+      "description": "Check back later to discover amazing products"
+    },
+    "scroll_left_aria": "Scroll left",
+    "scroll_right_aria": "Scroll right"
+  },
+  "header": {
+    "top_bar": {
+      "free_shipping": "Free shipping from 500k",
+      "login_button": "Login"
+    },
+    "user_menu": {
+      "profile_info": "Personal Info",
+      "order_history": "Order History",
+      "admin_section_title": "Management",
+      "admin_dashboard_link": "Go to Admin Page",
+      "logout_button": "Logout",
+      "logout_success_toast": "Logged out successfully"
+    },
+    "search": {
+      "placeholder": "Search products...",
+      "speech_not_supported": "Speech recognition is not supported in your browser"
+    },
+    "mobile_menu": {
+      "title": "Menu",
+      "login_button": "Login"
+    },
+    "categories": {
+      "men_wear": "Men's Wear",
+      "women_wear": "Women's Wear"
+    }
+  },
+  "footer": {
+    "benefits": {
+      "free_shipping": "Free shipping from 500k",
+      "genuine_warranty": "Genuine Warranty",
+      "secure_payment": "Secure Payment"
+    },
+    "brand_description": "Redefining modern fashion with unique designs, high quality, and the latest fashion trends from around the world.",
+    "connect_us": "Connect with us",
+    "product_categories": "Product Categories",
+    "quick_links": {
+      "men_wear": "Men's Wear",
+      "women_wear": "Women's Wear",
+      "sale_off": "Sale Off",
+      "collections": "Collections"
+    },
+    "customer_support": "Customer Support",
+    "support_links": {
+      "return_policy": "Return Policy",
+      "buying_guide": "Buying Guide",
+      "privacy_policy": "Privacy Policy",
+      "terms_of_use": "Terms of Use"
+    },
+    "contact_info": {
+      "address": "123 ABC Street, XYZ District, HCMC",
+      "opening_hours": "8:00 AM - 10:00 PM (Mon - Sun)"
+    },
+    "newsletter": {
+      "title": "Subscribe to Newsletter",
+      "description": "Receive updates on new products, special offers, and the latest fashion trends",
+      "placeholder": "Enter your email",
+      "subscribe_success": "Thank you for subscribing!"
+    },
+    "vip_member": {
+      "title": "VIP Member",
+      "description": "Become a VIP member to receive special offers up to 30% off"
+    },
+    "bottom_bar": {
+      "all_rights_reserved": "All rights reserved.",
+      "made_with": "Made with",
+      "in_vietnam": "in Vietnam",
+      "payment_methods": "Payment Methods:"
+    }
+  }
+}

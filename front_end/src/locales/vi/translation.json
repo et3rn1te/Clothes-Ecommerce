@@ -1,0 +1,119 @@
+{
+  "loading_page": {
+    "title": "Đang tải trang chủ...",
+    "subtitle": "Vui lòng chờ trong giây lát"
+  },
+  "hero_banner": {
+    "slide1_title": "CỬA HÀNG MOGGO XIN CHÀO!",
+    "slide1_subtitle": "Số lượng giới hạn 200",
+    "slide1_description": "Khám phá những món đồ thời trang tuyệt vời với giá không thể tin được",
+    "slide1_cta": "MUA NGAY",
+    "slide2_title": "BỘ SƯU TẬP MỚI",
+    "slide2_subtitle": "Thời trang xu hướng 2025",
+    "slide2_description": "Những thiết kế độc đáo, chất lượng cao từ các nhà thiết kế hàng đầu",
+    "slide2_cta": "KHÁM PHÁ",
+    "slide3_title": "SALE UP TO 50%",
+    "slide3_subtitle": "Giảm giá cực khủng",
+    "slide3_description": "Cơ hội vàng sở hữu những item yêu thích với giá không thể tốt hơn",
+    "slide3_cta": "MUA SẮM"
+  },
+  "categories": {
+    "men_wear_title": "MEN WEAR",
+    "men_wear_description": "Phong cách lịch lãm, hiện đại",
+    "men_wear_cta": "MUA NGAY",
+    "women_active_title": "WOMEN WEAR",
+    "women_active_description": "Năng động, tự tin, quyến rũ",
+    "women_active_cta": "MUA NGAY"
+  },
+  "casualwear_banner": {
+    "title": "CASUALWEAR COLLECTION",
+    "subtitle": "Nhập COOLNEW giảm 30k cho đơn từ 299k",
+    "description": "Bộ sưu tập thời trang casual với phong cách trẻ trung, năng động",
+    "cta": "MUA NGAY"
+  },
+  "featured_products": {
+    "section_tag": "Xu hướng",
+    "section_title": "Sản phẩm nổi bật",
+    "section_description": "Khám phá những sản phẩm được yêu thích nhất từ cộng đồng thời trang",
+    "error_message": {
+      "title": "Đã xảy ra lỗi",
+      "description": "Không thể tải sản phẩm nổi bật.",
+      "retry_button": "Thử lại"
+    },
+    "no_products_message": {
+      "title": "Chưa có sản phẩm nổi bật",
+      "description": "Hãy quay lại sau để khám phá những sản phẩm tuyệt vời"
+    },
+    "scroll_left_aria": "Cuộn sang trái",
+    "scroll_right_aria": "Cuộn sang phải"
+  },
+  "header": {
+    "top_bar": {
+      "free_shipping": "Miễn phí vận chuyển từ 500k",
+      "login_button": "Đăng nhập"
+    },
+    "user_menu": {
+      "profile_info": "Thông tin cá nhân",
+      "order_history": "Thông tin đơn hàng",
+      "admin_section_title": "Quản lý",
+      "admin_dashboard_link": "Tới trang admin",
+      "logout_button": "Đăng xuất",
+      "logout_success_toast": "Đăng xuất thành công"
+    },
+    "search": {
+      "placeholder": "Tìm kiếm sản phẩm...",
+      "speech_not_supported": "Tính năng nhận dạng giọng nói không được hỗ trợ trên trình duyệt của bạn"
+    },
+    "mobile_menu": {
+      "title": "Menu",
+      "login_button": "Đăng nhập"
+    },
+    "categories": {
+      "men_wear": "Đồ Nam",
+      "women_wear": "Đồ Nữ"
+    }
+  },
+  "footer": {
+    "benefits": {
+      "free_shipping": "Miễn phí vận chuyển từ 500k",
+      "genuine_warranty": "Bảo hành chính hãng",
+      "secure_payment": "Thanh toán an toàn"
+    },
+    "brand_description": "Định nghĩa lại phong cách thời trang hiện đại với những thiết kế độc đáo, chất lượng cao và xu hướng thời trang mới nhất từ khắp nơi trên thế giới.",
+    "connect_us": "Kết nối với chúng tôi",
+    "product_categories": "Danh mục sản phẩm",
+    "quick_links": {
+      "men_wear": "Đồ Nam",
+      "women_wear": "Đồ Nữ",
+      "sale_off": "Sale Off",
+      "collections": "Bộ Sưu Tập"
+    },
+    "customer_support": "Hỗ trợ khách hàng",
+    "support_links": {
+      "return_policy": "Chính sách đổi trả",
+      "buying_guide": "Hướng dẫn mua hàng",
+      "privacy_policy": "Chính sách bảo mật",
+      "terms_of_use": "Điều khoản sử dụng"
+    },
+    "contact_info": {
+      "address": "123 Đường ABC, Quận XYZ, TP.HCM",
+      "opening_hours": "8:00 - 22:00 (Thứ 2 - Chủ nhật)"
+    },
+    "newsletter": {
+      "title": "Đăng ký nhận tin",
+      "description": "Nhận thông tin về sản phẩm mới, ưu đãi đặc biệt và xu hướng thời trang mới nhất",
+      "placeholder": "Nhập email của bạn",
+      "subscribe_success": "Cảm ơn bạn đã đăng ký!"
+    },
+    "vip_member": {
+      "title": "VIP Member",
+      "description": "Trở thành thành viên VIP để nhận ưu đãi đặc biệt lên đến 30%"
+    },
+    "bottom_bar": {
+      "all_rights_reserved": "Tất cả quyền được bảo lưu.",
+      "made_with": "Được làm bằng",
+      "in_vietnam": "tại Việt Nam",
+      "payment_methods": "Phương thức thanh toán:"
+    }
+  }
+}
