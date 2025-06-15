@@ -171,6 +171,27 @@
     "review": "Reviews",
     "review_comment": "There is no review yet."
   },
+  "product_list": {
+    "product_heading": "Product",
+    "product_subheading": "product(s)",
+    "order_by": "Order by:",
+    "order_newest": "Newest",
+    "order_price_asc": "Price Ascending",
+    "order_price_desc": "Price Descending",
+    "empty": "Can not find any products",
+    "color": "Color",
+    "size": "Size",
+    "price": "Price Range",
+    "apply_button": "Apply"
+  },
+  "wishlist": {
+    "title": "Your Wishlist",
+    "heading": "inside wishlist",
+    "favorite": "Favorite",
+    "empty_text": "Your wishlist is empty",
+    "empty_subtext": "Discover amazing products and add them to your wishlist",
+    "shopping_button": "Start Shopping"
+  },
   "footer": {
     "benefits": {
       "free_shipping": "Free shipping from 500k",

@@ -6,6 +6,7 @@ import SizeFilter from '../../components/filters/SizeFilter';
 import PriceFilter from '../../components/filters/PriceFilter';
 import ProductCard from '../../components/product/ProductCard';
 import Pagination from '../../components/common/Pagination';
+import {useTranslation} from "react-i18next";
 
 // Currency formatter
 const formatCurrency = (price) => {
@@ -16,6 +17,8 @@ const formatCurrency = (price) => {
 };
 
 const ProductListPage = () => {
+  const {t} = useTranslation();
+
   const navigate = useNavigate();
   const { categorySlug } = useParams();
 
@@ -162,21 +165,21 @@ const ProductListPage = () => {
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Sản phẩm</h1>
-              <p className="text-gray-600">{pagination.totalElements} sản phẩm</p>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">{t("product_list.product_heading")}</h1>
+              <p className="text-gray-600">{pagination.totalElements} {t("product_list.product_subheading")}</p>
             </div>
 
             {/* Sort Dropdown */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Sắp xếp theo:</span>
+              <span className="text-sm text-gray-600">{t("product_list.order_by")}</span>
               <select
                 value={sortBy}
                 onChange={(e) => handleSortChange(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-500"
               >
-                <option value="createdAt,desc">Mới nhất</option>
-                <option value="basePrice,asc">Giá tăng dần</option>
-                <option value="basePrice,desc">Giá giảm dần</option>
+                <option value="createdAt,desc">{t("product_list.order_newest")}</option>
+                <option value="basePrice,asc">{t("product_list.order_price_asc")}</option>
+                <option value="basePrice,desc">{t("product_list.order_price_desc")}</option>
               </select>
             </div>
           </div>
@@ -204,7 +207,7 @@ const ProductListPage = () => {
           {/* Empty State */}
           {!loading && products.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500">Không tìm thấy sản phẩm nào</p>
+              <p className="text-gray-500">{t("product_list.empty")}</p>
             </div>
           )}
 

@@ -116,7 +116,7 @@ const Cart = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-4 mb-4"
@@ -126,7 +126,7 @@ const Cart = () => {
               <span className="font-medium">Continue Shopping</span>
             </button>
           </motion.div>
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -134,7 +134,7 @@ const Cart = () => {
           >
             Shopping Cart
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -147,7 +147,7 @@ const Cart = () => {
         <div className="flex flex-col xl:flex-row gap-8">
           {/* Cart Items */}
           <div className="xl:w-2/3">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -181,8 +181,8 @@ const Cart = () => {
                     <motion.div
                       key={item.id}
                       initial={{ opacity: 0, x: -20 }}
-                      animate={{ 
-                        opacity: removingItem === item.id ? 0 : 1, 
+                      animate={{
+                        opacity: removingItem === item.id ? 0 : 1,
                         x: removingItem === item.id ? -100 : 0,
                         scale: removingItem === item.id ? 0.9 : 1
                       }}
@@ -264,7 +264,7 @@ const Cart = () => {
                 </AnimatePresence>
 
                 {cartItems.length === 0 && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="text-center py-16"
@@ -285,7 +285,7 @@ const Cart = () => {
 
           {/* Order Summary */}
           <div className="xl:w-1/3">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
@@ -314,7 +314,7 @@ const Cart = () => {
                       <span className="font-semibold">${taxAmount.toFixed(2)}</span>
                     </div>
                     {discount > 0 && (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="flex justify-between items-center text-green-600"
@@ -350,7 +350,7 @@ const Cart = () => {
                           onChange={(e) => setPromoCode(e.target.value)}
                         />
                       </div>
-                      <button 
+                      <button
                         onClick={() => findDiscount(promoCode)}
                         className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
                       >
@@ -358,7 +358,7 @@ const Cart = () => {
                       </button>
                     </div>
                     {isPromoApplied && (
-                      <motion.p 
+                      <motion.p
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="text-sm text-green-600 flex items-center gap-2"
@@ -391,7 +391,7 @@ const Cart = () => {
                   </div>
 
                   {/* Checkout Button */}
-                  <button 
+                  <button
                     onClick={handleCheckout}
                     disabled={cartItems.length === 0}
                     className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 ${

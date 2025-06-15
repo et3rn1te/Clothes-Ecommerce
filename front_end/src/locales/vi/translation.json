@@ -171,6 +171,27 @@
     "review": "Đánh giá",
     "review_comment": "Chưa có đánh giá nào"
   },
+  "product_list": {
+    "product_heading": "Sản phẩm",
+    "product_subheading": "sản phẩm",
+    "order_by": "Sắp xếp theo:",
+    "order_newest": "Mới nhất",
+    "order_price_asc": "Giá tăng dần",
+    "order_price_desc": "Giá giảm dần",
+    "empty": "Không tìm thấy sản phẩm nào",
+    "color": "Màu sắc",
+    "size": "Kích thước",
+    "price": "Khoảng Giá",
+    "apply_button": "Áp dụng"
+  },
+  "wishlist": {
+    "title": "Danh sách yêu thích của bạn",
+    "heading": "trong danh sách",
+    "favorite": "Yêu thích",
+    "empty_text": "Wishlist của bạn trống",
+    "empty_subtext": "Khám phá những sản phẩm ấn tượng và thêm vào wishlist",
+    "shopping_button": "Mua Sắm Ngay"
+  },
   "footer": {
     "benefits": {
       "free_shipping": "Miễn phí vận chuyển từ 500k",
