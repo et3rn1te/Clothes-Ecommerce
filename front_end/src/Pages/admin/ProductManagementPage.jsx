@@ -160,7 +160,7 @@ const ProductManagementPage = () => {
         <div className="container mx-auto p-4 font-sans antialiased">
             <CustomMessageBox message={message} type={messageType} />
 
-            <h1 className="text-4xl font-extrabold mb-8 text-center text-gray-800">Quản lý sản phẩm</h1>
+            <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">Quản lý sản phẩm</h1>
 
             <ProductSearchBar
                 searchTerm={searchTerm}

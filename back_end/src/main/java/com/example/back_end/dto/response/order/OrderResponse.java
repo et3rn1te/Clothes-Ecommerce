@@ -1,5 +1,6 @@
 package com.example.back_end.dto.response.order;
 
+import com.example.back_end.dto.StatusDto;
 import com.example.back_end.dto.response.user.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class OrderResponse {
     private String phone;
     private LocalDate dateOrder;
     private String paymentMethod;
-    private String status;
+    private StatusDto status;
     private BigDecimal totalAmount;
     private List<OrderDetailResponse> orderDetails;
 } 

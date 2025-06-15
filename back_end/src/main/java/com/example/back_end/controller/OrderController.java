@@ -132,7 +132,7 @@ public class OrderController {
      * @param pageable  Pagination information (page, size, sort).
      * @return ApiResponse containing a paginated list of OrderResponse.
      */
-    @GetMapping("/admin/search-filter")
+    @GetMapping("/admin/search")
     @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
     public ApiResponse<PageResponse<OrderResponse>> searchAndFilterOrders(
             @RequestParam(name = "keyword", required = false) String keyword,

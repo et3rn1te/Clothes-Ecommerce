@@ -1,7 +1,9 @@
 import React, {useState, useEffect, useContext} from "react";
 import {FiSearch, FiSettings, FiBell, FiMenu, FiX} from "react-icons/fi";
 import {FaUserCircle} from "react-icons/fa";
-import {MdDashboard, MdAdminPanelSettings} from "react-icons/md";
+import {
+    MdAdminPanelSettings
+} from "react-icons/md";
 import {useNavigate, Link} from "react-router-dom";
 import {introspect, logOutApi} from "../../API/AuthService";
 import {FavoriteContext} from "../../contexts/FavoriteContext.jsx";
@@ -74,9 +76,8 @@ const AdminHeader = () => {
         }
     };
 
-    // Admin menu items
+    // Admin menu items - Loại bỏ Dashboard
     const adminMenuItems = [
-        {name: "Dashboard", icon: <MdDashboard/>, link: "/admin/dashboard"},
         {name: "Quản lý sản phẩm", icon: <FiSettings/>, link: "/admin/products"},
         {name: "Quản lý danh mục", icon: <FiSettings/>, link: "/admin/categories"},
         {name: "Quản lý người dùng", icon: <FiSettings/>, link: "/admin/users"},
@@ -145,7 +146,8 @@ const AdminHeader = () => {
                                                 role="menuitem"
                                                 onClick={() => setIsOpen(false)}
                                             >
-                                                <MdDashboard className="mr-3 text-gray-400"/>
+                                                {/* Đổi icon về trang chủ nếu cần */}
+                                                <MdAdminPanelSettings className="mr-3 text-gray-400"/>
                                                 Về trang chủ
                                             </Link>
 
@@ -173,10 +175,10 @@ const AdminHeader = () => {
             {/* Admin Navigation */}
             <nav className="bg-white py-4 border-b border-gray-200">
                 <div className="container mx-auto px-4">
-                    <div className="flex items-center justify-between"> {/* Changed to justify-between */}
-                        {/* Logo & Title */}
+                    <div className="flex items-center justify-between">
+                        {/* Logo & Title - Liên kết về trang quản lý sản phẩm mặc định */}
                         <div className="flex items-center space-x-4">
-                            <Link to="/admin/dashboard">
+                            <Link to="/admin/products"> {/* Thay đổi link từ /admin/dashboard sang /admin/products */}
                                 <h1 className="text-2xl font-bold text-indigo-900 hover:text-purple-900 transition-colors duration-300">
                                     Moggo Admin
                                 </h1>
@@ -184,7 +186,7 @@ const AdminHeader = () => {
                         </div>
 
                         {/* Desktop Admin Menu - Adjusted justify-center for centered links */}
-                        <div className="hidden lg:flex items-center justify-center flex-1 space-x-8"> {/* Added flex-1 and justify-center */}
+                        <div className="hidden lg:flex items-center justify-center flex-1 space-x-8">
                             {adminMenuItems.map((item, index) => (
                                 <Link
                                     key={index}
@@ -197,23 +199,8 @@ const AdminHeader = () => {
                             ))}
                         </div>
 
-                        {/* Right section: Mobile Menu Button (search bar removed) */}
-                        <div className="flex items-center space-x-4"> {/* Kept this div for consistency with mobile button */}
-                            {/* Search Bar - REMOVED */}
-                            {/* <div className="relative">
-                                <input
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Tìm kiếm trong admin..."
-                                    className="w-64 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-300"
-                                />
-                                <button
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-600">
-                                    <FiSearch className="w-5 h-5"/>
-                                </button>
-                            </div> */}
-
+                        {/* Right section: Mobile Menu Button */}
+                        <div className="flex items-center space-x-4">
                             {/* Mobile Menu Button */}
                             <button
                                 className="lg:hidden text-gray-600 hover:text-indigo-900 transition-colors duration-300"
