@@ -1,5 +1,6 @@
 package com.example.back_end.service.order;
 
+import com.example.back_end.dto.OrderAdminDetailDto;
 import com.example.back_end.dto.OrderDetailDto;
 import com.example.back_end.dto.OrderDto;
 import com.example.back_end.dto.StatusDto;
@@ -160,5 +161,55 @@ public class OrderService implements IOrderService {
                 .orElseThrow(() -> new AppException(ErrorCode.STATUS_NOT_FOUND));
         order.setIdStatus(status);
         orderRepository.save(order);
+    }
+
+    @Override
+    public OrderAdminDetailDto getOrderDetailsForAdmin(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        List<OrderDetail> orderDetails = orderDetailRepository.findByIdOrder_Id(orderId);
+
+        // Tính tổng giá trị đơn hàng từ chi tiết đơn hàng
+        BigDecimal totalOrderValue = orderDetails.stream()
+                .map(OrderDetail::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Map Order entity sang OrderAdminDetailDto bằng ModelMapper
+        OrderAdminDetailDto adminDetailDto = modelMapper.map(order, OrderAdminDetailDto.class);
+
+        // Map danh sách OrderDetail entities sang OrderDetailDto list
+        List<OrderDetailDto> orderDetailDtos = orderDetails.stream()
+                .map(detail -> modelMapper.map(detail, OrderDetailDto.class))
+                .collect(Collectors.toList());
+
+        adminDetailDto.setOrderDetails(orderDetailDtos);
+        adminDetailDto.setTotalOrderValue(totalOrderValue);
+
+        return adminDetailDto;
+    }
+
+    @Override
+    public PageResponse<OrderResponse> searchAndFilterOrders(
+            String keyword,
+            Integer statusId,
+            LocalDate startDate,
+            LocalDate endDate,
+            Pageable pageable) {
+
+        Page<Order> orderPage = orderRepository.findOrdersByCriteria(keyword, statusId, startDate, endDate, pageable);
+
+        List<OrderResponse> orderResponses = orderPage.getContent().stream()
+                .map(order -> modelMapper.map(order, OrderResponse.class))
+                .collect(Collectors.toList());
+
+        return PageResponse.<OrderResponse>builder()
+                .content(orderResponses)
+                .pageNo(orderPage.getNumber())
+                .pageSize(orderPage.getSize())
+                .totalElements(orderPage.getTotalElements())
+                .totalPages(orderPage.getTotalPages())
+                .last(orderPage.isLast())
+                .build();
     }
 }

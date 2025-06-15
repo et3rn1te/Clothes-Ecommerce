@@ -1,27 +1,30 @@
 package com.example.back_end.controller;
 
+import com.example.back_end.dto.OrderAdminDetailDto;
 import com.example.back_end.dto.OrderDetailDto;
 import com.example.back_end.dto.OrderDto;
-import com.example.back_end.dto.request.CartRequest;
 import com.example.back_end.dto.request.OrderCreateRequest;
 import com.example.back_end.dto.request.order.OrderRequest;
 import com.example.back_end.dto.response.ApiResponse;
-import com.example.back_end.service.order.OrderService;
+import com.example.back_end.dto.response.PageResponse;
+import com.example.back_end.dto.response.order.OrderResponse;
+import com.example.back_end.service.order.IOrderService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
-    private final OrderService orderService;
+    private final IOrderService orderService;
 
     /**
      * Method to create a new order
@@ -105,4 +108,42 @@ public class OrderController {
         return ApiResponse.<Void>builder().build();
     }
 
+    /**
+     * Endpoint to get detailed order information for Admin.
+     * Accessible by ADMIN and MANAGER roles.
+     *
+     * @param id The ID of the order to retrieve.
+     * @return ResponseEntity containing OrderAdminDetailDto if found.
+     */
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    public ResponseEntity<OrderAdminDetailDto> getOrderDetailsForAdmin(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getOrderDetailsForAdmin(id));
+    }
+
+    /**
+     * Endpoint to search and filter orders for Admin.
+     * Accessible by ADMIN and MANAGER roles.
+     *
+     * @param keyword   Optional keyword to search by receiver, phone, or order ID.
+     * @param statusId  Optional status ID to filter by.
+     * @param startDate Optional start date to filter orders.
+     * @param endDate   Optional end date to filter orders.
+     * @param pageable  Pagination information (page, size, sort).
+     * @return ApiResponse containing a paginated list of OrderResponse.
+     */
+    @GetMapping("/admin/search-filter")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_MANAGER')")
+    public ApiResponse<PageResponse<OrderResponse>> searchAndFilterOrders(
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "statusId", required = false) Integer statusId,
+            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            Pageable pageable) {
+        return ApiResponse.<PageResponse<OrderResponse>>builder()
+                .code(0)
+                .message("Tìm kiếm và lọc đơn hàng thành công")
+                .data(orderService.searchAndFilterOrders(keyword, statusId, startDate, endDate, pageable))
+                .build();
+    }
 }
