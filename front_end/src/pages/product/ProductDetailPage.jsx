@@ -9,8 +9,10 @@ import ProductActions from '../../components/product/ProductActions';
 import RelatedProducts from '../../components/product/RelatedProducts';
 import FacebookComment from '../../components/commentFB/FacebookComment';
 import ReviewService from '../../API/ReviewService';
+import {useTranslation} from "react-i18next";
 
 const ProductDetailPage = () => {
+  const { t } = useTranslation();
   const { slug } = useParams();
   const navigate = useNavigate();
 
@@ -191,7 +193,7 @@ const ProductDetailPage = () => {
         {product.description && (
           <div className="mb-12">
             <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Mô tả sản phẩm</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('product_detail.description')}</h2>
               <div
                 className="prose prose-gray max-w-none"
                 dangerouslySetInnerHTML={{ __html: product.description }}
@@ -199,10 +201,10 @@ const ProductDetailPage = () => {
             </div>
             <FacebookComment url={'https://your-public-url.com/product/'+product.id} />
             <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Xem đánh giá</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('product_detail.review')}</h2>
               <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6">
                 {reviews.length === 0 ? (
-                  <p className="text-gray-500">Chưa có đánh giá nào.</p>
+                  <p className="text-gray-500">{t('product_detail.review_comment')}</p>
                 ) : (
                   <div className="space-y-6">
                     {reviews.map((review, index) => (
@@ -244,26 +246,6 @@ const ProductDetailPage = () => {
                 )}
                 </div>
 
-            </div>
-          </div>
-          
-        )}
-
-        {/* Product Specifications */}
-        {product.specifications && Object.keys(product.specifications).length > 0 && (
-          <div className="mb-12">
-            <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Thông số kỹ thuật</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {Object.entries(product.specifications).map(([key, value]) => (
-                  <div key={key} className="flex justify-between py-2 border-b border-gray-100">
-                    <span className="font-medium text-gray-700 capitalize">
-                      {key.replace(/([A-Z])/g, ' $1').trim()}:
-                    </span>
-                    <span className="text-gray-600">{value}</span>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         )}

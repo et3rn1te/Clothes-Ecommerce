@@ -3,8 +3,11 @@ import { FiMail, FiPhone, FiMapPin, FiClock, FiSend, FiHeart } from "react-icons
 import { MdSecurity, MdLocalShipping, MdOutlinePayment } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 const Footer = () => {
+    const { t } = useTranslation(); // Khởi tạo hook useTranslation
+
     const [email, setEmail] = useState("");
     const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -18,17 +21,17 @@ const Footer = () => {
     };
 
     const quickLinks = [
-        { name: "Đồ Nam", link: "/nam" },
-        { name: "Đồ Nữ", link: "/nu" },
-        { name: "Sale Off", link: "/sale" },
-        { name: "Bộ Sưu Tập", link: "/collections" }
+        { name: t('footer.quick_links.men_wear'), link: "/nam" }, 
+        { name: t('footer.quick_links.women_wear'), link: "/nu" }, 
+        { name: t('footer.quick_links.sale_off'), link: "/sale" }, 
+        { name: t('footer.quick_links.collections'), link: "/collections" } 
     ];
 
     const supportLinks = [
-        { name: "Chính sách đổi trả", link: "/return-policy" },
-        { name: "Hướng dẫn mua hàng", link: "/guide" },
-        { name: "Chính sách bảo mật", link: "/privacy" },
-        { name: "Điều khoản sử dụng", link: "/terms" }
+        { name: t('footer.support_links.return_policy'), link: "/return-policy" }, 
+        { name: t('footer.support_links.buying_guide'), link: "/guide" },       
+        { name: t('footer.support_links.privacy_policy'), link: "/privacy" },   
+        { name: t('footer.support_links.terms_of_use'), link: "/terms" }         
     ];
 
     const socialIcons = [
@@ -53,15 +56,15 @@ const Footer = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                             <div className="flex items-center justify-center space-x-3">
                                 <MdLocalShipping className="text-2xl" />
-                                <span className="font-medium">Miễn phí vận chuyển từ 500k</span>
+                                <span className="font-medium">{t('footer.benefits.free_shipping')}</span> 
                             </div>
                             <div className="flex items-center justify-center space-x-3">
                                 <MdSecurity className="text-2xl" />
-                                <span className="font-medium">Bảo hành chính hãng</span>
+                                <span className="font-medium">{t('footer.benefits.genuine_warranty')}</span> 
                             </div>
                             <div className="flex items-center justify-center space-x-3">
                                 <MdOutlinePayment className="text-2xl" />
-                                <span className="font-medium">Thanh toán an toàn</span>
+                                <span className="font-medium">{t('footer.benefits.secure_payment')}</span> 
                             </div>
                         </div>
                     </div>
@@ -77,14 +80,13 @@ const Footer = () => {
                                     MOGGO
                                 </h3>
                                 <p className="text-gray-300 leading-relaxed text-sm">
-                                    Định nghĩa lại phong cách thời trang hiện đại với những thiết kế độc đáo,
-                                    chất lượng cao và xu hướng thời trang mới nhất từ khắp nơi trên thế giới.
+                                    {t('footer.brand_description')} 
                                 </p>
                             </div>
 
                             {/* Social Media */}
                             <div>
-                                <h4 className="text-lg font-semibold mb-4 text-white">Kết nối với chúng tôi</h4>
+                                <h4 className="text-lg font-semibold mb-4 text-white">{t('footer.connect_us')}</h4> 
                                 <div className="flex space-x-3">
                                     {socialIcons.map(({ Icon, color, bg }, index) => (
                                         <div key={index} className={`group p-3 rounded-full bg-white/10 backdrop-blur-sm ${color} ${bg} transition-all duration-300 cursor-pointer hover:scale-110 hover:shadow-lg`}>
@@ -98,7 +100,7 @@ const Footer = () => {
                         {/* Quick Links */}
                         <div>
                             <h4 className="text-lg font-semibold mb-6 text-white relative">
-                                Danh mục sản phẩm
+                                {t('footer.product_categories')} 
                                 <div className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-amber-400 to-orange-400"></div>
                             </h4>
                             <ul className="space-y-4">
@@ -119,7 +121,7 @@ const Footer = () => {
                         {/* Support Links */}
                         <div>
                             <h4 className="text-lg font-semibold mb-6 text-white relative">
-                                Hỗ trợ khách hàng
+                                {t('footer.customer_support')} 
                                 <div className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-amber-400 to-orange-400"></div>
                             </h4>
                             <ul className="space-y-4">
@@ -140,7 +142,7 @@ const Footer = () => {
                             <div className="mt-8 space-y-3">
                                 <div className="flex items-center text-gray-300 text-sm group">
                                     <FiMapPin className="mr-3 text-amber-400 group-hover:scale-110 transition-transform" />
-                                    <span>123 Đường ABC, Quận XYZ, TP.HCM</span>
+                                    <span>{t('footer.contact_info.address')}</span> 
                                 </div>
                                 <div className="flex items-center text-gray-300 text-sm group">
                                     <FiPhone className="mr-3 text-amber-400 group-hover:scale-110 transition-transform" />
@@ -152,7 +154,7 @@ const Footer = () => {
                                 </div>
                                 <div className="flex items-center text-gray-300 text-sm group">
                                     <FiClock className="mr-3 text-amber-400 group-hover:scale-110 transition-transform" />
-                                    <span>8:00 - 22:00 (Thứ 2 - Chủ nhật)</span>
+                                    <span>{t('footer.contact_info.opening_hours')}</span> 
                                 </div>
                             </div>
                         </div>
@@ -160,11 +162,11 @@ const Footer = () => {
                         {/* Newsletter */}
                         <div>
                             <h4 className="text-lg font-semibold mb-6 text-white relative">
-                                Đăng ký nhận tin
+                                {t('footer.newsletter.title')} 
                                 <div className="absolute bottom-0 left-0 w-12 h-0.5 bg-gradient-to-r from-amber-400 to-orange-400"></div>
                             </h4>
                             <p className="text-gray-300 mb-6 text-sm leading-relaxed">
-                                Nhận thông tin về sản phẩm mới, ưu đãi đặc biệt và xu hướng thời trang mới nhất
+                                {t('footer.newsletter.description')} 
                             </p>
 
                             <form onSubmit={handleNewsletterSubmit} className="space-y-4">
@@ -173,7 +175,7 @@ const Footer = () => {
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        placeholder="Nhập email của bạn"
+                                        placeholder={t('footer.newsletter.placeholder')} 
                                         className="w-full px-4 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-gray-300 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all duration-300"
                                         required
                                     />
@@ -188,7 +190,7 @@ const Footer = () => {
                                 {isSubscribed && (
                                     <div className="flex items-center text-green-400 text-sm">
                                         <FiHeart className="mr-2" />
-                                        <span>Cảm ơn bạn đã đăng ký!</span>
+                                        <span>{t('footer.newsletter.subscribe_success')}</span> 
                                     </div>
                                 )}
                             </form>
@@ -197,10 +199,10 @@ const Footer = () => {
                             <div className="mt-8 p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
                                 <div className="flex items-center mb-2">
                                     <FiHeart className="text-amber-400 mr-2" />
-                                    <span className="text-sm font-medium text-white">VIP Member</span>
+                                    <span className="text-sm font-medium text-white">{t('footer.vip_member.title')}</span> 
                                 </div>
                                 <p className="text-xs text-gray-300">
-                                    Trở thành thành viên VIP để nhận ưu đãi đặc biệt lên đến 30%
+                                    {t('footer.vip_member.description')} 
                                 </p>
                             </div>
                         </div>
@@ -213,18 +215,18 @@ const Footer = () => {
                         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-8">
                                 <p className="text-gray-400 text-sm">
-                                    &copy; {new Date().getFullYear()} MOGGO Fashion. All rights reserved.
+                                    &copy; {new Date().getFullYear()} MOGGO Fashion. {t('footer.bottom_bar.all_rights_reserved')} 
                                 </p>
                                 <div className="flex items-center space-x-4 text-xs text-gray-500">
-                                    <span>Made with</span>
+                                    <span>{t('footer.bottom_bar.made_with')}</span> 
                                     <FiHeart className="text-red-400 animate-pulse" />
-                                    <span>in Vietnam</span>
+                                    <span>{t('footer.bottom_bar.in_vietnam')}</span> 
                                 </div>
                             </div>
 
                             <div className="flex items-center space-x-6">
                                 <div className="flex items-center space-x-2 text-xs text-gray-400">
-                                    <span>Phương thức thanh toán:</span>
+                                    <span>{t('footer.bottom_bar.payment_methods')}</span> 
                                 </div>
                                 <div className="flex space-x-2">
                                     {['VISA', 'MASTER', 'MOMO', 'VNPAY'].map((payment, index) => (

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight, FiArrowRight, FiShoppingBag, FiTrendingUp, FiStar } from 'react-icons/fi';
 import ProductService from '../API/ProductService';
 import ProductCard from '../components/product/ProductCard';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 const HERO_IMAGE = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=800&fit=crop&crop=center';
 const MEN_IMAGE = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop&crop=center';
@@ -10,6 +11,8 @@ const WOMEN_IMAGE = 'https://images.unsplash.com/photo-1494790108755-2616c5e8f3e
 const CASUAL_IMAGE = 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=1200&h=600&fit=crop&crop=center';
 
 function HomePage() {
+  const { t } = useTranslation(); // Khởi tạo hook useTranslation
+
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loadingFeaturedProducts, setLoadingFeaturedProducts] = useState(true);
   const [errorFeatured, setErrorFeatured] = useState(null);
@@ -32,15 +35,15 @@ function HomePage() {
         const response = await ProductService.getFeaturedProducts();
         setFeaturedProducts(response.data.content);
       } catch (err) {
-        console.error('Error fetching sản phẩm nổi bật:', err);
-        setErrorFeatured('Không thể tải sản phẩm nổi bật.');
+        console.error('Error fetching sản phẩm nổi bật:', err); // Giữ lại log gốc để debug
+        setErrorFeatured(t('homepage.featured_products.error_message.description')); // Sử dụng chuỗi dịch
       } finally {
         setLoadingFeaturedProducts(false);
       }
     };
 
     fetchFeaturedProducts();
-  }, []);
+  }, [t]); // Thêm t vào dependency array
 
   const scrollProducts = (direction) => {
     if (productsContainerRef.current) {
@@ -50,26 +53,27 @@ function HomePage() {
     }
   };
 
+  // Cập nhật nội dung heroSlides để sử dụng t()
   const heroSlides = [
     {
-      title: "WOWBOX CHỈ VỚI 149K",
-      subtitle: "Số lượng giới hạn 200 box / ngày",
-      description: "Khám phá những món đồ thời trang tuyệt vời với giá không thể tin được",
-      cta: "MUA NGAY",
+      title: t('homepage.hero_banner.slide1_title'),
+      subtitle: t('homepage.hero_banner.slide1_subtitle'),
+      description: t('homepage.hero_banner.slide1_description'),
+      cta: t('homepage.hero_banner.slide1_cta'),
       gradient: "from-blue-600 via-purple-600 to-blue-800"
     },
     {
-      title: "BỘ SƯU TẬP MỚI",
-      subtitle: "Thời trang xu hướng 2024",
-      description: "Những thiết kế độc đáo, chất lượng cao từ các nhà thiết kế hàng đầu",
-      cta: "KHÁM PHÁ",
+      title: t('homepage.hero_banner.slide2_title'),
+      subtitle: t('homepage.hero_banner.slide2_subtitle'),
+      description: t('homepage.hero_banner.slide2_description'),
+      cta: t('homepage.hero_banner.slide2_cta'),
       gradient: "from-pink-500 via-red-500 to-yellow-500"
     },
     {
-      title: "SALE UP TO 50%",
-      subtitle: "Giảm giá cực khủng",
-      description: "Cơ hội vàng sở hữu những item yêu thích với giá không thể tốt hơn",
-      cta: "MUA SẮM",
+      title: t('homepage.hero_banner.slide3_title'),
+      subtitle: t('homepage.hero_banner.slide3_subtitle'),
+      description: t('homepage.hero_banner.slide3_description'),
+      cta: t('homepage.hero_banner.slide3_cta'),
       gradient: "from-green-400 via-blue-500 to-purple-600"
     }
   ];
@@ -82,8 +86,8 @@ function HomePage() {
               <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-200 border-t-gray-900 mx-auto"></div>
               <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-gray-900 to-transparent opacity-20"></div>
             </div>
-            <p className="text-xl font-medium text-gray-700">Đang tải trang chủ...</p>
-            <p className="text-gray-500 mt-2">Vui lòng chờ trong giây lát</p>
+            <p className="text-xl font-medium text-gray-700">{t('loading_page.title')}</p>
+            <p className="text-gray-500 mt-2">{t('loading_page.subtitle')}</p>
           </div>
         </div>
     );
@@ -155,11 +159,11 @@ function HomePage() {
 
               <div className="relative z-10 h-full flex items-end p-8">
                 <div className="text-white">
-                  <h2 className="text-4xl font-bold mb-4">MEN WEAR</h2>
-                  <p className="text-lg opacity-90 mb-6">Phong cách lịch lãm, hiện đại</p>
+                  <h2 className="text-4xl font-bold mb-4">{t('homepage.categories.men_wear_title')}</h2>
+                  <p className="text-lg opacity-90 mb-6">{t('homepage.categories.men_wear_description')}</p>
                   <button className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105">
                     <FiShoppingBag className="w-4 h-4" />
-                    MUA NGAY
+                    {t('homepage.categories.men_wear_cta')}
                     <FiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
                   </button>
                 </div>
@@ -176,11 +180,11 @@ function HomePage() {
 
               <div className="relative z-10 h-full flex items-end p-8">
                 <div className="text-white">
-                  <h2 className="text-4xl font-bold mb-4">WOMEN ACTIVE</h2>
-                  <p className="text-lg opacity-90 mb-6">Năng động, tự tin, quyến rũ</p>
+                  <h2 className="text-4xl font-bold mb-4">{t('homepage.categories.women_active_title')}</h2>
+                  <p className="text-lg opacity-90 mb-6">{t('homepage.categories.women_active_description')}</p>
                   <button className="group/btn inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105">
                     <FiShoppingBag className="w-4 h-4" />
-                    MUA NGAY
+                    {t('homepage.categories.women_active_cta')}
                     <FiArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
                   </button>
                 </div>
@@ -199,16 +203,16 @@ function HomePage() {
 
           <div className="relative z-10 text-white text-center px-4 max-w-4xl mx-auto">
             <h2 className="text-5xl md:text-6xl font-black mb-6 leading-tight">
-              CASUALWEAR COLLECTION
+              {t('homepage.casualwear_banner.title')}
             </h2>
             <p className="text-xl md:text-2xl font-light mb-4 opacity-90">
-              Nhập COOLNEW giảm 30k cho đơn từ 299k
+              {t('homepage.casualwear_banner.subtitle')}
             </p>
             <p className="text-lg mb-8 opacity-80">
-              Bộ sưu tập thời trang casual với phong cách trẻ trung, năng động
+              {t('homepage.casualwear_banner.description')}
             </p>
             <button className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-purple-700 font-bold rounded-full shadow-2xl hover:shadow-white/25 hover:scale-105 transition-all duration-300 text-lg">
-              MUA NGAY
+              {t('homepage.casualwear_banner.cta')}
               <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </button>
           </div>
@@ -219,13 +223,13 @@ function HomePage() {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
               <FiTrendingUp className="w-4 h-4" />
-              Xu hướng
+              {t('homepage.featured_products.section_tag')}
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Sản phẩm nổi bật
+              {t('homepage.featured_products.section_title')}
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Khám phá những sản phẩm được yêu thích nhất từ cộng đồng thời trang
+              {t('homepage.featured_products.section_description')}
             </p>
           </div>
 
@@ -236,14 +240,14 @@ function HomePage() {
                     <FiArrowRight className="w-8 h-8 text-red-500" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    Đã xảy ra lỗi
+                    {t('homepage.featured_products.error_message.title')}
                   </h3>
                   <p className="text-gray-600 mb-6">{errorFeatured}</p>
                   <button
                       onClick={() => window.location.reload()}
                       className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
                   >
-                    Thử lại
+                    {t('homepage.featured_products.error_message.retry_button')}
                   </button>
                 </div>
               </div>
@@ -253,7 +257,7 @@ function HomePage() {
                 <button
                     onClick={() => scrollProducts('left')}
                     className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white shadow-xl rounded-full flex items-center justify-center text-gray-700 hover:text-gray-900 hover:scale-110 transition-all duration-300 -ml-6"
-                    aria-label="Cuộn sang trái"
+                    aria-label={t('homepage.featured_products.scroll_left_aria')}
                 >
                   <FiChevronLeft className="w-6 h-6" />
                 </button>
@@ -261,7 +265,7 @@ function HomePage() {
                 <button
                     onClick={() => scrollProducts('right')}
                     className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white shadow-xl rounded-full flex items-center justify-center text-gray-700 hover:text-gray-900 hover:scale-110 transition-all duration-300 -mr-6"
-                    aria-label="Cuộn sang phải"
+                    aria-label={t('homepage.featured_products.scroll_right_aria')}
                 >
                   <FiChevronRight className="w-6 h-6" />
                 </button>
@@ -296,40 +300,40 @@ function HomePage() {
                   <FiStar className="w-10 h-10 text-gray-400" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  Chưa có sản phẩm nổi bật
+                  {t('homepage.featured_products.no_products_message.title')}
                 </h3>
                 <p className="text-gray-600">
-                  Hãy quay lại sau để khám phá những sản phẩm tuyệt vời
+                  {t('homepage.featured_products.no_products_message.description')}
                 </p>
               </div>
           )}
         </section>
 
         <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-fadeInUp {
-          animation: fadeInUp 0.6s ease-out;
-        }
 
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+          .animate-fadeInUp {
+            animation: fadeInUp 0.6s ease-out;
+          }
+
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
       </div>
   );
 }

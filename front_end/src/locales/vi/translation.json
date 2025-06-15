@@ -1,0 +1,398 @@
+{
+  "homepage": {
+    "loading_page": {
+      "title": "Đang tải trang chủ...",
+      "subtitle": "Vui lòng chờ trong giây lát"
+    },
+    "hero_banner": {
+      "slide1_title": "CỬA HÀNG MOGGO XIN CHÀO!",
+      "slide1_subtitle": "Số lượng giới hạn 200",
+      "slide1_description": "Khám phá những món đồ thời trang tuyệt vời với giá không thể tin được",
+      "slide1_cta": "MUA NGAY",
+      "slide2_title": "BỘ SƯU TẬP MỚI",
+      "slide2_subtitle": "Thời trang xu hướng 2025",
+      "slide2_description": "Những thiết kế độc đáo, chất lượng cao từ các nhà thiết kế hàng đầu",
+      "slide2_cta": "KHÁM PHÁ",
+      "slide3_title": "SALE UP TO 50%",
+      "slide3_subtitle": "Giảm giá cực khủng",
+      "slide3_description": "Cơ hội vàng sở hữu những item yêu thích với giá không thể tốt hơn",
+      "slide3_cta": "MUA SẮM"
+    },
+    "categories": {
+      "men_wear_title": "MEN WEAR",
+      "men_wear_description": "Phong cách lịch lãm, hiện đại",
+      "men_wear_cta": "MUA NGAY",
+      "women_active_title": "WOMEN WEAR",
+      "women_active_description": "Năng động, tự tin, quyến rũ",
+      "women_active_cta": "MUA NGAY"
+    },
+    "casualwear_banner": {
+      "title": "CASUALWEAR COLLECTION",
+      "subtitle": "Nhập COOLNEW giảm 30k cho đơn từ 299k",
+      "description": "Bộ sưu tập thời trang casual với phong cách trẻ trung, năng động",
+      "cta": "MUA NGAY"
+    },
+    "featured_products": {
+      "section_tag": "Xu hướng",
+      "section_title": "Sản phẩm nổi bật",
+      "section_description": "Khám phá những sản phẩm được yêu thích nhất từ cộng đồng thời trang",
+      "error_message": {
+        "title": "Đã xảy ra lỗi",
+        "description": "Không thể tải sản phẩm nổi bật.",
+        "retry_button": "Thử lại"
+      },
+      "no_products_message": {
+        "title": "Chưa có sản phẩm nổi bật",
+        "description": "Hãy quay lại sau để khám phá những sản phẩm tuyệt vời"
+      },
+      "scroll_left_aria": "Cuộn sang trái",
+      "scroll_right_aria": "Cuộn sang phải"
+    }
+  },
+  "verificationPage": {
+    "title": "Xác minh email của bạn",
+    "description1": "Chúng tôi đã gửi một liên kết xác minh đến",
+    "description2": "Vui lòng kiểm tra hộp thư đến và nhấp vào liên kết để xác minh tài khoản của bạn",
+    "resendEmail": "Gửi lại email xác minh"
+  },
+  "login": {
+    "title": {
+      "login": "Đăng nhập",
+      "forgotPassword": "Quên mật khẩu",
+      "verifyEmail": "Xác minh Email"
+    },
+    "subtitle": {
+      "signIn": "Đăng nhập vào tài khoản của bạn",
+      "resetPassword": "Nhập email của bạn để đặt lại mật khẩu",
+      "checkEmail": "Kiểm tra email của bạn để xác minh"
+    },
+    "emailLabel": "Địa chỉ Email",
+    "emailPlaceholder": "Nhập địa chỉ email",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "rememberMe": "Ghi nhớ tôi",
+    "forgotPasswordLink": "Quên mật khẩu?",
+    "signInButton": "Đăng nhập",
+    "sendEmailButton": "Gửi Email",
+    "orContinueWith": "Hoặc tiếp tục với",
+    "noAccountSignUp": "Chưa có tài khoản? Đăng ký",
+    "backToSignIn": "Quay lại đăng nhập",
+    "haveAccountSignIn": "Đã có tài khoản? Đăng nhập",
+    "errors": {
+      "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+      "passwordInvalid": "Vui lòng nhập mật khẩu",
+      "emailNotRegistered": "Email chưa được đăng ký",
+      "emailExists": "Email đã tồn tại",
+      "unknownError": "Đã xảy ra lỗi không xác định."
+    },
+    "errorPrefix": "Lỗi: "
+  },
+  "register": {
+    "title": "Tạo tài khoản của bạn",
+    "fullNameLabel": "Họ và tên",
+    "fullNamePlaceholder": "Nhập họ và tên của bạn",
+    "usernameLabel": "Tên người dùng",
+    "usernamePlaceholder": "Nhập tên tài khoản của bạn",
+    "phoneNumberLabel": "Số điện thoại",
+    "phoneNumberPlaceholder": "Nhập số điện thoại",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "confirmPasswordLabel": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "Xác nhận lại mật khẩu",
+    "termsAndConditions": "Tôi chấp nhận các điều khoản và điều kiện",
+    "signUpButton": "Đăng ký",
+    "haveAccountSignIn": "Đã có tài khoản? Đăng nhập",
+    "passwordStrength": {
+      "enterPassword": "Nhập mật khẩu",
+      "weak": "Yếu",
+      "fair": "Trung bình",
+      "good": "Tốt",
+      "strong": "Mạnh"
+    },
+    "errors": {
+      "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+      "passwordInvalid": "Mật khẩu phải dài ít nhất 8 ký tự và bao gồm chữ hoa, số và ký tự đặc biệt",
+      "passwordsMismatch": "Mật khẩu không khớp",
+      "fullNameRequired": "Tên đầy đủ là bắt buộc",
+      "usernameRequired": "Tên người dùng là bắt buộc",
+      "phoneRequired": "Số điện thoại là bắt buộc"
+    }
+  },
+  "verification_page": {
+    "verify_your_email": "Xác minh email của bạn",
+    "we_have_sent_a_verification_link_to": "Chúng tôi đã gửi một liên kết xác minh đến",
+    "please_check_your_inbox": "Vui lòng kiểm tra hộp thư đến của bạn và nhấp vào liên kết để xác minh tài khoản của bạn",
+    "resend_verification_email": "Gửi lại email xác minh"
+  },
+  "send_email_page": {
+    "sending_verify": "Đang gửi xác minh",
+    "email_address": "Địa chỉ email",
+    "enter_email_address": "Nhập địa chỉ email",
+    "send_reset_link": "Gửi liên kết đặt lại",
+    "back_to_sign_in": "Quay lại đăng nhập"
+  },
+  "errors": {
+    "please_enter_a_valid_email_address": "Vui lòng nhập một địa chỉ email hợp lệ",
+    "password_must_be_at_least_8_characters": "Mật khẩu phải dài ít nhất 8 ký tự và bao gồm chữ hoa, số và ký tự đặc biệt",
+    "passwords_do_not_match": "Mật khẩu không khớp",
+    "full_name_is_required": "Tên đầy đủ là bắt buộc",
+    "username_is_required": "Tên người dùng là bắt buộc",
+    "phone_number_is_required": "Số điện thoại là bắt buộc",
+    "please_accept_terms_and_conditions": "Vui lòng chấp nhận các điều khoản và điều kiện"
+  },
+  "password_strength": {
+    "enter_password": "Nhập mật khẩu",
+    "weak": "Yếu",
+    "fair": "Trung bình",
+    "good": "Tốt",
+    "strong": "Mạnh"
+  },
+  "profile": {
+    "header": {
+      "title": "Hồ Sơ Cá Nhân",
+      "description": "Quản lý thông tin và tài khoản của bạn"
+    },
+    "avatarSection": {
+      "saveImage": "Lưu ảnh",
+      "fileSizeError": "Kích thước file không được vượt quá 5MB",
+      "fileTypeError": "File phải là hình ảnh",
+      "selectNewImage": "Vui lòng chọn ảnh mới",
+      "updateAvatarSuccess": "Cập nhật avatar thành công",
+      "updateAvatarFailed": "Cập nhật avatar thất bại"
+    },
+    "quickActions": {
+      "changePassword": "Đổi mật khẩu",
+      "logout": "Đăng xuất"
+    },
+    "personalInfo": {
+      "title": "Thông tin cá nhân",
+      "fullname": {
+        "label": "Họ và tên",
+        "placeholder": "Nhập họ và tên của bạn",
+        "required": "Vui lòng nhập họ tên"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Email của bạn",
+        "note": "Email không thể thay đổi"
+      },
+      "phone": {
+        "label": "Số điện thoại",
+        "placeholder": "Nhập số điện thoại của bạn",
+        "required": "Vui lòng nhập số điện thoại",
+        "invalid": "Số điện thoại không hợp lệ"
+      },
+      "saveChanges": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "updateSuccess": "Cập nhật thông tin thành công",
+      "updateFailed": "Cập nhật thông tin thất bại"
+    }
+  },
+  "passwordModal": {
+    "title": "Đổi mật khẩu",
+    "currentPassword": {
+      "label": "Mật khẩu hiện tại"
+    },
+    "newPassword": {
+      "label": "Mật khẩu mới"
+    },
+    "confirmNewPassword": {
+      "label": "Xác nhận mật khẩu mới"
+    },
+    "passwordMismatch": "Mật khẩu mới không khớp",
+    "changePasswordSuccess": "Đổi mật khẩu thành công",
+    "changePasswordFailed": "Đổi mật khẩu thất bại",
+    "cancel": "Hủy",
+    "changePasswordBtn": "Đổi mật khẩu"
+  },
+  "session": {
+    "expired": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại",
+    "loadingProfileFailed": "Không thể tải thông tin người dùng"
+  },
+  "header": {
+    "top_bar": {
+      "free_shipping": "Miễn phí vận chuyển từ 500k",
+      "login_button": "Đăng nhập"
+    },
+    "user_menu": {
+      "profile_info": "Thông tin cá nhân",
+      "order_history": "Thông tin đơn hàng",
+      "admin_section_title": "Quản lý",
+      "admin_dashboard_link": "Tới trang admin",
+      "logout_button": "Đăng xuất",
+      "logout_success_toast": "Đăng xuất thành công"
+    },
+    "search": {
+      "placeholder": "Tìm kiếm sản phẩm...",
+      "speech_not_supported": "Tính năng nhận dạng giọng nói không được hỗ trợ trên trình duyệt của bạn"
+    },
+    "mobile_menu": {
+      "title": "Menu",
+      "login_button": "Đăng nhập"
+    },
+    "categories": {
+      "men_wear": "Đồ Nam",
+      "women_wear": "Đồ Nữ"
+    }
+  },
+  "category_list": {
+    "hero": {
+      "title_prefix": "Thời Trang",
+      "description": "Khám phá bộ sưu tập thời trang hiện đại với những thiết kế tinh tế và chất lượng vượt trội"
+    },
+    "loading": {
+      "message": "Đang tải danh mục..."
+    },
+    "error_state": {
+      "heading": "Đã xảy ra lỗi",
+      "message": "Không thể tải danh mục. Vui lòng thử lại sau.",
+      "retry_button": "Thử lại"
+    },
+    "empty_state": {
+      "heading": "Chưa có danh mục",
+      "message_prefix": "Hiện tại chưa có danh mục nào cho thời trang",
+      "message_suffix": ""
+    },
+    "categories_section": {
+      "title": "Danh Mục Sản Phẩm",
+      "count_suffix": "danh mục có sẵn",
+      "filter_button": "Lọc",
+      "view_button": "Xem"
+    },
+    "gender_names": {
+      "nam": "Nam",
+      "nu": "Nữ",
+      "unisex": "Unisex",
+      "tre-em": "Trẻ em"
+    },
+    "errors": {
+      "loading_categories_log": "Lỗi khi tải danh mục:"
+    }
+  },
+  "product_info": {
+    "contact_for_price": "Liên hệ",
+    "reviews_count": "{{count}} đánh giá",
+    "stock_status": {
+      "in_stock": "Còn hàng",
+      "out_of_stock": "Hết hàng"
+    },
+    "shipping_return_guarantees": {
+      "free_shipping_title": "Miễn phí vận chuyển",
+      "free_shipping_description": "Đơn hàng từ 500k",
+      "easy_returns_title": "Đổi trả dễ dàng",
+      "easy_returns_description": "Trong vòng 30 ngày",
+      "genuine_warranty_title": "Bảo hành chính hãng",
+      "genuine_warranty_description": "12 tháng",
+      "secure_payment_title": "Thanh toán an toàn",
+      "secure_payment_description": "Bảo mật 100%"
+    }
+  },
+  "product_variant_selector": {
+    "contact_for_price": "Liên hệ",
+    "color_selection_title": "Màu sắc",
+    "color_selected": "Đã chọn:",
+    "out_of_stock_parentheses": "(Hết hàng)",
+    "size_selection_title": "Kích thước",
+    "out_of_stock_no_stock": "Hết hàng",
+    "out_of_stock_short": "(Hết)",
+    "price_label": "Giá:",
+    "stock_label": "Tồn kho:",
+    "product_unit": "sản phẩm",
+    "weight_label": "Trọng lượng:",
+    "weight_unit": "kg",
+    "sku_label": "SKU:",
+    "size_guide_button": "📏 Hướng dẫn chọn size"
+  },
+  "product_actions": {
+    "quantity_label": "Số lượng",
+    "quantity_remaining": "(Còn lại: {{stockQuantity}} sản phẩm)",
+    "add_to_cart_button": "Thêm vào giỏ hàng",
+    "add_to_cart_loading": "Đang thêm...",
+    "buy_now_button": "Mua ngay",
+    "buy_now_loading": "Đang xử lý...",
+    "favorite_button_liked": "Đã thích",
+    "favorite_button_unliked": "Yêu thích",
+    "share_button": "Chia sẻ",
+    "messages": {
+      "add_to_cart_success": "Đã thêm sản phẩm vào giỏ hàng!",
+      "add_to_cart_fail": "Thêm giỏ hàng thất bại",
+      "check_favorite_error": "Lỗi kiểm tra yêu thích:",
+      "update_favorite_error": "Lỗi cập nhật yêu thích:",
+      "add_to_cart_error": "Lỗi thêm vào giỏ:",
+      "buy_now_error": "Lỗi mua ngay:"
+    },
+    "login_required": "Vui lòng đăng nhập"
+  },
+  "facebook_comment": {
+    "title": "Bình luận Facebook"
+  },
+  "product_detail": {
+    "description": "Mô tả sản phẩm",
+    "review": "Đánh giá",
+    "review_comment": "Chưa có đánh giá nào"
+  },
+  "product_list": {
+    "product_heading": "Sản phẩm",
+    "product_subheading": "sản phẩm",
+    "order_by": "Sắp xếp theo:",
+    "order_newest": "Mới nhất",
+    "order_price_asc": "Giá tăng dần",
+    "order_price_desc": "Giá giảm dần",
+    "empty": "Không tìm thấy sản phẩm nào",
+    "color": "Màu sắc",
+    "size": "Kích thước",
+    "price": "Khoảng Giá",
+    "apply_button": "Áp dụng"
+  },
+  "wishlist": {
+    "title": "Danh sách yêu thích của bạn",
+    "heading": "trong danh sách",
+    "favorite": "Yêu thích",
+    "empty_text": "Wishlist của bạn trống",
+    "empty_subtext": "Khám phá những sản phẩm ấn tượng và thêm vào wishlist",
+    "shopping_button": "Mua Sắm Ngay"
+  },
+  "footer": {
+    "benefits": {
+      "free_shipping": "Miễn phí vận chuyển từ 500k",
+      "genuine_warranty": "Bảo hành chính hãng",
+      "secure_payment": "Thanh toán an toàn"
+    },
+    "brand_description": "Định nghĩa lại phong cách thời trang hiện đại với những thiết kế độc đáo, chất lượng cao và xu hướng thời trang mới nhất từ khắp nơi trên thế giới.",
+    "connect_us": "Kết nối với chúng tôi",
+    "product_categories": "Danh mục sản phẩm",
+    "quick_links": {
+      "men_wear": "Đồ Nam",
+      "women_wear": "Đồ Nữ",
+      "sale_off": "Sale Off",
+      "collections": "Bộ Sưu Tập"
+    },
+    "customer_support": "Hỗ trợ khách hàng",
+    "support_links": {
+      "return_policy": "Chính sách đổi trả",
+      "buying_guide": "Hướng dẫn mua hàng",
+      "privacy_policy": "Chính sách bảo mật",
+      "terms_of_use": "Điều khoản sử dụng"
+    },
+    "contact_info": {
+      "address": "123 Đường ABC, Quận XYZ, TP.HCM",
+      "opening_hours": "8:00 - 22:00 (Thứ 2 - Chủ nhật)"
+    },
+    "newsletter": {
+      "title": "Đăng ký nhận tin",
+      "description": "Nhận thông tin về sản phẩm mới, ưu đãi đặc biệt và xu hướng thời trang mới nhất",
+      "placeholder": "Nhập email của bạn",
+      "subscribe_success": "Cảm ơn bạn đã đăng ký!"
+    },
+    "vip_member": {
+      "title": "VIP Member",
+      "description": "Trở thành thành viên VIP để nhận ưu đãi đặc biệt lên đến 30%"
+    },
+    "bottom_bar": {
+      "all_rights_reserved": "Tất cả quyền được bảo lưu.",
+      "made_with": "Được làm bằng",
+      "in_vietnam": "tại Việt Nam",
+      "payment_methods": "Phương thức thanh toán:"
+    }
+  }
+}
