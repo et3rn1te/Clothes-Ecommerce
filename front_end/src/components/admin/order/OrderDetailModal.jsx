@@ -3,7 +3,7 @@ import React from 'react';
 const OrderDetailModal = ({ order, onClose }) => {
     // Đảm bảo order và các thuộc tính lồng nhau được kiểm tra trước khi truy cập
     if (!order) {
-        return null; 
+        return null;
     }
 
     return (
