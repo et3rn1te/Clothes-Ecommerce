@@ -49,6 +49,166 @@
       "scroll_right_aria": "Cuộn sang phải"
     }
   },
+  "verificationPage": {
+    "title": "Xác minh email của bạn",
+    "description1": "Chúng tôi đã gửi một liên kết xác minh đến",
+    "description2": "Vui lòng kiểm tra hộp thư đến và nhấp vào liên kết để xác minh tài khoản của bạn",
+    "resendEmail": "Gửi lại email xác minh"
+  },
+  "login": {
+    "title": {
+      "login": "Đăng nhập",
+      "forgotPassword": "Quên mật khẩu",
+      "verifyEmail": "Xác minh Email"
+    },
+    "subtitle": {
+      "signIn": "Đăng nhập vào tài khoản của bạn",
+      "resetPassword": "Nhập email của bạn để đặt lại mật khẩu",
+      "checkEmail": "Kiểm tra email của bạn để xác minh"
+    },
+    "emailLabel": "Địa chỉ Email",
+    "emailPlaceholder": "Nhập địa chỉ email",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "rememberMe": "Ghi nhớ tôi",
+    "forgotPasswordLink": "Quên mật khẩu?",
+    "signInButton": "Đăng nhập",
+    "sendEmailButton": "Gửi Email",
+    "orContinueWith": "Hoặc tiếp tục với",
+    "noAccountSignUp": "Chưa có tài khoản? Đăng ký",
+    "backToSignIn": "Quay lại đăng nhập",
+    "haveAccountSignIn": "Đã có tài khoản? Đăng nhập",
+    "errors": {
+      "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+      "passwordInvalid": "Vui lòng nhập mật khẩu",
+      "emailNotRegistered": "Email chưa được đăng ký",
+      "emailExists": "Email đã tồn tại",
+      "unknownError": "Đã xảy ra lỗi không xác định."
+    },
+    "errorPrefix": "Lỗi: "
+  },
+  "register": {
+    "title": "Tạo tài khoản của bạn",
+    "fullNameLabel": "Họ và tên",
+    "fullNamePlaceholder": "Nhập họ và tên của bạn",
+    "usernameLabel": "Tên người dùng",
+    "usernamePlaceholder": "Nhập tên tài khoản của bạn",
+    "phoneNumberLabel": "Số điện thoại",
+    "phoneNumberPlaceholder": "Nhập số điện thoại",
+    "passwordLabel": "Mật khẩu",
+    "passwordPlaceholder": "Nhập mật khẩu",
+    "confirmPasswordLabel": "Xác nhận mật khẩu",
+    "confirmPasswordPlaceholder": "Xác nhận lại mật khẩu",
+    "termsAndConditions": "Tôi chấp nhận các điều khoản và điều kiện",
+    "signUpButton": "Đăng ký",
+    "haveAccountSignIn": "Đã có tài khoản? Đăng nhập",
+    "passwordStrength": {
+      "enterPassword": "Nhập mật khẩu",
+      "weak": "Yếu",
+      "fair": "Trung bình",
+      "good": "Tốt",
+      "strong": "Mạnh"
+    },
+    "errors": {
+      "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+      "passwordInvalid": "Mật khẩu phải dài ít nhất 8 ký tự và bao gồm chữ hoa, số và ký tự đặc biệt",
+      "passwordsMismatch": "Mật khẩu không khớp",
+      "fullNameRequired": "Tên đầy đủ là bắt buộc",
+      "usernameRequired": "Tên người dùng là bắt buộc",
+      "phoneRequired": "Số điện thoại là bắt buộc"
+    }
+  },
+  "verification_page": {
+    "verify_your_email": "Xác minh email của bạn",
+    "we_have_sent_a_verification_link_to": "Chúng tôi đã gửi một liên kết xác minh đến",
+    "please_check_your_inbox": "Vui lòng kiểm tra hộp thư đến của bạn và nhấp vào liên kết để xác minh tài khoản của bạn",
+    "resend_verification_email": "Gửi lại email xác minh"
+  },
+  "send_email_page": {
+    "sending_verify": "Đang gửi xác minh",
+    "email_address": "Địa chỉ email",
+    "enter_email_address": "Nhập địa chỉ email",
+    "send_reset_link": "Gửi liên kết đặt lại",
+    "back_to_sign_in": "Quay lại đăng nhập"
+  },
+  "errors": {
+    "please_enter_a_valid_email_address": "Vui lòng nhập một địa chỉ email hợp lệ",
+    "password_must_be_at_least_8_characters": "Mật khẩu phải dài ít nhất 8 ký tự và bao gồm chữ hoa, số và ký tự đặc biệt",
+    "passwords_do_not_match": "Mật khẩu không khớp",
+    "full_name_is_required": "Tên đầy đủ là bắt buộc",
+    "username_is_required": "Tên người dùng là bắt buộc",
+    "phone_number_is_required": "Số điện thoại là bắt buộc",
+    "please_accept_terms_and_conditions": "Vui lòng chấp nhận các điều khoản và điều kiện"
+  },
+  "password_strength": {
+    "enter_password": "Nhập mật khẩu",
+    "weak": "Yếu",
+    "fair": "Trung bình",
+    "good": "Tốt",
+    "strong": "Mạnh"
+  },
+  "profile": {
+    "header": {
+      "title": "Hồ Sơ Cá Nhân",
+      "description": "Quản lý thông tin và tài khoản của bạn"
+    },
+    "avatarSection": {
+      "saveImage": "Lưu ảnh",
+      "fileSizeError": "Kích thước file không được vượt quá 5MB",
+      "fileTypeError": "File phải là hình ảnh",
+      "selectNewImage": "Vui lòng chọn ảnh mới",
+      "updateAvatarSuccess": "Cập nhật avatar thành công",
+      "updateAvatarFailed": "Cập nhật avatar thất bại"
+    },
+    "quickActions": {
+      "changePassword": "Đổi mật khẩu",
+      "logout": "Đăng xuất"
+    },
+    "personalInfo": {
+      "title": "Thông tin cá nhân",
+      "fullname": {
+        "label": "Họ và tên",
+        "placeholder": "Nhập họ và tên của bạn",
+        "required": "Vui lòng nhập họ tên"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Email của bạn",
+        "note": "Email không thể thay đổi"
+      },
+      "phone": {
+        "label": "Số điện thoại",
+        "placeholder": "Nhập số điện thoại của bạn",
+        "required": "Vui lòng nhập số điện thoại",
+        "invalid": "Số điện thoại không hợp lệ"
+      },
+      "saveChanges": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "updateSuccess": "Cập nhật thông tin thành công",
+      "updateFailed": "Cập nhật thông tin thất bại"
+    }
+  },
+  "passwordModal": {
+    "title": "Đổi mật khẩu",
+    "currentPassword": {
+      "label": "Mật khẩu hiện tại"
+    },
+    "newPassword": {
+      "label": "Mật khẩu mới"
+    },
+    "confirmNewPassword": {
+      "label": "Xác nhận mật khẩu mới"
+    },
+    "passwordMismatch": "Mật khẩu mới không khớp",
+    "changePasswordSuccess": "Đổi mật khẩu thành công",
+    "changePasswordFailed": "Đổi mật khẩu thất bại",
+    "cancel": "Hủy",
+    "changePasswordBtn": "Đổi mật khẩu"
+  },
+  "session": {
+    "expired": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại",
+    "loadingProfileFailed": "Không thể tải thông tin người dùng"
+  },
   "header": {
     "top_bar": {
       "free_shipping": "Miễn phí vận chuyển từ 500k",

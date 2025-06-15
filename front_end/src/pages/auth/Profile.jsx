@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 import UserService from "../../API/UserService";
 import { toast } from "react-toastify";
 import { checkAndRefreshSession, getTokenExpiryTime } from "../../utils/tokenUtils";
+import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
@@ -33,7 +35,7 @@ const Profile = () => {
   useEffect(() => {
     const currentSession = checkAndRefreshSession();
     if (!currentSession) {
-      toast.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
+      toast.error(t('session.expired'));
       navigate('/auth/login');
       return;
     }
@@ -45,7 +47,7 @@ const Profile = () => {
     }
 
     fetchUserProfile();
-  }, []);
+  }, [t, navigate]);
 
   const fetchUserProfile = async () => {
     try {
@@ -60,11 +62,11 @@ const Profile = () => {
       });
     } catch (error) {
       if (error.response?.status === 401) {
-        toast.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
+        toast.error(t('session.expired'));
         localStorage.removeItem("session");
         navigate('/auth/login');
       } else {
-        toast.error("Không thể tải thông tin người dùng");
+        toast.error(t('session.loadingProfileFailed'));
         console.error("Error fetching profile:", error);
       }
     } finally {
@@ -89,12 +91,12 @@ const Profile = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!userInfo.fullname.trim()) {
-      newErrors.fullname = "Vui lòng nhập họ tên";
+      newErrors.fullname = t('profile.personalInfo.fullname.required');
     }
     if (!userInfo.phone.trim()) {
-      newErrors.phone = "Vui lòng nhập số điện thoại";
+      newErrors.phone = t('profile.personalInfo.phone.required');
     } else if (!/^[0-9]{10}$/.test(userInfo.phone)) {
-      newErrors.phone = "Số điện thoại không hợp lệ";
+      newErrors.phone = t('profile.personalInfo.phone.invalid');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -110,9 +112,9 @@ const Profile = () => {
         fullname: userInfo.fullname,
         phone: userInfo.phone
       });
-      toast.success("Cập nhật thông tin thành công");
+      toast.success(t('profile.personalInfo.updateSuccess'));
     } catch (error) {
-      toast.error(error.response?.data?.message || "Cập nhật thông tin thất bại");
+      toast.error(error.response?.data?.message || t('profile.personalInfo.updateFailed'));
       console.error("Error updating profile:", error);
     } finally {
       setLoading(false);
@@ -123,11 +125,11 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Kích thước file không được vượt quá 5MB");
+        toast.error(t('profile.avatarSection.fileSizeError'));
         return;
       }
       if (!file.type.startsWith('image/')) {
-        toast.error("File phải là hình ảnh");
+        toast.error(t('profile.avatarSection.fileTypeError'));
         return;
       }
       setSelectedFile(file);
@@ -137,22 +139,22 @@ const Profile = () => {
 
   const handleAvatarUpdate = async () => {
     if (!selectedFile) {
-      toast.warning("Vui lòng chọn ảnh mới");
+      toast.warning(t('profile.avatarSection.selectNewImage'));
       return;
     }
 
     try {
       setAvatarLoading(true);
       await UserService.updateAvatar(selectedFile);
-      toast.success("Cập nhật avatar thành công");
+      toast.success(t('profile.avatarSection.updateAvatarSuccess'));
       fetchUserProfile();
     } catch (error) {
       if (error.response?.status === 401) {
-        toast.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
+        toast.error(t('session.expired'));
         localStorage.removeItem("session");
         navigate('/auth/login');
       } else {
-        toast.error(error.response?.data?.message || "Cập nhật avatar thất bại");
+        toast.error(error.response?.data?.message || t('profile.avatarSection.updateAvatarFailed'));
         console.error("Error updating avatar:", error);
       }
     } finally {
@@ -165,7 +167,7 @@ const Profile = () => {
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      toast.error("Mật khẩu mới không khớp");
+      toast.error(t('passwordModal.passwordMismatch'));
       return;
     }
 
@@ -176,7 +178,7 @@ const Profile = () => {
         newPassword: passwordData.newPassword,
         confirmPassword: passwordData.confirmPassword
       });
-      toast.success("Đổi mật khẩu thành công");
+      toast.success(t('passwordModal.changePasswordSuccess'));
       setShowPasswordModal(false);
       setPasswordData({
         currentPassword: "",
@@ -184,7 +186,7 @@ const Profile = () => {
         confirmPassword: ""
       });
     } catch (error) {
-      toast.error(error.response?.data?.message || "Đổi mật khẩu thất bại");
+      toast.error(error.response?.data?.message || t('passwordModal.changePasswordFailed'));
       console.error("Error changing password:", error);
     } finally {
       setLoading(false);
@@ -212,8 +214,8 @@ const Profile = () => {
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-900 via-gray-800 to-slate-900 text-white py-6 px-4">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl font-bold tracking-tight">Hồ Sơ Cá Nhân</h1>
-            <p className="text-gray-300 mt-2">Quản lý thông tin và tài khoản của bạn</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t('profile.header.title')}</h1>
+            <p className="text-gray-300 mt-2">{t('profile.header.description')}</p>
           </div>
         </div>
 
@@ -277,7 +279,7 @@ const Profile = () => {
                         ) : (
                             <>
                               <FiSave className="w-4 h-4" />
-                              Lưu ảnh
+                              {t('profile.avatarSection.saveImage')}
                             </>
                         )}
                       </button>
@@ -293,7 +295,7 @@ const Profile = () => {
                     <div className="p-2 rounded-lg bg-white shadow-sm group-hover:bg-amber-100 transition-colors">
                       <FiLock className="w-5 h-5" />
                     </div>
-                    <span className="font-medium">Đổi mật khẩu</span>
+                    <span className="font-medium">{t('profile.quickActions.changePassword')}</span>
                   </button>
 
                   <button
@@ -303,7 +305,7 @@ const Profile = () => {
                     <div className="p-2 rounded-lg bg-white shadow-sm group-hover:bg-red-100 transition-colors">
                       <FiLogOut className="w-5 h-5" />
                     </div>
-                    <span className="font-medium">Đăng xuất</span>
+                    <span className="font-medium">{t('profile.quickActions.logout')}</span>
                   </button>
                 </div>
               </div>
@@ -316,7 +318,7 @@ const Profile = () => {
                   <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg">
                     <FiSettings className="w-6 h-6 text-white" />
                   </div>
-                  Thông tin cá nhân
+                  {t('profile.personalInfo.title')}
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -324,7 +326,7 @@ const Profile = () => {
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <FiUser className="w-4 h-4 text-amber-500" />
-                      Họ và tên
+                      {t('profile.personalInfo.fullname.label')}
                     </label>
                     <input
                         type="text"
@@ -336,7 +338,7 @@ const Profile = () => {
                                 ? 'border-red-300 focus:border-red-400'
                                 : 'border-gray-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-100'
                         }`}
-                        placeholder="Nhập họ và tên của bạn"
+                        placeholder={t('profile.personalInfo.fullname.placeholder')}
                     />
                     {errors.fullname && (
                         <p className="mt-2 text-sm text-red-500 flex items-center gap-1">
@@ -350,23 +352,23 @@ const Profile = () => {
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <FiMail className="w-4 h-4 text-amber-500" />
-                      Email
+                      {t('profile.personalInfo.email.label')}
                     </label>
                     <input
                         type="email"
                         value={userInfo.email}
                         disabled
                         className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-500 cursor-not-allowed"
-                        placeholder="Email của bạn"
+                        placeholder={t('profile.personalInfo.email.placeholder')}
                     />
-                    <p className="mt-2 text-xs text-gray-500">Email không thể thay đổi</p>
+                    <p className="mt-2 text-xs text-gray-500">{t('profile.personalInfo.email.note')}</p>
                   </div>
 
                   {/* Phone */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <FiPhone className="w-4 h-4 text-amber-500" />
-                      Số điện thoại
+                      {t('profile.personalInfo.phone.label')}
                     </label>
                     <input
                         type="tel"
@@ -378,7 +380,7 @@ const Profile = () => {
                                 ? 'border-red-300 focus:border-red-400'
                                 : 'border-gray-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-100'
                         }`}
-                        placeholder="Nhập số điện thoại của bạn"
+                        placeholder={t('profile.personalInfo.phone.placeholder')}
                     />
                     {errors.phone && (
                         <p className="mt-2 text-sm text-red-500 flex items-center gap-1">
@@ -397,12 +399,12 @@ const Profile = () => {
                     {loading ? (
                         <div className="flex items-center justify-center gap-2">
                           <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-                          <span>Đang lưu...</span>
+                          <span>{t('profile.personalInfo.saving')}</span>
                         </div>
                     ) : (
                         <div className="flex items-center justify-center gap-2">
                           <FiSave className="w-5 h-5" />
-                          <span>Lưu thay đổi</span>
+                          <span>{t('profile.personalInfo.saveChanges')}</span>
                         </div>
                     )}
                   </button>
@@ -421,14 +423,14 @@ const Profile = () => {
                     <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg">
                       <FiLock className="w-5 h-5 text-white" />
                     </div>
-                    Đổi mật khẩu
+                    {t('passwordModal.title')}
                   </h3>
                 </div>
 
                 <form onSubmit={handlePasswordChange} className="p-6 space-y-4">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Mật khẩu hiện tại
+                      {t('passwordModal.currentPassword.label')}
                     </label>
                     <input
                         type="password"
@@ -444,7 +446,7 @@ const Profile = () => {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Mật khẩu mới
+                      {t('passwordModal.newPassword.label')}
                     </label>
                     <input
                         type="password"
@@ -460,7 +462,7 @@ const Profile = () => {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Xác nhận mật khẩu mới
+                      {t('passwordModal.confirmNewPassword.label')}
                     </label>
                     <input
                         type="password"
@@ -480,7 +482,7 @@ const Profile = () => {
                         onClick={() => setShowPasswordModal(false)}
                         className="flex-1 px-4 py-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-colors duration-300 font-medium"
                     >
-                      Hủy
+                      {t('passwordModal.cancel')}
                     </button>
                     <button
                         type="submit"
@@ -492,7 +494,7 @@ const Profile = () => {
                             <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
                           </div>
                       ) : (
-                          'Đổi mật khẩu'
+                          t('passwordModal.changePasswordBtn')
                       )}
                     </button>
                   </div>
