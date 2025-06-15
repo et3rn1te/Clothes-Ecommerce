@@ -5,6 +5,7 @@ import ProductManagementPage from "../pages/admin/ProductManagementPage.jsx";
 import CategoryManagementPage from "../pages/admin/CategoryManagementPage.jsx";
 import Dashboard from '../pages/admin/AdminDashboard.jsx';
 import AdminDashboard from "../pages/admin/AdminDashboard.jsx";
+import {Navigate} from "react-router-dom";
 
 const routes = [
     {
