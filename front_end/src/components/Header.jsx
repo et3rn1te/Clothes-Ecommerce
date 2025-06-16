@@ -1,10 +1,9 @@
 import React, {useState, useEffect, useContext} from "react";
-import {FiSearch, FiShoppingCart, FiHeart, FiMenu, FiX, FiMic, FiUser, FiGlobe} from "react-icons/fi"; // Thêm FiGlobe
+import {FiSearch, FiShoppingCart, FiHeart, FiMenu, FiX, FiMic, FiUser, FiGlobe} from "react-icons/fi";
 import {FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaUserCircle} from "react-icons/fa";
 import {MdEmail, MdPhone, MdLocationOn} from "react-icons/md";
 import {useNavigate, Link} from "react-router-dom";
 import {introspect, logOutApi} from "../API/AuthService";
-import {listCartItem} from "../API/CartService";
 import {FavoriteContext} from "../contexts/FavoriteContext.jsx";
 import {checkAndRefreshSession} from "../utils/tokenUtils";
 import {toast} from "react-toastify";
@@ -27,9 +26,6 @@ const Header = () => {
     const [userAvatar, setUserAvatar] = useState(null);
     const [isListening, setIsListening] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = SpeechRecognition ? new SpeechRecognition() : null;
-
     const [isLogin, setIsLogin] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
 
@@ -110,39 +106,6 @@ const Header = () => {
         }
     };
 
-    if (recognition) {
-        recognition.continuous = false;
-        recognition.lang = i18n.language === 'vi' ? "vi-VN" : "en-US"; // Điều chỉnh ngôn ngữ nhận diện giọng nói
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-
-        recognition.onresult = (event) => {
-            const text = event.results[0][0].transcript;
-            setSearchQuery(text);
-            setIsListening(false);
-        };
-
-        recognition.onerror = (event) => {
-            console.error("Speech recognition error", event.error);
-            setIsListening(false);
-        };
-    }
-
-    const handleVoiceSearch = () => {
-        if (!recognition) {
-            alert(t('header.search.speech_not_supported'));
-            return;
-        }
-
-        if (isListening) {
-            recognition.stop();
-            setIsListening(false);
-        } else {
-            recognition.start();
-            setIsListening(true);
-        }
-    };
-
     const loginClick = () => {
         navigate('/auth/login');
     }
@@ -209,25 +172,26 @@ const Header = () => {
             {renderCurrentLanguageFlag()}
         </span>
                                     <span>{i18n.language.toUpperCase()}</span>
-                                    <FiGlobe className="w-4 h-4" />
+                                    <FiGlobe className="w-4 h-4"/>
                                 </button>
 
                                 {isLanguageDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border z-50">
+                                    <div
+                                        className="absolute right-0 mt-2 w-38 bg-white rounded-lg shadow-lg border z-50">
                                         <div className="py-1">
                                             <button
                                                 onClick={() => changeLanguage('vi')}
                                                 className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
                                             >
                                                 <span className="fi fi-vn w-4 h-4"></span>
-                                                Tiếng Việt
+                                                {t("header.change_language_vi")}
                                             </button>
                                             <button
                                                 onClick={() => changeLanguage('en')}
                                                 className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
                                             >
                                                 <span className="fi fi-us w-4 h-4"></span>
-                                                English
+                                                {t("header.change_language_en_us")}
                                             </button>
                                         </div>
                                     </div>

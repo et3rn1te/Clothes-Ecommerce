@@ -210,6 +210,8 @@
     "loadingProfileFailed": "Không thể tải thông tin người dùng"
   },
   "header": {
+    "change_language_vi": "Tiếng Việt",
+    "change_language_en_us": "Tiếng Anh (US)",
     "top_bar": {
       "free_shipping": "Miễn phí vận chuyển từ 500k",
       "login_button": "Đăng nhập"
@@ -342,7 +344,18 @@
     "color": "Màu sắc",
     "size": "Kích thước",
     "price": "Khoảng Giá",
-    "apply_button": "Áp dụng"
+    "apply_button": "Áp dụng",
+    "price_filter": {
+      "loading_rates": "Đang tải tỷ giá...",
+      "below_300k": "Dưới 300k",
+      "300k_500k": "300k - 500k",
+      "500k_1m": "500k - 1 triệu",
+      "above_1m": "Trên 1 triệu",
+      "invalid_min_price": "Giá tối thiểu không hợp lệ",
+      "invalid_max_price": "Giá tối đa không hợp lệ",
+      "negative_price_error": "Giá không được âm",
+      "min_greater_than_max_error": "Giá tối thiểu không được lớn hơn giá tối đa"
+    }
   },
   "product_card": {
     "quick_view": "Xem nhanh",
