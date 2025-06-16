@@ -150,7 +150,7 @@ const WishList = () => {
                                             className="w-full flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:from-purple-700 hover:to-blue-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
                                         >
                                             <FaShoppingCart className="mr-2 h-4 w-4"/>
-                                            Add to Cart
+                                            {t("wishlist.add_to_cart")}
                                         </button>
                                         <button
                                             onClick={() => removeFromWishlist(item.id)}
@@ -158,7 +158,7 @@ const WishList = () => {
                                             className="w-full flex items-center justify-center px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-200 text-gray-600 rounded-xl font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all duration-200 disabled:opacity-50"
                                         >
                                             <FaTrash className="mr-2 h-4 w-4"/>
-                                            {removingItems.has(item.id) ? 'Removing...' : 'Remove'}
+                                            {removingItems.has(item.id) ? t("wishlist.removing") : t("wishlist.remove")}
                                         </button>
                                     </div>
                                 </div>

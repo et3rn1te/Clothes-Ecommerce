@@ -4,6 +4,7 @@ import { FiHeart, FiShoppingBag, FiEye, FiStar } from 'react-icons/fi';
 import { updateCartItem } from '../../API/CartService';
 import { FavoriteContext } from '../../contexts/FavoriteContext.jsx';
 import WishlistService from '../../API/WishlistService';
+import {useTranslation} from "react-i18next";
 
 const PLACEHOLDER_IMAGE_URL = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=600&fit=crop&crop=center';
 
@@ -15,6 +16,7 @@ const formatCurrency = (price) => {
 };
 
 const ProductCard = ({ product, onClick }) => {
+  const { t } = useTranslation(); // Use useTranslation hook
   const session = JSON.parse(localStorage.getItem("session"));
   const { addToWishlist, removeFromWishlist } = useContext(FavoriteContext);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -118,7 +120,7 @@ const ProductCard = ({ product, onClick }) => {
                       ? 'bg-red-500 text-white hover:bg-red-600'
                       : 'bg-white/90 text-gray-700 hover:bg-white hover:text-red-500'
               } hover:scale-110`}
-              aria-label={isFavorite ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
+              aria-label={isFavorite ? t("product_card.remove_from_wishlist") : t("product_card.add_to_wishlist")}
           >
             <FiHeart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
           </button>
@@ -137,7 +139,7 @@ const ProductCard = ({ product, onClick }) => {
                 className="flex-1 bg-white/90 backdrop-blur-sm text-gray-900 py-2.5 px-4 rounded-xl font-medium hover:bg-white transition-all duration-200 flex items-center justify-center gap-2"
             >
               <FiEye className="w-4 h-4" />
-              <span className="text-sm">Xem nhanh</span>
+              <span className="text-sm">{t("product_card.quick_view")}</span>
             </button>
             <button
                 onClick={handleAddToCart}
@@ -145,7 +147,7 @@ const ProductCard = ({ product, onClick }) => {
                 className="flex-1 bg-gray-900 text-white py-2.5 px-4 rounded-xl font-medium hover:bg-gray-800 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <FiShoppingBag className="w-4 h-4" />
-              <span className="text-sm">{isLoading ? 'Đang thêm...' : 'Thêm vào giỏ'}</span>
+              <span className="text-sm">{isLoading ? t("product_card.adding_to_cart") : t("product_card.add_to_cart")}</span>
             </button>
           </div>
         </div>
@@ -179,7 +181,7 @@ const ProductCard = ({ product, onClick }) => {
                   />
               ))}
             </div>
-            <span className="text-xs text-gray-500">({reviewCount})</span>
+            <span className="text-xs text-gray-500">({reviewCount}) {t("product_card.review_count")}</span>
           </div>
 
           {/* Price */}
@@ -198,7 +200,7 @@ const ProductCard = ({ product, onClick }) => {
             {/* Stock Status */}
             <div className="flex items-center">
               <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-              <span className="text-xs text-gray-600">Còn hàng</span>
+              <span className="text-xs text-gray-600">{t("product_card.in_stock")}</span>
             </div>
           </div>
         </div>
