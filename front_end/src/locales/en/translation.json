@@ -342,7 +342,18 @@
     "color": "Color",
     "size": "Size",
     "price": "Price Range",
-    "apply_button": "Apply"
+    "apply_button": "Apply",
+    "price_filter": {
+      "loading_rates": "Loading exchange rates...",
+      "below_300k": "Below $12",
+      "300k_500k": "$12 - $20",
+      "500k_1m": "$20 - $26",
+      "above_1m": "Above $26",
+      "invalid_min_price": "Invalid minimum price",
+      "invalid_max_price": "Invalid maximum price",
+      "negative_price_error": "Price cannot be negative",
+      "min_greater_than_max_error": "Min price cannot be greater than max price"
+    }
   },
   "product_card": {
     "quick_view": "Quick view",

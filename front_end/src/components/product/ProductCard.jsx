@@ -1,24 +1,22 @@
+// src/components/ProductCard.jsx
 import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiHeart, FiShoppingBag, FiEye, FiStar } from 'react-icons/fi';
 import { updateCartItem } from '../../API/CartService';
 import { FavoriteContext } from '../../contexts/FavoriteContext.jsx';
+import { CurrencyContext } from '../../contexts/CurrencyContext.jsx'; // Import CurrencyContext
 import WishlistService from '../../API/WishlistService';
 import {useTranslation} from "react-i18next";
 
 const PLACEHOLDER_IMAGE_URL = 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=600&fit=crop&crop=center';
 
-const formatCurrency = (price) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND'
-  }).format(price);
-};
-
 const ProductCard = ({ product, onClick }) => {
-  const { t } = useTranslation(); // Use useTranslation hook
+  const { t } = useTranslation();
   const session = JSON.parse(localStorage.getItem("session"));
   const { addToWishlist, removeFromWishlist } = useContext(FavoriteContext);
+  // Lấy hàm convertAndGetDisplayPrice và formatCurrency từ CurrencyContext
+  const { convertAndGetDisplayPrice, formatCurrency, currentCurrency } = useContext(CurrencyContext);
+
   const [isFavorite, setIsFavorite] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -94,9 +92,12 @@ const ProductCard = ({ product, onClick }) => {
     handleProductClick();
   };
 
-  // Generate mock rating for demo
-  const rating = Math.floor(Math.random() * 2) + 4; // 4-5 stars
+  const rating = Math.floor(Math.random() * 2) + 4;
   const reviewCount = Math.floor(Math.random() * 100) + 10;
+
+  // Sử dụng hàm convertAndGetDisplayPrice với giá gốc từ database (VND)
+  const displayBasePrice = convertAndGetDisplayPrice(product?.basePrice || 0);
+  const displayOriginalPrice = convertAndGetDisplayPrice(product?.originalPrice || 0);
 
   return (
       <div className="group relative bg-white rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 cursor-pointer">
@@ -188,11 +189,12 @@ const ProductCard = ({ product, onClick }) => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
             <span className="text-xl font-bold text-gray-900">
-              {formatCurrency(product?.basePrice)}
+              {/* Sử dụng formatCurrency với giá đã chuyển đổi và currentCurrency */}
+              {formatCurrency(displayBasePrice, currentCurrency)}
             </span>
               {product?.originalPrice && product.originalPrice > product.basePrice && (
                   <span className="text-sm text-gray-500 line-through">
-                {formatCurrency(product.originalPrice)}
+                {formatCurrency(displayOriginalPrice, currentCurrency)}
               </span>
               )}
             </div>
