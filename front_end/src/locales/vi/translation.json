@@ -344,13 +344,106 @@
     "price": "Khoảng Giá",
     "apply_button": "Áp dụng"
   },
+  "product_card": {
+    "quick_view": "Xem nhanh",
+    "add_to_cart": "Thêm vào giỏ",
+    "adding_to_cart": "Đang thêm...",
+    "review_count": "đánh giá",
+    "in_stock": "Còn hàng",
+    "remove_from_wishlist": "Xóa khỏi yêu thích",
+    "add_to_wishlist": "Thêm vào yêu thích"
+  },
+  "cart": {
+    "continue_shopping": "Tiếp Tục Mua Sắm",
+    "title": "Giỏ hàng",
+    "in_your_cart": "trong giỏ hàng",
+    "your_items": "Sản Phẩm Của Bạn",
+    "empty_cart": "Giỏ hàng của bạn trống.",
+    "add_some_items": "Thêm sản phẩm vào giỏ hàng.",
+    "shopping_button": "Mua Sắm Ngay",
+    "clear_button": "Xóa Giỏ Hàng",
+    "order_summary": "Thông Tin Đơn Hàng",
+    "order_subtotal": "Tổng:",
+    "order_tax": "Thuế (10%):",
+    "discount": "Giảm giá",
+    "order_total": "Tổng Cộng",
+    "promo_code": "Mã Promo",
+    "promo_apply": "Áp dụng",
+    "promo_code_applied": "Mã Promo đã được áp dụng!",
+    "promo_code_heading": "Thử: \"SAVE20\" hoặc \"WELCOME10\"",
+    "checkout_span": "An toàn thanh toán",
+    "order_shipping_heading": "Miễn ship với đơn trên 500k",
+    "order_return_heading": "Chính sách 30 ngày đổi trả"
+  },
   "wishlist": {
     "title": "Danh sách yêu thích của bạn",
     "heading": "trong danh sách",
     "favorite": "Yêu thích",
     "empty_text": "Wishlist của bạn trống",
     "empty_subtext": "Khám phá những sản phẩm ấn tượng và thêm vào wishlist",
-    "shopping_button": "Mua Sắm Ngay"
+    "shopping_button": "Mua Sắm Ngay",
+    "add_to_cart": "Thêm vào giỏ hàng",
+    "remove": "Xóa",
+    "removing": "Đang xóa..."
+  },
+  "order_history_page": {
+    "header": {
+      "title": "Lịch Sử Đơn Hàng",
+      "description": "Theo dõi và quản lý các đơn hàng của bạn"
+    },
+    "search_filter": {
+      "placeholder": "Tìm kiếm đơn hàng theo tên sản phẩm...",
+      "all_statuses": "Tất cả trạng thái",
+      "pending": "Chờ xác nhận",
+      "confirmed": "Đã xác nhận",
+      "shipping": "Đang giao hàng",
+      "completed": "Đã giao hàng",
+      "cancelled": "Đã hủy"
+    },
+    "no_orders_found": {
+      "title": "Không tìm thấy đơn hàng nào",
+      "message": "Hãy thử thay đổi bộ lọc tìm kiếm"
+    },
+    "order_card": {
+      "order_id": "Mã đơn hàng",
+      "payment_method": {
+        "vn_pay": "VN PAY",
+        "cod": "COD"
+      },
+      "status": {
+        "completed": "Đã giao",
+        "processing": "Đang xử lý",
+        "cancelled": "Đã hủy",
+        "shipping": "Đang giao"
+      },
+      "products_ordered": "Sản phẩm đã đặt",
+      "size": "Kích cỡ",
+      "review": "Đánh giá",
+      "total_amount": "Tổng tiền:",
+      "buy_again": "Mua lại",
+      "details": "Chi tiết",
+      "cancel_order": "Hủy đơn hàng"
+    },
+    "cancel_modal": {
+      "title": "Xác nhận hủy đơn hàng",
+      "reason_prompt": "Vui lòng chọn lý do hủy đơn:",
+      "select_reason": "Chọn lý do",
+      "reasons": {
+        "change_address": "Thay đổi địa chỉ giao hàng",
+        "change_payment": "Thay đổi phương thức thanh toán",
+        "found_better_price": "Tìm thấy sản phẩm giá tốt hơn",
+        "changed_mind": "Đổi ý không muốn mua nữa",
+        "other_reason": "Lý do khác"
+      },
+      "close": "Đóng",
+      "confirm_cancel": "Xác nhận hủy"
+    },
+    "review_modal": {
+      "title": "Đánh giá sản phẩm",
+      "share_experience_placeholder": "Chia sẻ trải nghiệm của bạn về sản phẩm...",
+      "cancel": "Hủy",
+      "submit_review": "Gửi đánh giá"
+    }
   },
   "footer": {
     "benefits": {

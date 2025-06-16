@@ -5,8 +5,10 @@ import { introspect } from "../API/AuthService";
 import { listCartItem, updateCartItem } from "../API/CartService";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../API/axiosClient";
+import {useTranslation} from "react-i18next";
 
 const Cart = () => {
+  const { t } = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const [promoCode, setPromoCode] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -123,7 +125,7 @@ const Cart = () => {
           >
             <button className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors duration-200 group">
               <FiArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-              <span className="font-medium">Continue Shopping</span>
+              <span className="font-medium">{t("cart.continue_shopping")}</span>
             </button>
           </motion.div>
           <motion.h1
@@ -132,7 +134,7 @@ const Cart = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-2"
           >
-            Shopping Cart
+            {t("cart.title")}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: -20 }}
@@ -140,7 +142,7 @@ const Cart = () => {
             transition={{ delay: 0.2 }}
             className="text-gray-600"
           >
-            {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} in your cart
+            {cartItems.length} {cartItems.length === 1 ? 'item' : 'items'} {t("cart.in_your_cart")}
           </motion.p>
         </div>
 
@@ -160,7 +162,7 @@ const Cart = () => {
                     <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
                       <FiShoppingCart className="w-5 h-5 text-white" />
                     </div>
-                    Your Items
+                    {t("cart.your_items")}
                   </h2>
                   {cartItems.length > 0 && (
                     <button
@@ -168,7 +170,7 @@ const Cart = () => {
                       className="text-red-500 hover:text-red-600 hover:bg-red-50 px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2 font-medium"
                     >
                       <FiTrash2 className="w-4 h-4" />
-                      Clear Cart
+                      {t("cart.clear_button")}
                     </button>
                   )}
                 </div>
@@ -220,9 +222,9 @@ const Cart = () => {
                           <div className="flex items-center gap-4 mb-4 text-sm text-gray-600">
                             <span className="flex items-center gap-2">
                               <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                              Color: {item.product.color.name}
+                              {t("cart.color")}: {item.product.color.name}
                             </span>
-                            <span>Size: {item.product.size.name}</span>
+                            <span>{t("cart.size")}: {item.product.size.name}</span>
                           </div>
 
                           {/* Quantity and Price */}
@@ -272,10 +274,10 @@ const Cart = () => {
                     <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <FiShoppingCart className="w-10 h-10 text-gray-400" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Your cart is empty</h3>
-                    <p className="text-gray-600 mb-6">Add some items to get started</p>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{t("cart.empty_cart")}</h3>
+                    <p className="text-gray-600 mb-6">{t("cart.add_some_items")}</p>
                     <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-                      Start Shopping
+                      {t("cart.shopping_button")}
                     </button>
                   </motion.div>
                 )}
@@ -298,7 +300,7 @@ const Cart = () => {
                     <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                       <FiTag className="w-4 h-4 text-white" />
                     </div>
-                    Order Summary
+                    {t("cart.order_summary")}
                   </h3>
                 </div>
 
@@ -306,11 +308,11 @@ const Cart = () => {
                   {/* Price Breakdown */}
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Subtotal</span>
+                      <span className="text-gray-600">{t("cart.order_subtotal")}</span>
                       <span className="font-semibold">${subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Tax (10%)</span>
+                      <span className="text-gray-600">{t("cart.order_tax")}</span>
                       <span className="font-semibold">${taxAmount.toFixed(2)}</span>
                     </div>
                     {discount > 0 && (
@@ -321,14 +323,14 @@ const Cart = () => {
                       >
                         <span className="flex items-center gap-2">
                           <FiPercent className="w-4 h-4" />
-                          Discount
+                          {t("cart.discount")}
                         </span>
                         <span className="font-semibold">-${discount.toFixed(2)}</span>
                       </motion.div>
                     )}
                     <div className="border-t pt-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-gray-900">Total</span>
+                        <span className="text-lg font-bold text-gray-900">{t("cart.order_total")}</span>
                         <span className="text-2xl font-bold text-gray-900">${total.toFixed(2)}</span>
                       </div>
                     </div>
@@ -337,7 +339,7 @@ const Cart = () => {
                   {/* Promo Code */}
                   <div className="space-y-3">
                     <label className="block text-sm font-semibold text-gray-700">
-                      Promo Code
+                      {t("cart.promo_code")}
                     </label>
                     <div className="flex gap-2">
                       <div className="relative flex-1">
@@ -354,7 +356,7 @@ const Cart = () => {
                         onClick={() => findDiscount(promoCode)}
                         className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
                       >
-                        Apply
+                        {t("cart.promo_apply")}
                       </button>
                     </div>
                     {isPromoApplied && (
@@ -364,11 +366,11 @@ const Cart = () => {
                         className="text-sm text-green-600 flex items-center gap-2"
                       >
                         <FiPercent className="w-4 h-4" />
-                        Promo code applied successfully!
+                        {t("cart.promo_code_applied")}
                       </motion.p>
                     )}
                     <div className="text-xs text-gray-500">
-                      Try: "SAVE20" or "WELCOME10"
+                      {t("cart.promo_code_heading")}
                     </div>
                   </div>
 
@@ -377,15 +379,15 @@ const Cart = () => {
                     <div className="space-y-3">
                       <div className="flex items-center gap-3 text-sm text-gray-700">
                         <FiShield className="w-4 h-4 text-blue-500" />
-                        <span>Secure checkout</span>
+                        <span>{t("cart.checkout_span")}</span>
                       </div>
                       <div className="flex items-center gap-3 text-sm text-gray-700">
                         <FiTruck className="w-4 h-4 text-blue-500" />
-                        <span>Free shipping over $100</span>
+                        <span>{t("cart.order_shipping_heading")}</span>
                       </div>
                       <div className="flex items-center gap-3 text-sm text-gray-700">
                         <FiHeart className="w-4 h-4 text-blue-500" />
-                        <span>30-day return policy</span>
+                        <span>{t("cart.order_return_heading")}</span>
                       </div>
                     </div>
                   </div>
