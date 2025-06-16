@@ -191,7 +191,7 @@ const Header = () => {
                                                 className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
                                             >
                                                 <span className="fi fi-us w-4 h-4"></span>
-                                                English
+                                                English (US)
                                             </button>
                                         </div>
                                     </div>
