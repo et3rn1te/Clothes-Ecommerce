@@ -210,6 +210,8 @@
     "loadingProfileFailed": "Failed to load user information"
   },
   "header": {
+    "change_language_vi": "Tiếng Việt",
+    "change_language_en_us": "English (US)",
     "top_bar": {
       "free_shipping": "Free shipping from 500k",
       "login_button": "Login"

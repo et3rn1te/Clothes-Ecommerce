@@ -177,21 +177,21 @@ const Header = () => {
 
                                 {isLanguageDropdownOpen && (
                                     <div
-                                        className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border z-50">
+                                        className="absolute right-0 mt-2 w-38 bg-white rounded-lg shadow-lg border z-50">
                                         <div className="py-1">
                                             <button
                                                 onClick={() => changeLanguage('vi')}
                                                 className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
                                             >
                                                 <span className="fi fi-vn w-4 h-4"></span>
-                                                Tiếng Việt
+                                                {t("header.change_language_vi")}
                                             </button>
                                             <button
                                                 onClick={() => changeLanguage('en')}
                                                 className="flex items-center gap-2 w-full px-2 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
                                             >
                                                 <span className="fi fi-us w-4 h-4"></span>
-                                                English (US)
+                                                {t("header.change_language_en_us")}
                                             </button>
                                         </div>
                                     </div>

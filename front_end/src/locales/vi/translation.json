@@ -210,6 +210,8 @@
     "loadingProfileFailed": "Không thể tải thông tin người dùng"
   },
   "header": {
+    "change_language_vi": "Tiếng Việt",
+    "change_language_en_us": "Tiếng Anh (US)",
     "top_bar": {
       "free_shipping": "Miễn phí vận chuyển từ 500k",
       "login_button": "Đăng nhập"
