@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
-import { FiSettings, FiLogOut, FiCamera, FiSave, FiLock, FiUser, FiMail, FiPhone } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {FiSettings, FiLogOut, FiCamera, FiSave, FiLock, FiUser, FiMail, FiPhone} from "react-icons/fi";
+import {FaUserCircle} from "react-icons/fa";
+import {useNavigate} from "react-router-dom";
 import UserService from "../../API/UserService";
-import { toast } from "react-toastify";
-import { checkAndRefreshSession, getTokenExpiryTime } from "../../utils/tokenUtils";
-import { useTranslation } from 'react-i18next';
+import {toast} from "react-toastify";
+import {checkAndRefreshSession, getTokenExpiryTime} from "../../utils/tokenUtils";
+import {useTranslation} from 'react-i18next';
+import {useAuth} from "../../contexts/AuthContext.jsx";
 
 const Profile = () => {
+  const {updateUserAvatar, refreshUserProfile} = useAuth();
+  const {t} = useTranslation();
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
@@ -53,7 +55,7 @@ const Profile = () => {
     try {
       setLoading(true);
       const response = await UserService.getUserProfile();
-      const { data } = response.data;
+      const {data} = response.data;
       setUserInfo({
         fullname: data.fullname || "",
         email: data.email || "",
@@ -75,7 +77,7 @@ const Profile = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
     setUserInfo(prev => ({
       ...prev,
       [name]: value
@@ -145,9 +147,33 @@ const Profile = () => {
 
     try {
       setAvatarLoading(true);
-      await UserService.updateAvatar(selectedFile);
+
+      // Upload avatar
+      const response = await UserService.updateAvatar(selectedFile);
+
+      // Lấy URL avatar mới từ response
+      const newAvatarUrl = response.data?.imageUrl || response.data?.data?.imageUrl;
+
+      if (newAvatarUrl) {
+        // Cập nhật avatar trong AuthContext NGAY LẬP TỨC
+        updateUserAvatar(newAvatarUrl);
+      } else {
+        // Nếu không có URL trong response, sử dụng preview URL tạm thời
+        // và sau đó refresh profile để lấy URL chính thức
+        if (previewUrl) {
+          updateUserAvatar(previewUrl);
+        }
+        // Sau đó refresh để lấy URL chính thức từ server
+        setTimeout(async () => {
+          await refreshUserProfile();
+        }, 100);
+      }
+
       toast.success(t('profile.avatarSection.updateAvatarSuccess'));
+
+      // Refresh user profile để đảm bảo data consistency
       fetchUserProfile();
+
     } catch (error) {
       if (error.response?.status === 401) {
         toast.error(t('session.expired'));
@@ -200,7 +226,8 @@ const Profile = () => {
 
   if (loading && !userInfo.fullname) {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
+        <div
+            className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-slate-100 flex items-center justify-center">
           <div className="relative">
             <div className="animate-spin rounded-full h-16 w-16 border-4 border-amber-400 border-t-transparent"></div>
             <div className="absolute inset-0 rounded-full border-4 border-amber-100"></div>
@@ -228,8 +255,10 @@ const Profile = () => {
                 {/* Avatar Section */}
                 <div className="flex flex-col items-center mb-8">
                   <div className="relative group">
-                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 p-1 shadow-2xl">
-                      <div className="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center">
+                    <div
+                        className="w-32 h-32 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 p-1 shadow-2xl">
+                      <div
+                          className="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center">
                         {previewUrl ? (
                             <img
                                 src={previewUrl}
@@ -243,23 +272,24 @@ const Profile = () => {
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
                                   e.target.onerror = null;
-                                  setUserInfo(prev => ({ ...prev, avatar: null }));
+                                  setUserInfo(prev => ({...prev, avatar: null}));
                                 }}
                             />
                         ) : (
-                            <FaUserCircle className="w-full h-full text-gray-300" />
+                            <FaUserCircle className="w-full h-full text-gray-300"/>
                         )}
                       </div>
                     </div>
 
-                    <label className="absolute -bottom-2 -right-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full p-3 shadow-lg hover:shadow-xl cursor-pointer transition-all duration-300 group-hover:scale-110">
+                    <label
+                        className="absolute -bottom-2 -right-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full p-3 shadow-lg hover:shadow-xl cursor-pointer transition-all duration-300 group-hover:scale-110">
                       <input
                           type="file"
                           accept="image/*"
                           onChange={handleFileChange}
                           className="hidden"
                       />
-                      <FiCamera className="text-white w-4 h-4" />
+                      <FiCamera className="text-white w-4 h-4"/>
                     </label>
                   </div>
 
@@ -275,10 +305,11 @@ const Profile = () => {
                           className="mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-2 rounded-full hover:from-amber-600 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 flex items-center gap-2 shadow-lg hover:shadow-xl"
                       >
                         {avatarLoading ? (
-                            <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                            <div
+                                className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
                         ) : (
                             <>
-                              <FiSave className="w-4 h-4" />
+                              <FiSave className="w-4 h-4"/>
                               {t('profile.avatarSection.saveImage')}
                             </>
                         )}
@@ -293,7 +324,7 @@ const Profile = () => {
                       className="w-full flex items-center gap-3 p-4 rounded-xl bg-gray-50 hover:bg-amber-50 text-gray-700 hover:text-amber-600 transition-all duration-300 group"
                   >
                     <div className="p-2 rounded-lg bg-white shadow-sm group-hover:bg-amber-100 transition-colors">
-                      <FiLock className="w-5 h-5" />
+                      <FiLock className="w-5 h-5"/>
                     </div>
                     <span className="font-medium">{t('profile.quickActions.changePassword')}</span>
                   </button>
@@ -303,7 +334,7 @@ const Profile = () => {
                       className="w-full flex items-center gap-3 p-4 rounded-xl bg-gray-50 hover:bg-red-50 text-gray-700 hover:text-red-600 transition-all duration-300 group"
                   >
                     <div className="p-2 rounded-lg bg-white shadow-sm group-hover:bg-red-100 transition-colors">
-                      <FiLogOut className="w-5 h-5" />
+                      <FiLogOut className="w-5 h-5"/>
                     </div>
                     <span className="font-medium">{t('profile.quickActions.logout')}</span>
                   </button>
@@ -316,7 +347,7 @@ const Profile = () => {
               <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-gray-200/50 p-8">
                 <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
                   <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg">
-                    <FiSettings className="w-6 h-6 text-white" />
+                    <FiSettings className="w-6 h-6 text-white"/>
                   </div>
                   {t('profile.personalInfo.title')}
                 </h2>
@@ -325,7 +356,7 @@ const Profile = () => {
                   {/* Full Name */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                      <FiUser className="w-4 h-4 text-amber-500" />
+                      <FiUser className="w-4 h-4 text-amber-500"/>
                       {t('profile.personalInfo.fullname.label')}
                     </label>
                     <input
@@ -351,7 +382,7 @@ const Profile = () => {
                   {/* Email */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                      <FiMail className="w-4 h-4 text-amber-500" />
+                      <FiMail className="w-4 h-4 text-amber-500"/>
                       {t('profile.personalInfo.email.label')}
                     </label>
                     <input
@@ -367,7 +398,7 @@ const Profile = () => {
                   {/* Phone */}
                   <div className="group">
                     <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                      <FiPhone className="w-4 h-4 text-amber-500" />
+                      <FiPhone className="w-4 h-4 text-amber-500"/>
                       {t('profile.personalInfo.phone.label')}
                     </label>
                     <input
@@ -398,12 +429,13 @@ const Profile = () => {
                   >
                     {loading ? (
                         <div className="flex items-center justify-center gap-2">
-                          <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                          <div
+                              className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
                           <span>{t('profile.personalInfo.saving')}</span>
                         </div>
                     ) : (
                         <div className="flex items-center justify-center gap-2">
-                          <FiSave className="w-5 h-5" />
+                          <FiSave className="w-5 h-5"/>
                           <span>{t('profile.personalInfo.saveChanges')}</span>
                         </div>
                     )}
@@ -421,7 +453,7 @@ const Profile = () => {
                 <div className="p-6 border-b border-gray-100">
                   <h3 className="text-xl font-bold text-gray-800 flex items-center gap-3">
                     <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg">
-                      <FiLock className="w-5 h-5 text-white" />
+                      <FiLock className="w-5 h-5 text-white"/>
                     </div>
                     {t('passwordModal.title')}
                   </h3>
@@ -491,7 +523,8 @@ const Profile = () => {
                     >
                       {loading ? (
                           <div className="flex items-center justify-center">
-                            <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                            <div
+                                className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
                           </div>
                       ) : (
                           t('passwordModal.changePasswordBtn')
