@@ -3,8 +3,12 @@ import { FiSearch, FiChevronDown, FiShoppingBag, FiStar, FiInfo, FiChevronUp, Fi
 import { introspect } from "../API/AuthService";
 import axiosClient from "../API/axiosClient";
 import {useTranslation} from "react-i18next";
+import ReviewService from "../API/ReviewService";
+import { FavoriteContext } from "../contexts/FavoriteContext";
+import OrderService from "../API/OrderService";
 
 const OrderHistory = () => {
+  const { session } = useContext(FavoriteContext);
   const { t } = useTranslation();
   const cancelReasons = [
     t("order_history_page.cancel_modal.reasons.change_address"),
@@ -141,7 +145,7 @@ const OrderHistory = () => {
   };
 
   const handleConfirmCancel = () => {
-    // OrderService.updateOrder(selectedOrder.order.idOrder,5,session.token);
+    OrderService.updateOrder(selectedOrder.order.idOrder,5,session.token);
     console.log("Order cancelled");
     setShowCancelModal(false);
     setSelectedOrder(null);
@@ -161,6 +165,8 @@ const OrderHistory = () => {
       rating: reviewRating,
       comment: reviewComment
     });
+    console.log(selectedProduct);
+    ReviewService.addReview(selectedProduct.id,session.currentUser.id,reviewRating,reviewComment,session.token);
     setShowReviewModal(false);
     setSelectedProduct(null);
     setReviewRating(0);
@@ -328,7 +334,7 @@ const OrderHistory = () => {
                                     {t("order_history_page.order_card.details")}
                                   </button>
                                 </div>
-                                {(order.statusName === "pending" || order.statusName === "confirmed") && (
+                                {(order.statusName === "processing" || order.statusName === "confirmed") && (
                                     <button
                                         className="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 font-medium"
                                         onClick={() => handleCancelClick({order})}
