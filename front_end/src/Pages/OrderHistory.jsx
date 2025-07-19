@@ -166,7 +166,7 @@ const OrderHistory = () => {
       comment: reviewComment
     });
     console.log(selectedProduct);
-    ReviewService.addReview(selectedProduct.id,session.currentUser.id,reviewRating,reviewComment,session.token);
+    ReviewService.addReview(selectedProduct.idProduct.id,session.currentUser.id,reviewRating,reviewComment,session.token);
     setShowReviewModal(false);
     setSelectedProduct(null);
     setReviewRating(0);

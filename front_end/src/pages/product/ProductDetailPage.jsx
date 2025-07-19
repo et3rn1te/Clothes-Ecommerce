@@ -179,6 +179,7 @@ const ProductDetailPage = () => {
                 onVariantChange={handleVariantChange}
               />
             )}
+            {console.log(selectedVariant)}
 
             <ProductActions
               product={product}

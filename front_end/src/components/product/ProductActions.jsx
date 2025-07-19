@@ -49,7 +49,7 @@ const ProductActions = ({
       await updateCartItem(
           {
             idUser: session.currentUser.id,
-            idProduct: product.id,
+            idProduct: currentVariant.id,
             amount: quantity,
             action: true
           },

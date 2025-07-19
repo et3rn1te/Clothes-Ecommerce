@@ -73,6 +73,7 @@ public class OrderService implements IOrderService {
         for (CartDetail cartDetail : cartDetails) {
             ProductVariant product = cartDetail.getIdProduct();
             Integer cartQuantity = cartDetail.getQuantity();
+            System.out.println(product.getId());
 
             OrderDetail oderDetail = new OrderDetail();
             oderDetail.setIdOrder(order);

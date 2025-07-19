@@ -8,6 +8,7 @@ import {FavoriteContext} from "../contexts/FavoriteContext.jsx";
 import {checkAndRefreshSession} from "../utils/tokenUtils";
 import {toast} from "react-toastify";
 import {useTranslation} from 'react-i18next';
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 const Header = () => {
     const {t, i18n} = useTranslation();
@@ -27,8 +28,8 @@ const Header = () => {
     const [isListening, setIsListening] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [isLogin, setIsLogin] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
 
+    const {user, isAdmin, loading} = useAuth();
     const navigate = useNavigate();
 
     const cartClick = () => {
@@ -45,12 +46,11 @@ const Header = () => {
                 setSession(currentSession);
                 setIsLogin(true);
 
-                const userRoles = currentSession.currentUser?.roles || [];
+                const userRoles = user?.roles || [];
                 console.log("User roles:", userRoles);
-                setIsAdmin(userRoles.some(role => role.name === "ADMIN"));
 
                 if (currentSession.currentUser?.imageUrl) {
-                    setUserAvatar(currentSession.currentUser.imageUrl);
+                    setUserAvatar(user?.imageUrl);
                 } else {
                     setUserAvatar(null);
                 }
@@ -69,7 +69,6 @@ const Header = () => {
                 }
             } else {
                 setIsLogin(false);
-                setIsAdmin(false);
                 setUserAvatar(null);
             }
         };

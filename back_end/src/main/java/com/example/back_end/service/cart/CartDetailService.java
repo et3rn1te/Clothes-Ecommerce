@@ -5,8 +5,11 @@ import com.example.back_end.dto.request.CartRequest;
 import com.example.back_end.entity.Cart;
 import com.example.back_end.entity.CartDetail;
 import com.example.back_end.entity.ProductVariant;
+import com.example.back_end.exception.AppException;
+import com.example.back_end.exception.ErrorCode;
 import com.example.back_end.repository.CartDetailRepository;
 import com.example.back_end.repository.CartRepository;
+import com.example.back_end.repository.ProductVariantRepository;
 import com.example.back_end.service.product.IProductVariantService;
 import com.example.back_end.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,7 @@ public class CartDetailService implements ICartService{
     private final IUserService userService;
     private final IProductVariantService productService;
     private final ModelMapper modelMapper;
+    private final ProductVariantRepository variantRepository;
     @Override
     public void updateCartItem(CartRequest request) {
         Cart cart = cartRepository.findByUser_IdAndIsOrdered(request.getIdUser(), false)
@@ -37,7 +41,10 @@ public class CartDetailService implements ICartService{
                     cartRepository.save(newOne);
                     return newOne;
                 });
-        ProductVariant product = productService.getById(request.getIdProduct());
+//        ProductVariant product = productService.getById(request.getIdProduct());
+        ProductVariant product = variantRepository.findById(request.getIdProduct())
+                .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND));
+        System.out.println(product.getId());
         CartDetail cartDetail = cartDetailRepository.findByIdCartAndIdProduct_Id(cart, product.getId())
                 .orElseGet(() -> {
                     System.out.println("Ko tìm thấy");

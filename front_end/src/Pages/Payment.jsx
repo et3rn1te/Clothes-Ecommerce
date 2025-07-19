@@ -6,8 +6,10 @@ import { addOrder, vnPay } from "../API/CheckoutService.jsx";
 import useQueryParam from "../utils/useQueryParam.jsx";
 import axiosClient from "../API/axiosClient.jsx";
 import { FavoriteContext } from "../contexts/FavoriteContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 const CheckoutPage = () => {
+  const navigate = useNavigate();
   const success = useQueryParam("success");
   const session = JSON.parse(localStorage.getItem("session"));
   const {  clearCart } = useContext(FavoriteContext);
@@ -355,7 +357,7 @@ const CheckoutPage = () => {
               <h3 className="text-2xl font-bold text-green-600 mb-4">Order Placed Successfully!</h3>
               <p className="text-gray-600 mb-6">Thank you for your purchase. We'll send you a confirmation email shortly.</p>
               <button
-                onClick={() => setShowSuccess(false)}
+                onClick={() => {setShowSuccess(false),navigate('/');}}
                 className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700"
               >
                 Continue Shopping

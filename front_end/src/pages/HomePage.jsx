@@ -43,7 +43,14 @@ function HomePage() {
     };
 
     fetchFeaturedProducts();
-  }, [t]); // Thêm t vào dependency array
+  }, [t]);
+  // useEffect(() => {
+  //   const script = document.createElement("script");
+  //   script.src =
+  //     "https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1";
+  //   script.async = true;
+  //   document.body.appendChild(script);
+  // }, []); // Thêm t vào dependency array
 
   const scrollProducts = (direction) => {
     if (productsContainerRef.current) {
@@ -92,6 +99,8 @@ function HomePage() {
         </div>
     );
   }
+
+  
 
   return (
       <div className="homepage bg-gradient-to-br from-gray-50 to-white">
@@ -308,8 +317,16 @@ function HomePage() {
               </div>
           )}
         </section>
+        {/* <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script> */}
+        {/* <df-messenger
+          intent="WELCOME"
+          chat-title="Trợ lý Handmade"
+          agent-id="19855501-d748-463c-969e-ee1ff94c19c6"
+          language-code="vi"
+        ></df-messenger> */}
 
-        <style jsx>{`
+
+        <style>{`
           @keyframes fadeInUp {
             from {
               opacity: 0;
@@ -335,6 +352,7 @@ function HomePage() {
           }
         `}</style>
       </div>
+      
   );
 }
 
